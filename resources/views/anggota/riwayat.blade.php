@@ -36,22 +36,22 @@
                                         <td class="px-4 py-2 border">{{ \Carbon\Carbon::parse($p->tgl_daftar)->format('d M Y H:i') }}</td>
                                         <td class="px-4 py-2 border">
                                             <span class="px-2 py-1 rounded text-white text-xs
-                                                @if($p->status == 'pending') bg-yellow-500
-                                                @elseif($p->status == 'disetujui') bg-green-500
-                                                @elseif($p->status == 'ditolak') bg-red-500
+                                                @if($p->status=='pending') bg-yellow-500
+                                                @elseif($p->status=='disetujui') bg-green-500
+                                                @elseif($p->status=='ditolak') bg-red-500
                                                 @else bg-gray-500 @endif">
                                                 {{ ucfirst($p->status) }}
                                             </span>
                                         </td>
                                         <td class="px-4 py-2 border">
-                                            <a href="{{ route('kegiatan.publik.show', $p->id_kegiatan) }}" class="text-blue-600 hover:underline">Lihat Kegiatan</a>
+                                            <a href="{{ route('kegiatan.publik.show', $p->id_kegiatan) }}" wire:navigate class="text-blue-600 hover:underline">Lihat</a>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">{{ $pendaftarans->links() }}</div>
+                    {{ $pendaftarans->links() }}
                 @else
                     <p class="text-gray-500">Anda belum pernah mendaftar kegiatan apapun.</p>
                 @endif

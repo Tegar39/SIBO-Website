@@ -7,7 +7,7 @@
             <div class="p-6 text-gray-900">
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-2xl font-bold">Daftar Anggota</h1>
-                    <a href="{{ route('admin.anggota.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Anggota</a>
+                    <a href="{{ route('admin.anggota.create') }}" wire:navigate class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Anggota</a>
                 </div>
 
                 @if(session('success'))
@@ -35,7 +35,7 @@
                                 <td class="px-4 py-2 border">{{ $a->pac }}</td>
                                 <td class="px-4 py-2 border">{{ $a->user->email }}</td>
                                 <td class="px-4 py-2 border">
-                                    <a href="{{ route('admin.anggota.edit', $a->id_anggota) }}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
+                                    <a href="{{ route('admin.anggota.edit', $a->id_anggota) }}" wire:navigate class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
                                     <form action="{{ route('admin.anggota.destroy', $a->id_anggota) }}" method="POST" class="inline-block">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded" onclick="return confirm('Yakin?')">Hapus</button>

@@ -7,7 +7,7 @@
             <div class="p-6 text-gray-900">
                 <div class="flex justify-between items-center mb-4">
                     <h1 class="text-2xl font-bold">Daftar Kegiatan</h1>
-                    <a href="{{ route('admin.kegiatan.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Kegiatan</a>
+                    <a href="{{ route('admin.kegiatan.create') }}" wire:navigate class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Kegiatan</a>
                 </div>
 
                 @if(session('success'))
@@ -35,8 +35,11 @@
                                 <td class="px-4 py-2 border">{{ $k->tanggal }}</td>
                                 <td class="px-4 py-2 border">{{ ucfirst($k->status) }}</td>
                                 <td class="px-4 py-2 border">
-                                    <a href="{{ route('admin.kegiatan.edit', $k->id_kegiatan) }}" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
-                                    <form action="{{ route('admin.kegiatan.destroy', $k->id_kegiatan) }}" method="POST" class="inline-block">@csrf @method('DELETE')<button type="submit" class="bg-red-500 text-white px-2 py-1 rounded" onclick="return confirm('Yakin?')">Hapus</button></form>
+                                    <a href="{{ route('admin.kegiatan.edit', $k->id_kegiatan) }}" wire:navigate class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
+                                    <form action="{{ route('admin.kegiatan.destroy', $k->id_kegiatan) }}" method="POST" class="inline-block">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded" onclick="return confirm('Yakin?')">Hapus</button>
+                                    </form>
                                 </td>
                             </tr>
                             @endforeach

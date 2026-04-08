@@ -26,7 +26,7 @@
                     <div class="mb-4"><label class="block font-medium">PAC</label><input type="text" name="pac" class="w-full border rounded px-2 py-1" placeholder="Contoh: PAC-01"></div>
                     <div class="flex gap-2">
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
-                        <a href="{{ route('admin.anggota.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded">Batal</a>
+                        <a href="{{ route('admin.anggota.index') }}" wire:navigate class="bg-gray-500 text-white px-4 py-2 rounded">Batal</a>
                     </div>
                 </form>
             </div>

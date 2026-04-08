@@ -22,6 +22,12 @@
                     </div>
                 </div>
 
+                <div class="mb-6 flex gap-2">
+                    <a href="{{ route('admin.anggota.index') }}" wire:navigate class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Kelola Anggota</a>
+                    <a href="{{ route('admin.kegiatan.index') }}" wire:navigate class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Kelola Kegiatan</a>
+                    <a href="{{ route('admin.pendaftaran.index') }}" wire:navigate class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Kelola Pendaftaran</a>
+                </div>
+
                 <h2 class="text-xl font-semibold mb-2">Anggota Terbaru</h2>
                 <div class="overflow-x-auto">
                     <table class="min-w-full border">
