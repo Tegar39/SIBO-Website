@@ -8,19 +8,64 @@
                     </a>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <!-- Desktop Menu -->
-                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>Beranda</x-nav-link>
+                    <!-- Beranda - hover hijau -->
+                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate
+                        class="hover:text-green-600 transition-colors duration-200">
+                        Beranda
+                    </x-nav-link>
                     @auth
                         @if(auth()->user()->role == 'admin')
-                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>Dashboard</x-nav-link>
-                            <x-nav-link :href="route('admin.anggota.index')" :active="request()->routeIs('admin.anggota.*')" wire:navigate>Anggota</x-nav-link>
-                            <x-nav-link :href="route('admin.kategori.index')" :active="request()->routeIs('admin.kategori.*')" wire:navigate>Kategori</x-nav-link>
-                            <x-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" wire:navigate>Kegiatan</x-nav-link>
-                            <x-nav-link :href="route('admin.pendaftaran.index')" :active="request()->routeIs('admin.pendaftaran.*')" wire:navigate>Pendaftaran</x-nav-link>
+                            <!-- Dashboard - hover biru -->
+                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate
+                                class="hover:text-blue-600 transition-colors duration-200">
+                                Dashboard
+                            </x-nav-link>
+                            <!-- Anggota - hover orange -->
+                            <x-nav-link :href="route('admin.anggota.index')" :active="request()->routeIs('admin.anggota.*')" wire:navigate
+                                class="hover:text-orange-500 transition-colors duration-200">
+                                Anggota
+                            </x-nav-link>
+                            <!-- Kategori - hover kuning -->
+                            <x-nav-link :href="route('admin.kategori.index')" :active="request()->routeIs('admin.kategori.*')" wire:navigate
+                                class="hover:text-yellow-500 transition-colors duration-200">
+                                Kategori
+                            </x-nav-link>
+                            <!-- Kegiatan - hover merah -->
+                            <x-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" wire:navigate
+                                class="hover:text-red-600 transition-colors duration-200">
+                                Kegiatan
+                            </x-nav-link>
+                            <!-- Pendaftaran - hover ungu -->
+                            <x-nav-link :href="route('admin.pendaftaran.index')" :active="request()->routeIs('admin.pendaftaran.*')" wire:navigate
+                                class="hover:text-purple-600 transition-colors duration-200">
+                                Pendaftaran
+                            </x-nav-link>
+                            <!-- Absensi - hover pink -->
+                            <x-nav-link :href="route('admin.absensi.index')" :active="request()->routeIs('admin.absensi.*')" wire:navigate
+                                class="hover:text-pink-500 transition-colors duration-200">
+                                Absensi
+                            </x-nav-link>
+                            <!-- Galeri - hover coklat (menggunakan warna brown-600) -->
+                            <x-nav-link :href="route('admin.galeri.index')" :active="request()->routeIs('admin.galeri.*')" wire:navigate
+                                class="hover:text-amber-800 transition-colors duration-200">
+                                Galeri
+                            </x-nav-link>
                         @else
-                            <x-nav-link :href="route('anggota.dashboard')" :active="request()->routeIs('anggota.dashboard')" wire:navigate>Dashboard</x-nav-link>
-                            <x-nav-link :href="route('kegiatan.publik.index')" :active="request()->routeIs('kegiatan.publik.*')" wire:navigate>Kegiatan</x-nav-link>
-                            <x-nav-link :href="route('anggota.riwayat')" :active="request()->routeIs('anggota.riwayat')" wire:navigate>Riwayat</x-nav-link>
+                            <!-- Dashboard anggota - hover biru muda -->
+                            <x-nav-link :href="route('anggota.dashboard')" :active="request()->routeIs('anggota.dashboard')" wire:navigate
+                                class="hover:text-blue-500 transition-colors duration-200">
+                                Dashboard
+                            </x-nav-link>
+                            <!-- Kegiatan anggota - hover merah -->
+                            <x-nav-link :href="route('kegiatan.publik.index')" :active="request()->routeIs('kegiatan.publik.*')" wire:navigate
+                                class="hover:text-red-500 transition-colors duration-200">
+                                Kegiatan
+                            </x-nav-link>
+                            <!-- Riwayat - hover ungu -->
+                            <x-nav-link :href="route('anggota.riwayat')" :active="request()->routeIs('anggota.riwayat')" wire:navigate
+                                class="hover:text-purple-500 transition-colors duration-200">
+                                Riwayat
+                            </x-nav-link>
                         @endif
                     @endauth
                 </div>
@@ -62,18 +107,64 @@
     <!-- Mobile menu panel -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>Beranda</x-responsive-nav-link>
+            <!-- Mobile: Beranda hijau -->
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate
+                class="hover:text-green-600">
+                Beranda
+            </x-responsive-nav-link>
             @auth
                 @if(auth()->user()->role == 'admin')
-                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>Dashboard</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.anggota.index')" :active="request()->routeIs('admin.anggota.*')" wire:navigate>Anggota</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.kategori.index')" :active="request()->routeIs('admin.kategori.*')" wire:navigate>Kategori</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" wire:navigate>Kegiatan</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.pendaftaran.index')" :active="request()->routeIs('admin.pendaftaran.*')" wire:navigate>Pendaftaran</x-responsive-nav-link>
+                    <!-- Dashboard biru -->
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate
+                        class="hover:text-blue-600">
+                        Dashboard
+                    </x-responsive-nav-link>
+                    <!-- Anggota orange -->
+                    <x-responsive-nav-link :href="route('admin.anggota.index')" :active="request()->routeIs('admin.anggota.*')" wire:navigate
+                        class="hover:text-orange-500">
+                        Anggota
+                    </x-responsive-nav-link>
+                    <!-- Kategori kuning -->
+                    <x-responsive-nav-link :href="route('admin.kategori.index')" :active="request()->routeIs('admin.kategori.*')" wire:navigate
+                        class="hover:text-yellow-500">
+                        Kategori
+                    </x-responsive-nav-link>
+                    <!-- Kegiatan merah -->
+                    <x-responsive-nav-link :href="route('admin.kegiatan.index')" :active="request()->routeIs('admin.kegiatan.*')" wire:navigate
+                        class="hover:text-red-600">
+                        Kegiatan
+                    </x-responsive-nav-link>
+                    <!-- Pendaftaran ungu -->
+                    <x-responsive-nav-link :href="route('admin.pendaftaran.index')" :active="request()->routeIs('admin.pendaftaran.*')" wire:navigate
+                        class="hover:text-purple-600">
+                        Pendaftaran
+                    </x-responsive-nav-link>
+                    <!-- Absensi pink -->
+                    <x-responsive-nav-link :href="route('admin.absensi.index')" :active="request()->routeIs('admin.absensi.*')" wire:navigate
+                        class="hover:text-pink-500">
+                        Absensi
+                    </x-responsive-nav-link>
+                    <!-- Galeri coklat -->
+                    <x-responsive-nav-link :href="route('admin.galeri.index')" :active="request()->routeIs('admin.galeri.*')" wire:navigate
+                        class="hover:text-amber-800">
+                        Galeri
+                    </x-responsive-nav-link>
                 @else
-                    <x-responsive-nav-link :href="route('anggota.dashboard')" :active="request()->routeIs('anggota.dashboard')" wire:navigate>Dashboard</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('kegiatan.publik.index')" :active="request()->routeIs('kegiatan.publik.*')" wire:navigate>Kegiatan</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('anggota.riwayat')" :active="request()->routeIs('anggota.riwayat')" wire:navigate>Riwayat</x-responsive-nav-link>
+                    <!-- Dashboard anggota biru muda -->
+                    <x-responsive-nav-link :href="route('anggota.dashboard')" :active="request()->routeIs('anggota.dashboard')" wire:navigate
+                        class="hover:text-blue-500">
+                        Dashboard
+                    </x-responsive-nav-link>
+                    <!-- Kegiatan anggota merah -->
+                    <x-responsive-nav-link :href="route('kegiatan.publik.index')" :active="request()->routeIs('kegiatan.publik.*')" wire:navigate
+                        class="hover:text-red-500">
+                        Kegiatan
+                    </x-responsive-nav-link>
+                    <!-- Riwayat ungu -->
+                    <x-responsive-nav-link :href="route('anggota.riwayat')" :active="request()->routeIs('anggota.riwayat')" wire:navigate
+                        class="hover:text-purple-500">
+                        Riwayat
+                    </x-responsive-nav-link>
                 @endif
             @endauth
         </div>
