@@ -2,9 +2,10 @@
 
 @section('content')
 <div class="bg-white">
-    <!-- Hero Section dengan efek hover: redup -> terang -->
-    <div class="relative overflow-hidden h-screen min-h-[600px] bg-gray-900 group">
-        <!-- Background Image -->
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden h-screen min-h-[600px]" 
+        onmouseenter="document.getElementById('hero-overlay').classList.add('hovered')"
+        onmouseleave="document.getElementById('hero-overlay').classList.remove('hovered')">
         @php
             $heroImage = null;
             $unggulan = $galeri->where('is_unggulan', 1)->first();
@@ -15,42 +16,30 @@
             }
         @endphp
         @if($heroImage)
-            <div class="absolute inset-0 transition duration-700 group-hover:brightness-100 brightness-50">
+            <div class="absolute inset-0">
                 <img src="{{ $heroImage }}" alt="Hero Background" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition duration-700"></div>
+                <div id="hero-overlay" class="absolute inset-0 bg-black/80 transition-all duration-500"></div>
             </div>
         @else
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 transition duration-700 group-hover:brightness-100 brightness-50"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900"></div>
         @endif
 
         <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
             <div class="animate-fade-in-up">
-                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight drop-shadow-lg">
-                    SIBO
-                </h1>
-                <p class="mt-4 text-xl md:text-2xl max-w-2xl drop-shadow-md">
-                    Sistem Informasi Budaya & Olahraga<br>PC DESBOR Kabupaten Kediri
-                </p>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight drop-shadow-lg">SIBO</h1>
+                <p class="mt-4 text-xl md:text-2xl max-w-2xl drop-shadow-md">Sistem Informasi Budaya & Olahraga<br>PC DESBOR Kabupaten Kediri</p>
                 <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                    <!-- Tombol Lihat Kegiatan dengan efek slide dari kiri ke kanan -->
+                    <!-- Tombol Lihat Kegiatan (efek slide hanya pada tombol) -->
                     <a href="{{ route('kegiatan.publik.index') }}" wire:navigate 
-                    class="relative px-8 py-3 font-semibold rounded-full shadow-lg transition transform hover:scale-105 overflow-hidden group-btn z-10">
-                        <span class="relative z-10 transition-colors duration-500 text-blue-900 group-hover:text-white">Lihat Kegiatan</span>
-                        <span class="absolute inset-0 bg-white"></span>
-                        <span class="absolute inset-0 bg-blue-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></span>
+                    class="relative px-8 py-3 font-semibold rounded-full shadow-lg overflow-hidden inline-block bg-white text-green-600 hover:text-white transition-colors duration-300 group">
+                        <span class="relative z-10">Lihat Kegiatan</span>
+                        <span class="absolute inset-0 bg-green-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></span>
                     </a>
-                    @guest
-                        <a href="{{ route('login') }}" wire:navigate class="px-8 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-blue-900 transition">
-                            Login Anggota
-                        </a>
-                    @endguest
                 </div>
             </div>
         </div>
 
-        <!-- Tombol scroll ke bawah - perbaiki agar bisa diklik -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer z-30" 
-            onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer z-30" onclick="window.scrollTo({top: window.innerHeight, behavior: 'smooth'})">
             <div class="animate-bounce bg-white/20 rounded-full p-2 hover:bg-white/40 transition">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
@@ -59,33 +48,102 @@
         </div>
     </div>
 
-    <!-- Statistik -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                <div class="text-5xl font-bold text-blue-600">{{ $totalAnggota }}</div>
-                <div class="text-gray-600 mt-2">Total Anggota</div>
+    <style>
+        #hero-overlay {
+            transition-property: background-color;
+            transition-duration: 0.5s;
+            transition-timing-function: ease;
+        }
+        #hero-overlay.hovered {
+            background-color: rgba(0, 0, 0, 0.6) !important;
+        }
+        .animate-infinite-scroll:hover {
+            animation-play-state: paused;
+        }
+        .animate-infinite-scroll {
+            animation: infinite-scroll 30s linear infinite;
+        }
+    </style>
+
+    <!-- Tentang SIBO (Profil) -->
+    <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Tentang SIBO</h2>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    SIBO (Sistem Informasi Budaya & Olahraga) adalah platform digital yang dikembangkan untuk PC DESBOR Kabupaten Kediri dalam rangka mendigitalisasi manajemen organisasi. Sistem ini memudahkan pendataan anggota, pengelolaan kegiatan, pendaftaran online, absensi, serta dokumentasi galeri.
+                </p>
+                <p class="text-gray-600 mb-4 leading-relaxed">
+                    Dengan SIBO, diharapkan seluruh anggota dapat mengakses informasi kegiatan secara real-time, mendaftar kegiatan dengan mudah, dan melihat riwayat keikutsertaan. Admin juga dimudahkan dalam mengelola data dan laporan.
+                </p>
+                <p class="text-gray-600 leading-relaxed">
+                    PC DESBOR Kabupaten Kediri berkomitmen untuk terus mengembangkan kegiatan di bidang budaya dan olahraga, serta memanfaatkan teknologi untuk meningkatkan pelayanan kepada anggota.
+                </p>
             </div>
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                <div class="text-5xl font-bold text-green-600">{{ $totalKegiatan }}</div>
-                <div class="text-gray-600 mt-2">Total Kegiatan</div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                <div class="text-5xl font-bold text-purple-600">{{ $totalAnggota }}</div>
-                <div class="text-gray-600 mt-2">PAC Aktif</div>
+            <div class="flex justify-center">
+                <img src="{{ asset('images/logo-desbor.png') }}" alt="PC DESBOR" class="rounded-lg shadow-lg w-full max-w-md object-cover">
             </div>
         </div>
     </div>
 
-    <!-- Kegiatan Terbaru -->
-    <div class="bg-gray-50 py-16">
+    <!-- Statistik -->
+    <div id="statistik" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Header Statistik -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Data Jumlah</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Rekapitulasi data anggota, kegiatan, dan keaktifan PAC di lingkungan PC DESBOR Kabupaten Kediri.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="text-5xl font-bold text-blue-600">{{ $totalAnggota }}</div>
+                <div class="text-gray-600 mt-2">Total Anggota</div>
+                <div class="text-sm text-gray-400 mt-1">Terdaftar aktif</div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="text-5xl font-bold text-green-600">{{ $totalKegiatan }}</div>
+                <div class="text-gray-600 mt-2">Total Kegiatan</div>
+                <div class="text-sm text-gray-400 mt-1">Sepanjang waktu</div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="text-5xl font-bold text-purple-600">{{ $totalPac ?? '0' }}</div>
+                <div class="text-gray-600 mt-2">PAC Aktif</div>
+                <div class="text-sm text-gray-400 mt-1">Tersebar di Kabupaten Kediri</div>
+            </div>
+        </div>
+
+        <!-- Informasi Tambahan (opsional) -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 rounded-xl p-6">
+            <div class="flex items-start gap-3">
+                <svg class="w-6 h-6 text-blue-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <h3 class="font-semibold text-gray-800">Informasi Keanggotaan</h3>
+                    <p class="text-sm text-gray-600">Anggota terdiri dari Kader Desa Bersama (KDB) dan Kader Nuansa Baru (KNB) yang tersebar di berbagai PAC.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <svg class="w-6 h-6 text-green-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <h3 class="font-semibold text-gray-800">Kegiatan Rutin</h3>
+                    <p class="text-sm text-gray-600">Kegiatan bidang budaya (KDB) dan olahraga (KNB) dilaksanakan secara berkala.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kegiatan Terbaru dengan efek hover zoom + darken -->
+    <div id="kegiatan-terbaru" class="bg-gray-50 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-gray-900 text-center mb-4">Kegiatan Terbaru</h2>
             <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Ikuti berbagai kegiatan seru dan bermanfaat dari PC DESBOR.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($kegiatanTerbaru as $kegiatan)
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden group transition duration-300 hover:shadow-2xl">
-                        <div class="overflow-hidden">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 hover:shadow-2xl group">
+                        <div class="relative overflow-hidden">
                             @php
                                 $imgPath = null;
                                 if ($kegiatan->pamflet && $kegiatan->pamflet->path_file) {
@@ -93,7 +151,9 @@
                                 }
                             @endphp
                             @if($imgPath)
-                                <img src="{{ $imgPath }}" class="w-full h-56 object-cover transition duration-500 group-hover:scale-110">
+                                <img src="{{ $imgPath }}" class="w-full h-56 object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1">
+                                <!-- Overlay darken saat hover -->
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             @else
                                 <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">Tidak ada gambar</div>
                             @endif
@@ -115,11 +175,10 @@
         </div>
     </div>
 
-    <!-- Galeri Foto dengan efek zoom + miring -->
+    <!-- Galeri Foto dengan Carousel Horizontal Loop (dengan efek darken saat hover) -->
     @if($galeri->count() > 0)
-    <div class="py-16 bg-white">
+    <div  id="galeri" class="py-16 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Header oval (pill) -->
             <div class="text-center mb-12">
                 <div class="inline-block bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full px-8 py-3 shadow-md">
                     <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Galeri Kegiatan</h2>
@@ -127,34 +186,55 @@
                 <p class="text-gray-600 mt-3 max-w-2xl mx-auto">Dokumentasi momen berharga dari berbagai kegiatan.</p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                @foreach($galeri as $foto)
-                    @php
-                        $fotoPath = $foto->path_file ? Storage::url($foto->path_file) : null;
-                    @endphp
-                    @if($fotoPath)
-                        <div class="group relative overflow-hidden rounded-xl shadow-md cursor-pointer" onclick="openLightbox('{{ $fotoPath }}', '{{ addslashes($foto->judul_foto ?? '') }}')">
-                            <div class="overflow-hidden">
-                                <img src="{{ $fotoPath }}" alt="{{ $foto->judul_foto ?? 'Galeri' }}" class="w-full h-48 object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1">
+            <div class="relative w-full overflow-hidden">
+                <div class="flex gap-4 animate-infinite-scroll">
+                    @foreach($galeri as $foto)
+                        @php
+                            $fotoPath = $foto->path_file ? Storage::url($foto->path_file) : null;
+                        @endphp
+                        @if($fotoPath)
+                            <div class="flex-none w-72 h-72 group relative overflow-hidden shadow-md cursor-pointer"
+                                onclick="openLightbox('{{ $fotoPath }}', '{{ addslashes($foto->judul_foto ?? '') }}')">
+                                <div class="w-full h-full overflow-hidden">
+                                    <img src="{{ $fotoPath }}" alt="{{ $foto->judul_foto ?? 'Galeri' }}" 
+                                        class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1">
+                                </div>
+                                <!-- Overlay darken saat hover -->
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                @if($foto->judul_foto)
+                                    <div class="absolute inset-x-0 bottom-0 bg-black/60 text-white text-xs p-2 text-center opacity-0 group-hover:opacity-100 transition">{{ $foto->judul_foto }}</div>
+                                @endif
                             </div>
-                            @if($foto->judul_foto)
-                                <div class="absolute inset-x-0 bottom-0 bg-black/60 text-white text-xs p-2 text-center opacity-0 group-hover:opacity-100 transition">{{ $foto->judul_foto }}</div>
-                            @endif
-                        </div>
-                    @endif
-                @endforeach
-            </div>
-            @if($galeri->count() > 8)
-                <div class="text-center mt-8">
-                    <a href="#" wire:navigate class="inline-block px-6 py-2 border border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition">Lihat Semua</a>
+                        @endif
+                    @endforeach
+                    <!-- Duplikasi untuk loop -->
+                    @foreach($galeri as $foto)
+                        @php
+                            $fotoPath = $foto->path_file ? Storage::url($foto->path_file) : null;
+                        @endphp
+                        @if($fotoPath)
+                            <div class="flex-none w-72 h-72 group relative overflow-hidden shadow-md cursor-pointer"
+                                onclick="openLightbox('{{ $fotoPath }}', '{{ addslashes($foto->judul_foto ?? '') }}')">
+                                <div class="w-full h-full overflow-hidden">
+                                    <img src="{{ $fotoPath }}" alt="{{ $foto->judul_foto ?? 'Galeri' }}" 
+                                        class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1">
+                                </div>
+                                <!-- Overlay darken saat hover -->
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                @if($foto->judul_foto)
+                                    <div class="absolute inset-x-0 bottom-0 bg-black/60 text-white text-xs p-2 text-center opacity-0 group-hover:opacity-100 transition">{{ $foto->judul_foto }}</div>
+                                @endif
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
-            @endif
+            </div>
         </div>
     </div>
     @endif
 </div>
 
-<!-- Lightbox Modal (sama seperti sebelumnya) -->
+<!-- Lightbox Modal -->
 <div id="lightbox" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center" onclick="closeLightbox()">
     <div class="relative max-w-4xl mx-auto p-4">
         <img id="lightbox-img" src="" class="max-w-full max-h-screen rounded-lg shadow-2xl">
@@ -198,7 +278,6 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    /* Efek zoom + rotate miring */
     .group:hover .group-hover\:rotate-1 {
         transform: scale(1.1) rotate(1deg);
     }

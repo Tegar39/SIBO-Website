@@ -8,20 +8,31 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        /* Sticky navigation */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="sticky-nav">
         @include('layouts.navigation')
-        @if (isset($header))
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endif
-        <main>
-            @yield('content')
-        </main>
     </div>
+
+    <main>
+        @yield('content')
+    </main>
+
+    <!-- Footer di setiap halaman -->
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; {{ date('Y') }} SIBO - PC DESBOR Kabupaten Kediri. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-1">Jl. Imam Bonjol, Ds. Ngadirejo, Kec. Kota, Kota Kediri</p>
+        </div>
+    </footer>
 </body>
 </html>

@@ -12,6 +12,7 @@ class HomeController extends Controller
     {
         $totalAnggota = Anggota::count();
         $totalKegiatan = Kegiatan::count();
+        $totalPac = Anggota::whereNotNull('pac')->distinct('pac')->count('pac');
         $kegiatanTerbaru = Kegiatan::with('pamflet', 'kategori')
             ->where('status', 'aktif')
             ->orderBy('tanggal', 'desc')
@@ -25,6 +26,6 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri'));
+        return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri', 'totalPac'));
     }
 }
