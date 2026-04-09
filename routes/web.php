@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Publik (tanpa login)
+| Halaman Publik
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -22,7 +22,7 @@ Route::get('/kegiatan/{id}', [KegiatanPublikController::class, 'show'])->name('k
 
 /*
 |--------------------------------------------------------------------------
-| Redirect setelah login (dipakai oleh Laravel Breeze)
+| Redirect setelah login (dipakai Breeze)
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard', function () {
@@ -34,33 +34,20 @@ Route::get('/dashboard', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Group untuk Admin (middleware auth + role:admin)
+| Admin Group
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-
-    // CRUD Anggota
     Route::resource('anggota', AnggotaController::class);
-
-    // CRUD Kategori
     Route::resource('kategori', KategoriController::class);
-
-    // CRUD Kegiatan (dengan pamflet)
     Route::resource('kegiatan', KegiatanController::class);
-
-    // Pendaftaran (admin)
     Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
     Route::get('/pendaftaran/{id_kegiatan}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
     Route::put('/pendaftaran/{id_daftar}', [PendaftaranController::class, 'updateStatus'])->name('pendaftaran.update');
-
-    // Absensi
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/{id_kegiatan}/create', [AbsensiController::class, 'create'])->name('absensi.create');
     Route::post('/absensi/{id_kegiatan}', [AbsensiController::class, 'store'])->name('absensi.store');
-
-    // Galeri
     Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri.index');
     Route::get('/galeri/{id_kegiatan}', [GaleriController::class, 'show'])->name('galeri.show');
     Route::get('/galeri/{id_kegiatan}/create', [GaleriController::class, 'create'])->name('galeri.create');
@@ -70,25 +57,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 /*
 |--------------------------------------------------------------------------
-| Group untuk Anggota (middleware auth + role:anggota)
+| Anggota Group
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')->group(function () {
-    // Dashboard anggota
     Route::get('/dashboard', function () {
         return view('anggota.dashboard');
     })->name('dashboard');
-
-    // Pendaftaran kegiatan (proses daftar)
     Route::post('/daftar/{id_kegiatan}', [PendaftaranController::class, 'daftar'])->name('daftar');
-
-    // Riwayat pendaftaran anggota
     Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Auth Breeze (login, register, lupa password, verifikasi email, logout)
-|--------------------------------------------------------------------------
-*/
 require __DIR__.'/auth.php';
