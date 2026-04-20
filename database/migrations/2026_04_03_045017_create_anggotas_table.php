@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('anggotas', function (Blueprint $table) {
             $table->id('id_anggota');
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
-            $table->string('nomor_anggota')->unique();
+            $table->string('nomor_anggota', 5)->unique();
             $table->string('nama_lengkap');
             $table->string('tempat_lahir')->nullable();
             $table->date('tgl_lahir')->nullable();

@@ -9,6 +9,10 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Stack untuk style tambahan dari child view -->
+    <?php echo $__env->yieldPushContent('styles'); ?>
+    
     <style>
         /* Sticky navigation */
         .sticky-nav {
@@ -34,5 +38,8 @@
             <p class="text-sm text-gray-400 mt-1">Jl. Imam Bonjol, Ds. Ngadirejo, Kec. Kota, Kota Kediri</p>
         </div>
     </footer>
+
+    <!-- Stack untuk script tambahan dari child view -->
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html><?php /**PATH D:\laragon\www\Sibo\resources\views/layouts/app.blade.php ENDPATH**/ ?>

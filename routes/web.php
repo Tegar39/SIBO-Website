@@ -9,6 +9,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\GaleriController;
+use App\Http\Controllers\AnggotaProfilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,6 +67,11 @@ Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')
     })->name('dashboard');
     Route::post('/daftar/{id_kegiatan}', [PendaftaranController::class, 'daftar'])->name('daftar');
     Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
+    
+    // Perbaikan: hapus 'anggota.' dari nama route
+    Route::get('/profil', [AnggotaProfilController::class, 'index'])->name('profil');
+    Route::put('/profil/update', [AnggotaProfilController::class, 'update'])->name('profil.update');
+    Route::put('/profil/update-password', [AnggotaProfilController::class, 'updatePassword'])->name('profil.update-password');
 });
 
 require __DIR__.'/auth.php';

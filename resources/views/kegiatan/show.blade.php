@@ -66,4 +66,24 @@
         </div>
     </div>
 </div>
+@if($kegiatan->latitude && $kegiatan->longitude)
+<div class="mt-4">
+    <h3 class="font-semibold">Lokasi di Peta</h3>
+    <div id="map" style="height: 300px;" class="rounded border mt-2"></div>
+</div>
+
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script>
+    var map = L.map('map').setView([{{ $kegiatan->latitude }}, {{ $kegiatan->longitude }}], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    L.marker([{{ $kegiatan->latitude }}, {{ $kegiatan->longitude }}]).addTo(map)
+        .bindPopup('{{ $kegiatan->lokasi }}')
+        .openPopup();
+</script>
+@endpush
+@endif
 @endsection

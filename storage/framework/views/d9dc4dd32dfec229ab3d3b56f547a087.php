@@ -90,7 +90,9 @@
     <div id="statistik" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <!-- Header Statistik -->
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-2">Data Jumlah</h2>
+            <div class="inline-block bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full px-8 py-3 shadow-md">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Data Jumlah</h2>
+            </div>
             <p class="text-gray-600 max-w-2xl mx-auto">Rekapitulasi data anggota, kegiatan, dan keaktifan PAC di lingkungan PC DESBOR Kabupaten Kediri.</p>
         </div>
 
@@ -136,41 +138,94 @@
     </div>
 
     <!-- Kegiatan Terbaru dengan efek hover zoom + darken -->
-    <div id="kegiatan-terbaru" class="bg-gray-50 py-16">
+    <div id="kegiatan-terbaru" class="bg-[#f2f2f2] py-20 border-y border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-gray-900 text-center mb-4">Kegiatan Terbaru</h2>
-            <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">Ikuti berbagai kegiatan seru dan bermanfaat dari PC DESBOR.</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $kegiatanTerbaru; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kegiatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transition duration-300 hover:shadow-2xl group">
-                        <div class="relative overflow-hidden">
-                            <?php
-                                $imgPath = null;
-                                if ($kegiatan->pamflet && $kegiatan->pamflet->path_file) {
-                                    $imgPath = Storage::url($kegiatan->pamflet->path_file);
-                                }
-                            ?>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($imgPath): ?>
-                                <img src="<?php echo e($imgPath); ?>" class="w-full h-56 object-cover transition-all duration-500 group-hover:scale-110 group-hover:rotate-1">
-                                <!-- Overlay darken saat hover -->
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <?php else: ?>
-                                <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-500">Tidak ada gambar</div>
-                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                        </div>
-                        <div class="p-5">
-                            <span class="inline-block px-3 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full"><?php echo e($kegiatan->kategori->nama ?? 'Umum'); ?></span>
-                            <h3 class="text-xl font-bold text-gray-900 mt-2"><?php echo e($kegiatan->judul); ?></h3>
-                            <p class="text-gray-600 mt-2 line-clamp-2"><?php echo e(Str::limit($kegiatan->deskripsi, 100)); ?></p>
-                            <div class="mt-4 flex justify-between items-center">
-                                <span class="text-sm text-gray-500"><?php echo e(\Carbon\Carbon::parse($kegiatan->tanggal)->format('d M Y')); ?></span>
-                                <a href="<?php echo e(route('kegiatan.publik.show', $kegiatan->id_kegiatan)); ?>" wire:navigate class="text-blue-600 font-medium hover:underline">Detail →</a>
+            
+            <div class="flex items-end justify-between mb-10 border-b-2 border-gray-800 pb-4">
+                <div>
+                    <h2 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
+                        Informasi & <span class="text-green-600">Kegiatan</span>
+                    </h2>
+                    <p class="text-gray-500 font-bold mt-2 text-[10px] uppercase tracking-widest">Latest from PC DESBOR Kediri</p>
+                </div>
+                <div class="hidden md:block">
+                    <a href="<?php echo e(route('kegiatan.publik.index')); ?>" class="text-[11px] font-black border-2 border-gray-800 px-5 py-2 hover:bg-gray-800 hover:text-white transition-all uppercase tracking-tighter">
+                        View All →
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative group">
+                <div class="flex overflow-x-auto pb-12 gap-8 snap-x scrollbar-hide" id="scroll-container">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $kegiatanTerbaru; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kegiatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <div class="flex-none w-[280px] snap-start">
+                            <div class="bg-white border border-gray-300 shadow-sm hover:shadow-2xl transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] flex flex-col h-full group/card relative rounded">
+                                
+                                <div class="relative aspect-[11/10] overflow-hidden bg-gray-100 border-b border-gray-100">
+                                    <?php
+                                        $imgPath = ($kegiatan->pamflet && $kegiatan->pamflet->path_file) 
+                                                   ? Storage::url($kegiatan->pamflet->path_file) 
+                                                   : null;
+                                    ?>
+                                    
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($imgPath): ?>
+                                        <img src="<?php echo e($imgPath); ?>" 
+                                             alt="<?php echo e($kegiatan->judul); ?>"
+                                             class="w-full h-full object-cover origin-center transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover/card:scale-110 group-hover/card:rotate-3">
+                                        
+                                        <div class="absolute inset-0 bg-black/0 group-hover/card:bg-black/15 transition-colors duration-500 z-0"></div>
+                                    <?php else: ?>
+                                        <div class="w-full h-full flex items-center justify-center text-gray-300 italic text-xs">
+                                            No Poster
+                                        </div>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+                                    <div class="absolute top-3 left-3 z-10">
+                                        <span class="bg-black text-white text-[9px] font-black px-3 py-1 uppercase tracking-widest shadow">
+                                            <?php echo e($kegiatan->kategori->nama ?? 'EVENT'); ?>
+
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="p-5 flex-grow flex flex-col relative z-10 bg-white">
+                                    <span class="text-[9px] font-bold text-gray-400 mb-2 tracking-widest uppercase">
+                                         Kediri / <?php echo e(\Carbon\Carbon::parse($kegiatan->tanggal)->translatedFormat('d M Y')); ?>
+
+                                    </span>
+                                    
+                                    <h3 class="text-base font-bold text-gray-900 leading-tight mb-3 transition-colors group-hover/card:text-green-700 min-h-[40px] line-clamp-2">
+                                        『<?php echo e($kegiatan->judul); ?>』
+                                    </h3>
+                                    
+                                    <p class="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-6 font-medium">
+                                        <?php echo e($kegiatan->deskripsi); ?>
+
+                                    </p>
+
+                                    <div class="mt-auto border-t border-gray-100 pt-3">
+                                        <a href="<?php echo e(route('kegiatan.publik.show', $kegiatan->id_kegiatan)); ?>" 
+                                           class="inline-block text-[10px] font-black uppercase tracking-tighter text-green-700 hover:text-gray-950 transition-colors">
+                                            Check details →
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        <div class="w-full text-center py-24 bg-gray-100 rounded border-2 border-dashed border-gray-300">
+                            <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Belum ada pengumuman terbaru</p>
+                        </div>
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div class="md:hidden flex justify-center mt-6">
+                    <div class="flex gap-1 animate-pulse">
+                        <div class="w-1.5 h-1 bg-gray-300"></div>
+                        <div class="w-6 h-1 bg-green-600"></div>
+                        <div class="w-1.5 h-1 bg-gray-300"></div>
                     </div>
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                    <div class="col-span-full text-center text-gray-500 py-8">Belum ada kegiatan terbaru.</div>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
@@ -281,6 +336,25 @@
     .group:hover .group-hover\:rotate-1 {
         transform: scale(1.1) rotate(1deg);
     }
+    .tracking-tighter { letter-spacing: -0.05em; }
+    .group-hover\/card\:scale-110 {
+        transform: scale(1.1);
+        /* Opsional: tambahkan sedikit rotasi agar lebih dinamis seperti desain majalah */
+        /* transform: scale(1.1) rotate(1deg); */
+    }
+
+    img {
+        backface-visibility: hidden;
+        -webkit-font-smoothing: subpixel-antialiased;
+        transform: translate-z(0);
+    }
+    .line-clamp-2, .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    .line-clamp-2 { -webkit-line-clamp: 2; }
+    .line-clamp-3 { -webkit-line-clamp: 3; }
 </style>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>

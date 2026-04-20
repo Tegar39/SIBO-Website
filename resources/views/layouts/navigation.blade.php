@@ -3,8 +3,8 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('home') }}" wire:navigate>
+                        <img src="{{ asset('images/logo-sibo.png') }}" alt="SIBO Logo" class="h-9 w-auto fill-current text-gray-800">
                     </a>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -54,6 +54,9 @@
                             </svg>
                         </button>
                         <div x-show="userOpen" @click.away="userOpen = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" style="display: none;">
+                            @if(auth()->user()->role == 'anggota')
+                                <a href="{{ route('anggota.profil') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil Saya</a>
+                            @endif
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log Out</button>
@@ -108,6 +111,7 @@
                     <x-responsive-nav-link :href="route('anggota.dashboard')" :active="request()->routeIs('anggota.dashboard')" class="hover:text-blue-500">Dashboard</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('kegiatan.publik.index')" :active="request()->routeIs('kegiatan.publik.*')" class="hover:text-red-500">Kegiatan</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('anggota.riwayat')" :active="request()->routeIs('anggota.riwayat')" class="hover:text-purple-500">Riwayat</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('anggota.profil')" :active="request()->routeIs('anggota.profil')" class="hover:text-green-600">Profil Saya</x-responsive-nav-link>
                 @endif
             @endauth
         </div>

@@ -12,7 +12,7 @@ class KegiatanController extends Controller
 {
     public function index()
     {
-        $kegiatans = Kegiatan::with('kategori', 'creator', 'pamflet')->latest()->paginate(10);
+        $kegiatans = Kegiatan::with('kategori', 'creator', 'pamflet')->latest()->paginate(3);
         return view('admin.kegiatan.index', compact('kegiatans'));
     }
 
