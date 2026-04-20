@@ -1,124 +1,113 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="py-12">
+<div class="py-12 bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <!-- Kartu Selamat Datang & Profil -->
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-green-700 mb-8">
-            <div class="bg-gradient-to-r from-green-800 to-emerald-800 px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="bg-yellow-500 rounded-full p-3 shadow-md">
-                        <svg class="w-8 h-8 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-white">Selamat Datang, <?php echo e(Auth::user()->name); ?>!</h1>
-                        <p class="text-yellow-200 mt-1">Anda login sebagai Anggota SIBO</p>
-                    </div>
-                </div>
-                <div class="flex gap-3">
-                    <a href="<?php echo e(route('anggota.profil')); ?>" class="bg-yellow-500 hover:bg-yellow-600 text-green-900 font-bold py-2 px-4 rounded-lg shadow transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        Profil Saya
-                    </a>
-                </div>
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b-4 border-gray-900 pb-6 gap-4">
+            <div>
+                <h1 class="text-4xl font-black text-gray-900 uppercase italic tracking-tighter">
+                    Halo, <span class="text-green-700"><?php echo e(Auth::user()->name); ?>!</span>
+                </h1>
+                <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Selamat Datang di Portal Anggota SIBO</p>
             </div>
-
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(Auth::user()->anggota): ?>
-                <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-green-50 rounded-xl p-4 border border-green-200 flex items-center gap-3">
-                        <div class="bg-green-700 rounded-full p-2">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 uppercase">Nomor Anggota</p>
-                            <p class="text-lg font-bold text-gray-800"><?php echo e(Auth::user()->anggota->nomor_anggota); ?></p>
-                        </div>
-                    </div>
-                    <div class="bg-green-50 rounded-xl p-4 border border-green-200 flex items-center gap-3">
-                        <div class="bg-green-700 rounded-full p-2">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 uppercase">PAC</p>
-                            <p class="text-lg font-bold text-gray-800"><?php echo e(Auth::user()->anggota->pac ?? 'Belum diatur'); ?></p>
-                        </div>
-                    </div>
-                    <div class="bg-green-50 rounded-xl p-4 border border-green-200 flex items-center gap-3">
-                        <div class="bg-green-700 rounded-full p-2">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500 uppercase">Kontak</p>
-                            <p class="text-lg font-bold text-gray-800"><?php echo e(Auth::user()->anggota->kontak ?? '-'); ?></p>
-                        </div>
-                    </div>
-                </div>
-            <?php else: ?>
-                <div class="p-6 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-b-2xl">
-                    <p>Data anggota belum lengkap. Silakan hubungi admin.</p>
-                </div>
-            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+            <a href="<?php echo e(route('anggota.profil')); ?>" class="bg-yellow-400 border-2 border-gray-900 text-gray-900 px-6 py-3 text-[11px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Profil Saya
+            </a>
         </div>
 
-        <!-- Statistik & Tombol Aksi -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                <div class="bg-green-700 px-4 py-3">
-                    <h3 class="text-white font-semibold flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Ringkasan Kegiatan
-                    </h3>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(Auth::user()->anggota): ?>
+            <div class="bg-white border-4 border-gray-900 shadow-[10px_10px_0px_0px_rgba(21,128,61,1)] mb-12 flex flex-col md:flex-row">
+                <div class="bg-green-700 md:w-1/3 p-8 flex flex-col items-center justify-center text-center border-b-4 md:border-b-0 md:border-r-4 border-gray-900">
+                    <div class="w-32 h-32 bg-yellow-400 border-4 border-gray-900 rounded-none mb-4 overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(Auth::user()->anggota->foto_profil && Storage::disk('public')->exists(Auth::user()->anggota->foto_profil)): ?>
+                            
+                            <img src="<?php echo e(Storage::url(Auth::user()->anggota->foto_profil)); ?>" 
+                                alt="Foto <?php echo e(Auth::user()->name); ?>" 
+                                class="w-full h-full object-cover">
+                        <?php else: ?>
+                            
+                            <svg class="w-16 h-16 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    </div>
+                    <h2 class="text-white font-black uppercase tracking-tighter text-xl"><?php echo e(Auth::user()->anggota->nama_lengkap); ?></h2>
+                    <span class="bg-black text-yellow-400 text-[10px] font-black px-3 py-1 mt-2 uppercase tracking-[0.2em]">Anggota Aktif</span>
                 </div>
-                <div class="p-4 space-y-3">
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <span class="text-gray-600">Total Pendaftaran</span>
-                        <span class="font-bold text-green-700 text-xl">0</span>
+                
+                <div class="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-b-2 border-gray-100 pb-2">
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Nomor Anggota</p>
+                        <p class="text-lg font-black text-gray-900"><?php echo e(Auth::user()->anggota->nomor_anggota); ?></p>
                     </div>
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <span class="text-gray-600">Kegiatan Aktif Diikuti</span>
-                        <span class="font-bold text-green-700 text-xl">0</span>
+                    <div class="border-b-2 border-gray-100 pb-2">
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Wilayah (PAC)</p>
+                        <p class="text-lg font-black text-gray-900 uppercase italic"><?php echo e(Auth::user()->anggota->pac ?? '-'); ?></p>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Kegiatan Selesai</span>
-                        <span class="font-bold text-green-700 text-xl">0</span>
+                    <div class="border-b-2 border-gray-100 pb-2">
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">WhatsApp</p>
+                        <p class="text-lg font-black text-gray-900"><?php echo e(Auth::user()->anggota->kontak ?? '-'); ?></p>
+                    </div>
+                    <div class="border-b-2 border-gray-100 pb-2">
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Email Terdaftar</p>
+                        <p class="text-lg font-black text-gray-900"><?php echo e(Auth::user()->email); ?></p>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="bg-red-50 border-4 border-gray-900 p-6 mb-12 shadow-[8px_8px_0px_0px_rgba(185,28,28,1)]">
+                <p class="font-black uppercase text-red-700 italic">⚠️ Data Anggota Belum Lengkap. Segera hubungi admin untuk validasi data!</p>
+            </div>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="md:col-span-2 bg-white border-2 border-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+                <div class="p-4 bg-gray-900 text-white font-black uppercase text-xs italic tracking-widest">
+                    Ringkasan Aktivitas
+                </div>
+                <div class="p-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 border-2 border-gray-900 bg-gray-50">
+                        <p class="text-[9px] font-black text-gray-400 uppercase">Pendaftaran</p>
+                        <p class="text-3xl font-black text-gray-900">0</p>
+                    </div>
+                    <div class="p-4 border-2 border-gray-900 bg-green-50">
+                        <p class="text-[9px] font-black text-gray-400 uppercase">Diikuti</p>
+                        <p class="text-3xl font-black text-green-700">0</p>
+                    </div>
+                    <div class="p-4 border-2 border-gray-900 bg-yellow-50">
+                        <p class="text-[9px] font-black text-gray-400 uppercase">Selesai</p>
+                        <p class="text-3xl font-black text-yellow-600">0</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                <div class="bg-yellow-500 px-4 py-3">
-                    <h3 class="text-green-900 font-semibold flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Aksi Cepat
-                    </h3>
-                </div>
-                <div class="p-4 space-y-3">
-                    <a href="<?php echo e(route('kegiatan.publik.index')); ?>" class="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition">
-                        Lihat Semua Kegiatan
-                    </a>
-                    <a href="<?php echo e(route('anggota.riwayat')); ?>" class="block w-full text-center bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition">
-                        Riwayat Pendaftaran Saya
-                    </a>
-                </div>
+            <div class="flex flex-col gap-4">
+                <a href="<?php echo e(route('kegiatan.publik.index')); ?>" class="flex-1 bg-green-700 border-2 border-gray-900 text-white p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex flex-col justify-center items-center group">
+                    <span class="text-xl font-black uppercase italic tracking-tighter group-hover:underline">Cari Kegiatan</span>
+                    <span class="text-[10px] font-bold uppercase opacity-70">Lihat agenda terbaru</span>
+                </a>
+                <a href="<?php echo e(route('anggota.riwayat')); ?>" class="flex-1 bg-white border-2 border-gray-900 text-gray-900 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex flex-col justify-center items-center group">
+                    <span class="text-xl font-black uppercase italic tracking-tighter group-hover:underline text-gray-700">Riwayat Saya</span>
+                    <span class="text-[10px] font-bold uppercase opacity-50 text-gray-500">Cek status pendaftaran</span>
+                </a>
             </div>
         </div>
 
-        <!-- Kegiatan Terbaru yang Akan Datang (contoh) -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-            <div class="bg-green-800 px-4 py-3">
-                <h3 class="text-yellow-400 font-semibold flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    Kegiatan Mendatang
-                </h3>
+        <div class="mt-12 bg-white border-2 border-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div class="p-4 border-b-2 border-gray-900 bg-yellow-400 font-black uppercase text-xs italic tracking-widest">
+                Agenda Mendatang
             </div>
-            <div class="p-6 text-center text-gray-500">
-                <svg class="w-12 h-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                <p>Belum ada kegiatan yang Anda ikuti.</p>
-                <p class="text-sm mt-1">Silakan daftar kegiatan terlebih dahulu.</p>
+            <div class="p-12 text-center">
+                <div class="inline-block p-4 bg-gray-100 border-2 border-dashed border-gray-400 mb-4">
+                    <svg class="w-12 h-12 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <p class="text-gray-400 font-black uppercase italic tracking-widest">Belum ada kegiatan yang kamu ikuti</p>
+                <p class="text-[10px] text-gray-400 uppercase mt-1">Ayo daftar kegiatan budaya & olahraga sekarang!</p>
             </div>
         </div>
+
     </div>
 </div>
 <?php $__env->stopSection(); ?>

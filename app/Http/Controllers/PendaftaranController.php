@@ -49,7 +49,12 @@ class PendaftaranController extends Controller
     // Admin: daftar kegiatan yang memiliki pendaftar
     public function index()
     {
-        $kegiatans = Kegiatan::withCount('pendaftarans')->orderBy('tanggal', 'desc')->get();
+        // Kita ganti get() jadi paginate(3) biar konsisten sama request kamu
+        $kegiatans = Kegiatan::withCount('pendaftarans')
+            ->with('pamflet') // Eager load pamflet biar gak berat
+            ->orderBy('tanggal', 'desc')
+            ->paginate(3); 
+
         return view('admin.pendaftaran.index', compact('kegiatans'));
     }
 

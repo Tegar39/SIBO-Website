@@ -1,115 +1,104 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="py-12">
+<div class="py-12 bg-gray-50 min-h-screen">
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-green-700">
-            <div class="bg-green-800 px-6 py-4 flex items-center gap-3 border-b-2 border-yellow-500">
-                <div class="bg-yellow-500 rounded-full p-2">
-                    <svg class="w-6 h-6 text-green-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
+        <div class="bg-white border-4 border-gray-900 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+            <div class="bg-green-700 px-8 py-6 border-b-4 border-gray-900 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-yellow-400 border-2 border-gray-900 p-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        <svg class="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-black text-white uppercase italic tracking-tighter">Profil Saya</h1>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-bold text-yellow-400">Profil Saya</h1>
             </div>
 
-            <div class="p-6 md:p-8">
+            <div class="p-8">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm">
+                    <div class="bg-yellow-400 border-4 border-gray-900 p-4 mb-8 font-black uppercase text-xs italic shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                         <?php echo e(session('success')); ?>
 
                     </div>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($errors->any()): ?>
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-                        <ul class="list-disc pl-5">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                <li><?php echo e($error); ?></li>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-
-                <!-- Form Edit Data Diri -->
-                <form action="<?php echo e(route('anggota.profil.update')); ?>" method="POST" enctype="multipart/form-data" class="mb-10">
+                <form action="<?php echo e(route('anggota.profil.update')); ?>" method="POST" enctype="multipart/form-data" class="space-y-8">
                     <?php echo csrf_field(); ?> <?php echo method_field('PUT'); ?>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Data Diri</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="border-b-4 border-gray-900 pb-2 mb-6">
+                        <h2 class="text-xl font-black uppercase tracking-widest text-gray-900">1. Data Personal</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nomor Anggota</label>
-                            <div class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300 text-gray-700">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Nomor Anggota (Read Only)</label>
+                            <div class="bg-gray-100 border-2 border-gray-900 px-4 py-3 font-black text-gray-500 italic">
                                 <?php echo e($anggota->nomor_anggota); ?>
 
                             </div>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Email</label>
-                            <div class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300 text-gray-700">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Email Akun</label>
+                            <div class="bg-gray-100 border-2 border-gray-900 px-4 py-3 font-black text-gray-500 italic">
                                 <?php echo e($user->email); ?>
 
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" value="<?php echo e(old('nama_lengkap', $anggota->nama_lengkap)); ?>" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" required>
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-900 mb-2">Nama Lengkap</label>
+                            <input type="text" name="nama_lengkap" value="<?php echo e(old('nama_lengkap', $anggota->nama_lengkap)); ?>" class="w-full border-2 border-gray-900 p-3 focus:bg-yellow-50 focus:outline-none font-bold" required>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Kontak</label>
-                            <input type="text" name="kontak" value="<?php echo e(old('kontak', $anggota->kontak)); ?>" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" required>
-                            <p class="text-xs text-gray-500 mt-1">Contoh: 081234567890 atau +6281234567890</p>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-900 mb-2">WhatsApp / Kontak</label>
+                            <input type="text" name="kontak" value="<?php echo e(old('kontak', $anggota->kontak)); ?>" class="w-full border-2 border-gray-900 p-3 focus:bg-yellow-50 focus:outline-none font-bold" required>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Tempat Lahir</label>
-                            <input type="text" name="tempat_lahir" value="<?php echo e(old('tempat_lahir', $anggota->tempat_lahir)); ?>" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Tanggal Lahir</label>
-                            <input type="date" name="tgl_lahir" value="<?php echo e(old('tgl_lahir', $anggota->tgl_lahir)); ?>" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-900 mb-2">Tanggal Lahir</label>
+                            <input type="date" name="tgl_lahir" value="<?php echo e(old('tgl_lahir', $anggota->tgl_lahir)); ?>" class="w-full border-2 border-gray-900 p-3 focus:bg-yellow-50 focus:outline-none font-bold">
                         </div>
                         <div class="md:col-span-2">
-                            <label class="block text-gray-700 font-semibold mb-2">Alamat</label>
-                            <textarea name="alamat" rows="2" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500"><?php echo e(old('alamat', $anggota->alamat)); ?></textarea>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-gray-700 font-semibold mb-2">Foto Profil</label>
-                            <input type="file" name="foto_profil" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-600 file:text-white hover:file:bg-green-700">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($anggota->foto_profil && Storage::disk('public')->exists($anggota->foto_profil)): ?>
-                                <div class="mt-3">
-                                    <img src="<?php echo e(Storage::url($anggota->foto_profil)); ?>" class="w-24 h-24 object-cover rounded-full border-2 border-green-600 shadow">
-                                    <p class="text-xs text-gray-500 mt-1">Foto saat ini</p>
-                                </div>
-                            <?php else: ?>
-                                <div class="mt-3 text-gray-500 text-sm">Belum ada foto profil</div>
-                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-gray-900 mb-2">Foto Profil</label>
+                            <div class="flex items-center gap-6 p-4 border-2 border-dashed border-gray-900 bg-gray-50">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($anggota->foto_profil && Storage::disk('public')->exists($anggota->foto_profil)): ?>
+                                    <img src="<?php echo e(Storage::url($anggota->foto_profil)); ?>" class="w-20 h-20 border-2 border-gray-900 object-cover shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                <?php else: ?>
+                                    <div class="w-20 h-20 bg-gray-200 border-2 border-gray-900 flex items-center justify-center font-black text-xs text-gray-400 uppercase text-center p-2">No Photo</div>
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                <input type="file" name="foto_profil" class="text-xs font-bold uppercase file:bg-gray-900 file:text-white file:border-0 file:px-4 file:py-2 file:mr-4 file:cursor-pointer hover:file:bg-green-700">
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-6">
-                        <button type="submit" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg shadow transition">Simpan Perubahan</button>
-                    </div>
+
+                    <button type="submit" class="bg-green-700 border-2 border-gray-900 text-white px-8 py-3 font-black uppercase italic tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all">
+                        Update Data Diri
+                    </button>
                 </form>
 
-                <!-- Form Ganti Password -->
-                <form action="<?php echo e(route('anggota.profil.update-password')); ?>" method="POST">
+                <form action="<?php echo e(route('anggota.profil.update-password')); ?>" method="POST" class="mt-16 bg-gray-900 p-8 shadow-[8px_8px_0px_0px_rgba(250,204,21,1)]">
                     <?php echo csrf_field(); ?> <?php echo method_field('PUT'); ?>
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Ganti Password</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Password Lama</label>
-                            <input type="password" name="current_password" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" required>
+                    <div class="border-b-2 border-yellow-400 pb-2 mb-6 text-yellow-400">
+                        <h2 class="text-xl font-black uppercase tracking-widest">2. Keamanan Akun</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-2">Password Saat Ini</label>
+                            <input type="password" name="current_password" class="w-full border-2 border-yellow-400 bg-transparent text-white p-3 focus:outline-none" required>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Password Baru</label>
-                            <input type="password" name="new_password" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" required>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-2">Password Baru</label>
+                            <input type="password" name="new_password" class="w-full border-2 border-yellow-400 bg-transparent text-white p-3 focus:outline-none" required>
                         </div>
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Konfirmasi Password Baru</label>
-                            <input type="password" name="new_password_confirmation" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500" required>
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-2">Konfirmasi Password Baru</label>
+                            <input type="password" name="new_password_confirmation" class="w-full border-2 border-yellow-400 bg-transparent text-white p-3 focus:outline-none" required>
                         </div>
                     </div>
-                    <div class="mt-6">
-                        <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg shadow transition">Ganti Password</button>
-                    </div>
+                    
+                    <button type="submit" class="bg-yellow-400 text-gray-900 border-2 border-yellow-400 px-8 py-3 font-black uppercase italic tracking-widest hover:bg-white hover:text-gray-900 transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                        Ganti Password
+                    </button>
                 </form>
             </div>
         </div>

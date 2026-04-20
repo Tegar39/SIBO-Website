@@ -1,55 +1,63 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
+<div class="py-12 bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900">
-                <div class="flex justify-between items-center mb-4">
-                    <h1 class="text-2xl font-bold">Daftar Kategori</h1>
-                    <a href="{{ route('admin.kategori.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200">
-                        + Tambah Kategori
-                    </a>
-                </div>
-
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded shadow-sm" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @foreach($kategoris as $key => $item)
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $key+1 }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item->nama }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $item->deskripsi ?? '-' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('admin.kategori.edit', $item->id_kategori) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                        <form action="{{ route('admin.kategori.destroy', $item->id_kategori) }}" method="POST" class="inline-block">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Yakin hapus?')">Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">
-                    {{ $kategoris->links() }}
-                </div>
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 border-b-4 border-gray-900 pb-4 gap-4">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 uppercase italic tracking-tighter">
+                    Daftar <span class="text-green-600">Kategori</span>
+                </h1>
+                <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest">Klasifikasi Kegiatan PC DESBOR</p>
             </div>
+            <a href="{{ route('admin.kategori.create') }}" class="bg-gray-900 hover:bg-green-600 text-white text-[11px] font-black py-3 px-6 uppercase tracking-[0.2em] transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                + Tambah Baru
+            </a>
+        </div>
+
+        @if(session('success'))
+            <div class="mb-6 bg-green-600 text-white p-4 font-black text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="bg-white border-2 border-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-900">
+                    <thead class="bg-gray-50 text-gray-900 font-black uppercase text-[10px] tracking-widest">
+                        <tr>
+                            <th class="px-6 py-4 text-left">No</th>
+                            <th class="px-6 py-4 text-left">Nama Kategori</th>
+                            <th class="px-6 py-4 text-left">Keterangan</th>
+                            <th class="px-6 py-4 text-right">Manajemen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        @foreach($kategoris as $key => $item)
+                        <tr class="hover:bg-green-50 transition-colors">
+                            <td class="px-6 py-4 text-sm font-black text-gray-300">#{{ $kategoris->firstItem() + $key }}</td>
+                            <td class="px-6 py-4">
+                                <span class="text-sm font-black text-gray-900 uppercase tracking-tighter">{{ $item->nama }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-xs text-gray-500 font-medium italic line-clamp-1">{{ $item->deskripsi ?? '-' }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-right space-x-3">
+                                <a href="{{ route('admin.kategori.edit', $item->id_kategori) }}" class="text-[10px] font-black uppercase text-blue-600 hover:text-black transition-colors">Edit</a>
+                                
+                                <form action="{{ route('admin.kategori.destroy', $item->id_kategori) }}" method="POST" class="inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-[10px] font-black uppercase text-red-600 hover:text-black transition-colors" onclick="return confirm('Hapus kategori ini?')">Hapus</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-8">
+            {{ $kategoris->links() }}
         </div>
     </div>
 </div>

@@ -66,34 +66,45 @@
     </style>
 
     <!-- Tentang SIBO (Profil) -->
-    <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Tentang SIBO</h2>
-                <p class="text-gray-600 mb-4 leading-relaxed">
-                    SIBO (Sistem Informasi Budaya & Olahraga) adalah platform digital yang dikembangkan untuk PC DESBOR Kabupaten Kediri dalam rangka mendigitalisasi manajemen organisasi. Sistem ini memudahkan pendataan anggota, pengelolaan kegiatan, pendaftaran online, absensi, serta dokumentasi galeri.
-                </p>
-                <p class="text-gray-600 mb-4 leading-relaxed">
-                    Dengan SIBO, diharapkan seluruh anggota dapat mengakses informasi kegiatan secara real-time, mendaftar kegiatan dengan mudah, dan melihat riwayat keikutsertaan. Admin juga dimudahkan dalam mengelola data dan laporan.
-                </p>
-                <p class="text-gray-600 leading-relaxed">
-                    PC DESBOR Kabupaten Kediri berkomitmen untuk terus mengembangkan kegiatan di bidang budaya dan olahraga, serta memanfaatkan teknologi untuk meningkatkan pelayanan kepada anggota.
-                </p>
+    <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div class="relative">
+                <div class="mb-8 relative">
+                    <span class="text-green-700 font-black text-xs uppercase tracking-[0.3em] mb-2 block">Profil Organisasi</span>
+                    <h2 class="text-5xl font-black text-gray-900 tracking-tighter uppercase italic leading-none relative z-10">
+                        Tentang <span class="text-green-700">SIBO</span>
+                    </h2>
+                    <div class="absolute -bottom-2 -left-2 w-32 h-4 bg-yellow-400 -z-10 opacity-60"></div>
+                </div>
+                
+                <div class="space-y-4 border-l-4 border-gray-900 pl-6">
+                    <p class="text-gray-700 leading-relaxed font-medium">
+                        SIBO (Sistem Informasi Budaya & Olahraga) adalah platform digital yang dikembangkan untuk PC DESBOR Kabupaten Kediri dalam rangka mendigitalisasi manajemen organisasi.
+                    </p>
+                    <p class="text-gray-600 leading-relaxed">
+                        Dengan SIBO, diharapkan seluruh anggota dapat mengakses informasi kegiatan secara real-time, mendaftar kegiatan dengan mudah, dan melihat riwayat keikutsertaan.
+                    </p>
+                </div>
             </div>
-            <div class="flex justify-center">
-                <img src="<?php echo e(asset('images/logo-desbor.png')); ?>" alt="PC DESBOR" class="rounded-lg shadow-lg w-full max-w-md object-cover">
+            <div class="flex justify-center relative">
+                <div class="absolute inset-0 border-4 border-green-700 translate-x-4 translate-y-4 -z-10"></div>
+                <img src="<?php echo e(asset('images/logo-desbor.png')); ?>" alt="PC DESBOR" class="bg-white p-4 border-4 border-gray-900 shadow-xl w-full max-w-md object-cover transform hover:-translate-y-2 transition-transform duration-500">
             </div>
         </div>
     </div>
 
     <!-- Statistik -->
-    <div id="statistik" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <!-- Header Statistik -->
-        <div class="text-center mb-12">
-            <div class="inline-block bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full px-8 py-3 shadow-md">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Data Jumlah</h2>
+    <div id="statistik" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center mb-16 relative">
+            <div class="inline-block relative">
+                <h2 class="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter italic relative z-10">
+                    DATA <span class="text-green-700">JUMLAH</span>
+                </h2>
+                <div class="absolute top-1/2 left-0 w-full h-3 bg-yellow-400 -rotate-1 -z-10"></div>
             </div>
-            <p class="text-gray-600 max-w-2xl mx-auto">Rekapitulasi data anggota, kegiatan, dan keaktifan PAC di lingkungan PC DESBOR Kabupaten Kediri.</p>
+            <p class="text-gray-500 font-bold mt-4 text-[11px] uppercase tracking-widest max-w-lg mx-auto leading-loose">
+                Real-time rekapitulasi anggota dan keaktifan PAC <br class="hidden md:block"> se-Kabupaten Kediri
+            </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -232,13 +243,21 @@
 
     <!-- Galeri Foto dengan Carousel Horizontal Loop (dengan efek darken saat hover) -->
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($galeri->count() > 0): ?>
-    <div  id="galeri" class="py-16 bg-white overflow-hidden">
+    <div id="galeri" class="py-20 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <div class="inline-block bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full px-8 py-3 shadow-md">
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Galeri Kegiatan</h2>
+            
+            <div class="flex items-end justify-between mb-12 border-b-4 border-gray-900 pb-6">
+                <div>
+                    <span class="bg-yellow-400 text-black text-[10px] font-black px-3 py-1 uppercase tracking-widest mb-3 inline-block">Visual Archive</span>
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
+                        Galeri <span class="text-green-700">Kegiatan</span>
+                    </h2>
                 </div>
-                <p class="text-gray-600 mt-3 max-w-2xl mx-auto">Dokumentasi momen berharga dari berbagai kegiatan.</p>
+                <div class="hidden md:block">
+                    <p class="text-gray-400 text-right font-black text-[10px] uppercase tracking-tighter leading-tight">
+                        Momen Berharga<br>PC DESBOR
+                    </p>
+                </div>
             </div>
 
             <div class="relative w-full overflow-hidden">

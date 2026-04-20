@@ -1,128 +1,114 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-8 bg-gray-50 min-h-screen">
+<div class="py-12 bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard Admin</h1>
-            <span class="text-sm font-medium text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-                {{ now()->translatedFormat('d F Y') }}
-            </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="relative overflow-hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition hover:shadow-md">
-                <div class="absolute top-0 right-0 p-3 opacity-10">
-                    <svg class="w-12 h-12 text-blue-600" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
-                </div>
-                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Anggota</p>
-                <p class="text-3xl font-bold text-blue-600 mt-1">{{ array_sum($anggotaData) }}</p>
-                <div class="mt-2 text-xs text-blue-500 font-medium">Data terdaftar aktif</div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition hover:shadow-md">
-                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Kegiatan</p>
-                <p class="text-3xl font-bold text-green-600 mt-1">{{ array_sum($kategoriData) }}</p>
-                <div class="mt-2 text-xs text-green-500 font-medium">Seluruh kategori kegiatan</div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition hover:shadow-md">
-                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Pendaftar Baru</p>
-                <p class="text-3xl font-bold text-purple-600 mt-1">{{ $pendaftarBaru }}</p>
-                <div class="mt-2 text-xs text-purple-500 font-medium">Bulan {{ now()->translatedFormat('F') }}</div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 transition hover:shadow-md">
-                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Kategori Aktif</p>
-                <p class="text-3xl font-bold text-orange-600 mt-1">{{ count($kategoriLabels) }}</p>
-                <div class="mt-2 text-xs text-orange-500 font-medium">Tersedia untuk pendaftaran</div>
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b-4 border-gray-900 pb-8 gap-4">
+            <div>
+                <h1 class="text-5xl font-black text-gray-900 uppercase italic tracking-tighter">
+                    Admin <span class="text-green-700">Dashboard</span>
+                </h1>
+                <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-2">Status Sistem & Statistik PC DESBOR - {{ now()->translatedFormat('d F Y') }}</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span class="w-2 h-6 bg-blue-600 rounded-full"></span>
-                    Pertumbuhan Anggota (6 Bulan Terakhir)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="bg-blue-50 border-2 border-gray-900 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+                <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Total Anggota</span>
+                <span class="text-4xl font-black text-blue-700 leading-none mb-4">{{ array_sum($anggotaData) }}</span>
+                <span class="mt-auto text-[10px] font-bold text-blue-500 border-t border-blue-200 pt-2 uppercase italic">Database Terpusat</span>
+            </div>
+
+            <div class="bg-green-50 border-2 border-gray-900 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+                <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Total Kegiatan</span>
+                <span class="text-4xl font-black text-green-700 leading-none mb-4">{{ array_sum($kategoriData) }}</span>
+                <span class="mt-auto text-[10px] font-bold text-green-500 border-t border-green-200 pt-2 uppercase italic">Arsip Budaya & Olahraga</span>
+            </div>
+
+            <div class="bg-yellow-50 border-2 border-gray-900 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+                <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Pendaftar Baru</span>
+                <span class="text-4xl font-black text-gray-900 leading-none mb-4">{{ $pendaftarBaru }}</span>
+                <span class="mt-auto text-[10px] font-bold text-gray-500 border-t border-yellow-200 pt-2 uppercase italic">Bulan {{ now()->translatedFormat('F') }}</span>
+            </div>
+
+            <div class="bg-red-50 border-2 border-gray-900 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+                <span class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">Kategori Aktif</span>
+                <span class="text-4xl font-black text-red-700 leading-none mb-4">{{ count($kategoriLabels) }}</span>
+                <span class="mt-auto text-[10px] font-bold text-red-500 border-t border-red-200 pt-2 uppercase italic">Ready to use</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div class="lg:col-span-2 bg-white border-2 border-gray-900 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+                <h2 class="text-lg font-black uppercase italic border-b-2 border-gray-900 pb-4 mb-6 flex items-center gap-2">
+                    Pertumbuhan Anggota
                 </h2>
                 <div class="relative h-[300px]">
                     <canvas id="anggotaChart"></canvas>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-lg font-bold text-gray-800 mb-4">Kegiatan per Kategori</h2>
-                <div class="relative h-[250px] flex items-center justify-center">
+            <div class="bg-white border-2 border-gray-900 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                <h2 class="text-lg font-black uppercase italic border-b-2 border-gray-900 pb-4 mb-6 text-center">Proporsi Kategori</h2>
+                <div class="relative h-[300px] flex items-center justify-center">
                     <canvas id="kegiatanChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-            <h2 class="text-lg font-bold text-gray-800 mb-4">5 Kegiatan dengan Pendaftar Terbanyak</h2>
-            <div class="relative h-[200px]">
-                <canvas id="pendaftarChart"></canvas>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 border-b border-gray-50 bg-gray-50/50">
-                    <h2 class="font-bold text-gray-800">Kegiatan Terdekat</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+                <div class="p-4 bg-gray-900 text-white font-black uppercase text-xs italic tracking-[0.2em]">
+                    Kegiatan Terdekat
                 </div>
-                <ul class="divide-y divide-gray-100">
+                <ul class="divide-y-2 divide-gray-900 font-bold">
                     @forelse($kegiatanTerdekat as $k)
-                        <li class="p-4 hover:bg-gray-50 transition">
-                            <div class="flex justify-between items-start">
-                                <span class="font-semibold text-sm text-gray-700 leading-snug">{{ $k->judul }}</span>
-                                <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded uppercase">
-                                    {{ \Carbon\Carbon::parse($k->tanggal)->translatedFormat('d M') }}
-                                </span>
-                            </div>
+                        <li class="p-4 hover:bg-yellow-100 transition-colors flex justify-between gap-2">
+                            <span class="text-xs uppercase leading-tight">{{ $k->judul }}</span>
+                            <span class="text-[9px] bg-black text-white px-2 py-1 uppercase whitespace-nowrap">{{ \Carbon\Carbon::parse($k->tanggal)->translatedFormat('d M') }}</span>
                         </li>
                     @empty
-                        <li class="p-4 text-gray-500 text-sm italic text-center">Tidak ada kegiatan terdekat.</li>
+                        <li class="p-4 text-xs italic text-gray-400">Kosong...</li>
                     @endforelse
                 </ul>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 border-b border-gray-50 bg-gray-50/50">
-                    <h2 class="font-bold text-gray-800">Aktivitas Terbaru</h2>
+            <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,100,0,1)] overflow-hidden">
+                <div class="p-4 bg-green-800 text-white font-black uppercase text-xs italic tracking-[0.2em]">
+                    Aktivitas Terbaru
                 </div>
-                <ul class="divide-y divide-gray-100">
+                <ul class="divide-y-2 divide-gray-900 font-bold">
                     @forelse($aktivitasTerbaru as $akt)
-                        <li class="p-4 hover:bg-gray-50 transition">
-                            <p class="text-sm text-gray-600 leading-tight">
-                                <strong class="text-gray-900">{{ $akt->anggota->nama_lengkap ?? 'Anggota' }}</strong> 
-                                mendaftar kegiatan 
-                                <span class="text-blue-600 italic">"{{ $akt->kegiatan->judul ?? '-' }}"</span>
+                        <li class="p-4 hover:bg-green-50 transition-colors">
+                            <p class="text-[11px] leading-tight uppercase">
+                                <span class="text-green-700">{{ $akt->anggota->nama_lengkap ?? 'Anggota' }}</span> 
+                                mendaftar ke <span class="italic">"{{ $akt->kegiatan->judul ?? '-' }}"</span>
                             </p>
-                            <span class="text-[10px] text-gray-400 mt-1 block uppercase font-bold">{{ $akt->created_at->diffForHumans() }}</span>
+                            <span class="text-[8px] text-gray-400 mt-2 block uppercase">{{ $akt->created_at->diffForHumans() }}</span>
                         </li>
                     @empty
-                        <li class="p-4 text-gray-500 text-sm italic text-center">Belum ada aktivitas.</li>
+                        <li class="p-4 text-xs italic text-gray-400">Belum ada...</li>
                     @endforelse
                 </ul>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 border-b border-gray-50 bg-red-50/50">
-                    <h2 class="font-bold text-red-800">Anggota Bolos</h2>
+            <div class="bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_rgba(185,28,28,1)] overflow-hidden">
+                <div class="p-4 bg-red-700 text-white font-black uppercase text-xs italic tracking-[0.2em]">
+                    Daftar Alfa
                 </div>
-                <ul class="divide-y divide-gray-100">
+                <ul class="divide-y-2 divide-gray-900 font-bold">
                     @forelse($anggotaBolos as $ab)
-                        <li class="p-4 bg-red-50/20">
+                        <li class="p-4 bg-red-50/50">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-sm text-gray-900">{{ $ab->anggota->nama_lengkap ?? '?' }}</span>
-                                <span class="text-[10px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded uppercase">Alfa</span>
+                                <span class="text-xs uppercase text-red-700 font-black">{{ $ab->anggota->nama_lengkap ?? '?' }}</span>
+                                <span class="text-[8px] border border-red-700 px-1 text-red-700 font-black">ALFA</span>
                             </div>
-                            <div class="text-[11px] text-gray-500">
-                                {{ $ab->kegiatan->judul ?? '-' }} ({{ \Carbon\Carbon::parse($ab->kegiatan->tanggal)->format('d M Y') }})
+                            <div class="text-[9px] text-gray-500 uppercase tracking-tighter">
+                                {{ $ab->kegiatan->judul ?? '-' }}
                             </div>
                         </li>
                     @empty
-                        <li class="p-4 text-gray-500 text-sm italic text-center">Tidak ada yang bolos.</li>
+                        <li class="p-4 text-xs italic text-gray-400">Zero Alfa!</li>
                     @endforelse
                 </ul>
             </div>
@@ -134,64 +120,60 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Kita modifikasi sedikit tampilan chart-nya agar lebih brutalist
+        Chart.defaults.font.family = 'Inter, sans-serif';
+        Chart.defaults.font.weight = '900';
+        Chart.defaults.color = '#000';
+
         const commonOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+            },
+            scales: {
+                y: { grid: { color: '#e5e7eb' }, border: { width: 2, color: '#000' } },
+                x: { grid: { display: false }, border: { width: 2, color: '#000' } }
             }
         };
 
-        // Grafik garis - pertumbuhan anggota
+        // Anggota Chart
         new Chart(document.getElementById('anggotaChart').getContext('2d'), {
             type: 'line',
             data: {
                 labels: @json($anggotaLabels),
                 datasets: [{
-                    label: 'Anggota Baru',
+                    label: 'ANGGOTA BARU',
                     data: @json($anggotaData),
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#3b82f6',
-                    pointRadius: 4
+                    borderColor: '#1d4ed8', // Biru Tua
+                    backgroundColor: '#1d4ed8',
+                    borderWidth: 4,
+                    tension: 0, // Garis kaku (Sesuai style Brutalist)
+                    pointStyle: 'rect',
+                    pointRadius: 6,
+                    pointBackgroundColor: '#fff'
                 }]
             },
             options: commonOptions
         });
 
-        // Grafik lingkaran - Diperkecil dengan pengaturan cutout
+        // Kegiatan Chart
         new Chart(document.getElementById('kegiatanChart').getContext('2d'), {
-            type: 'doughnut', // Menggunakan Doughnut agar lebih modern
+            type: 'doughnut',
             data: {
                 labels: @json($kategoriLabels),
                 datasets: [{
                     data: @json($kategoriData),
-                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                    borderWidth: 0
+                    backgroundColor: ['#15803d', '#facc15', '#b91c1c', '#1d4ed8', '#7e22ce'],
+                    borderWidth: 3,
+                    borderColor: '#000'
                 }]
             },
             options: {
                 ...commonOptions,
-                cutout: '70%', // Membuat ring lebih tipis
+                cutout: '65%',
+                scales: { x: { display: false }, y: { display: false } }
             }
-        });
-
-        // Grafik batang - pendaftar per kegiatan
-        new Chart(document.getElementById('pendaftarChart').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: @json($kegiatanPendaftarLabels),
-                datasets: [{
-                    label: 'Jumlah Pendaftar',
-                    data: @json($kegiatanPendaftarData),
-                    backgroundColor: '#f97316',
-                    borderRadius: 5,
-                    barThickness: 30
-                }]
-            },
-            options: commonOptions
         });
     });
 </script>

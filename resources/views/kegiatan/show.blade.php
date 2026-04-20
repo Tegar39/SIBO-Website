@@ -1,89 +1,137 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 text-gray-900">
-                @if($kegiatan->pamflet)
-                    <img src="{{ Storage::url($kegiatan->pamflet->path_file) }}" class="w-full max-h-96 object-cover rounded mb-6">
-                @endif
+<div class="py-12 bg-[#f4f4f4] min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="mb-8">
+            <a href="{{ route('kegiatan.publik.index') }}" wire:navigate class="group inline-flex items-center text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-green-600 transition-colors">
+                <span class="mr-2 transition-transform group-hover:-translate-x-1">←</span> Back to Bulletin
+            </a>
+        </div>
 
-                <h1 class="text-3xl font-bold mb-2">{{ $kegiatan->judul }}</h1>
-                <p class="text-gray-600 mb-1"><span class="font-semibold">Kategori:</span> {{ $kegiatan->kategori->nama }}</p>
-                <p class="text-gray-600 mb-1"><span class="font-semibold">Tanggal:</span> {{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d M Y') }} @if($kegiatan->waktu) , {{ \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i') }} WIB @endif</p>
-                <p class="text-gray-600 mb-1"><span class="font-semibold">Lokasi:</span> {{ $kegiatan->lokasi ?: '-' }}</p>
-                <p class="text-gray-600 mb-4"><span class="font-semibold">Kuota:</span> {{ $jumlahPeserta }} / {{ $kegiatan->kuota == 0 ? 'Tak terbatas' : $kegiatan->kuota }}</p>
-
-                <div class="mt-4 border-t pt-4">
-                    <h2 class="text-xl font-semibold mb-2">Deskripsi</h2>
-                    <p class="text-gray-700">{{ nl2br(e($kegiatan->deskripsi)) }}</p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <div class="lg:col-span-8">
+                <div class="bg-white p-3 shadow-xl transform -rotate-1 mb-10 border border-gray-200">
+                    @if($kegiatan->pamflet)
+                        <img src="{{ Storage::url($kegiatan->pamflet->path_file) }}" class="w-full h-auto object-cover">
+                    @else
+                        <div class="w-full h-80 bg-gray-100 flex items-center justify-center text-gray-400 uppercase font-black tracking-widest italic">
+                            No Poster Provided
+                        </div>
+                    @endif
                 </div>
 
-                @auth
-                    @if(auth()->user()->role == 'anggota')
-                        @php
-                            $sudahDaftar = \App\Models\Pendaftaran::where('id_anggota', auth()->user()->anggota->id_anggota)
-                                ->where('id_kegiatan', $kegiatan->id_kegiatan)
-                                ->exists();
-                            $statusPendaftaran = $sudahDaftar ? \App\Models\Pendaftaran::where('id_anggota', auth()->user()->anggota->id_anggota)
-                                ->where('id_kegiatan', $kegiatan->id_kegiatan)
-                                ->first()->status : null;
-                        @endphp
-                        @if($sudahDaftar)
-                            <div class="mt-6 p-3 rounded @if($statusPendaftaran == 'disetujui') bg-green-100 text-green-700 @elseif($statusPendaftaran == 'ditolak') bg-red-100 text-red-700 @else bg-yellow-100 text-yellow-700 @endif">
-                                @if($statusPendaftaran == 'pending')
-                                    Anda sudah mendaftar. Menunggu konfirmasi admin.
-                                @elseif($statusPendaftaran == 'disetujui')
-                                    Pendaftaran Anda telah disetujui. Silakan datang tepat waktu.
-                                @elseif($statusPendaftaran == 'ditolak')
-                                    Maaf, pendaftaran Anda ditolak.
-                                @endif
-                            </div>
-                        @elseif($kegiatan->status != 'aktif')
-                            <div class="mt-6 p-3 bg-gray-100 text-gray-700 rounded">Kegiatan ini sudah {{ $kegiatan->status }}.</div>
-                        @elseif($kegiatan->kuota > 0 && $jumlahPeserta >= $kegiatan->kuota)
-                            <div class="mt-6 p-3 bg-red-100 text-red-700 rounded">Maaf, kuota sudah penuh.</div>
-                        @else
-                            <form action="{{ route('anggota.daftar', $kegiatan->id_kegiatan) }}" method="POST" class="mt-6">
-                                @csrf
-                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">Daftar Sekarang</button>
-                            </form>
-                        @endif
-                    @else
-                        <div class="mt-6 p-3 bg-blue-100 text-blue-700 rounded">Anda login sebagai admin. Untuk mendaftar, gunakan akun anggota.</div>
-                    @endif
-                @else
-                    <div class="mt-6 p-3 bg-yellow-100 text-yellow-700 rounded">
-                        <a href="{{ route('login') }}" class="underline">Login</a> sebagai anggota untuk mendaftar kegiatan ini.
-                    </div>
-                @endauth
+                <div class="mb-8">
+                    <span class="bg-green-600 text-white text-[10px] font-black px-4 py-1.5 uppercase tracking-[0.2em] mb-4 inline-block">
+                        {{ $kegiatan->kategori->nama }}
+                    </span>
+                    <h1 class="text-4xl md:text-5xl font-black text-gray-900 leading-[0.9] tracking-tighter uppercase italic">
+                        {{ $kegiatan->judul }}
+                    </h1>
+                </div>
 
-                <div class="mt-6">
-                    <a href="{{ route('kegiatan.publik.index') }}" wire:navigate class="text-blue-600 hover:underline">&larr; Kembali ke daftar kegiatan</a>
+                <div class="prose prose-lg max-w-none">
+                    <h2 class="text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-200 pb-2 mb-4">Event Description</h2>
+                    <p class="text-gray-700 leading-relaxed text-lg whitespace-pre-line font-medium">
+                        {{ e($kegiatan->deskripsi) }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4">
+                <div class="sticky top-8">
+                    <div class="bg-white border-2 border-gray-900 p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                        <h3 class="text-xl font-black text-gray-900 uppercase tracking-tighter mb-6 border-b-2 border-gray-900 pb-2">Detail Logistik</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="bg-gray-100 p-2 text-gray-900 font-black text-center min-w-[50px]">
+                                    <span class="block text-lg leading-none">{{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d') }}</span>
+                                    <span class="text-[10px] uppercase">{{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('M') }}</span>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Waktu</p>
+                                    <p class="text-sm font-bold text-gray-900">
+                                        {{ \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i') }} WIB - Selesai
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="bg-gray-100 p-2 text-gray-400 flex items-center justify-center min-w-[50px]">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Lokasi</p>
+                                    <p class="text-sm font-bold text-gray-900 leading-tight">{{ $kegiatan->lokasi ?: 'Lokasi belum ditentukan' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 pb-4 border-b border-gray-100">
+                                <div class="bg-gray-100 p-2 text-gray-400 flex items-center justify-center min-w-[50px]">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ketersediaan</p>
+                                    <p class="text-sm font-bold text-gray-900">
+                                        {{ $jumlahPeserta }} / {{ $kegiatan->kuota == 0 ? '∞' : $kegiatan->kuota }} Peserta
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            @auth
+                                @if(auth()->user()->role == 'anggota')
+                                    @php
+                                        $pendaftaran = \App\Models\Pendaftaran::where('id_anggota', auth()->user()->anggota->id_anggota)
+                                            ->where('id_kegiatan', $kegiatan->id_kegiatan)
+                                            ->first();
+                                    @endphp
+
+                                    @if($pendaftaran)
+                                        <div class="text-center p-4 rounded-sm border-2 font-black uppercase text-xs tracking-tighter
+                                            @if($pendaftaran->status == 'disetujui') border-green-600 text-green-600 bg-green-50 
+                                            @elseif($pendaftaran->status == 'ditolak') border-red-600 text-red-600 bg-red-50 
+                                            @else border-yellow-500 text-yellow-600 bg-yellow-50 @endif">
+                                            Status: {{ $pendaftaran->status }}
+                                            <p class="font-bold normal-case mt-1 tracking-normal italic text-[10px]">
+                                                {{ $pendaftaran->status == 'pending' ? 'Tunggu konfirmasi admin' : 'Silakan cek email berkala' }}
+                                            </p>
+                                        </div>
+                                    @elseif($kegiatan->status != 'aktif')
+                                        <div class="w-full bg-gray-200 text-gray-500 text-center py-3 font-black uppercase text-xs">
+                                            Event {{ $kegiatan->status }}
+                                        </div>
+                                    @elseif($kegiatan->kuota > 0 && $jumlahPeserta >= $kegiatan->kuota)
+                                        <div class="w-full bg-red-100 text-red-600 text-center py-3 font-black uppercase text-xs border border-red-200">
+                                            Kuota Penuh
+                                        </div>
+                                    @else
+                                        <form action="{{ route('anggota.daftar', $kegiatan->id_kegiatan) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="w-full bg-green-600 hover:bg-black text-white font-black py-4 uppercase tracking-[0.2em] transition-all transform hover:-translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                                                Daftar Sekarang
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <div class="p-4 bg-blue-50 border-l-4 border-blue-600 text-blue-700 text-[10px] font-bold uppercase leading-tight">
+                                        Anda login sebagai Admin.
+                                    </div>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="block w-full bg-gray-900 text-white text-center font-black py-4 uppercase tracking-[0.2em] hover:bg-green-600 transition-colors">
+                                    Login to Register
+                                </a>
+                            @endauth
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@if($kegiatan->latitude && $kegiatan->longitude)
-<div class="mt-4">
-    <h3 class="font-semibold">Lokasi di Peta</h3>
-    <div id="map" style="height: 300px;" class="rounded border mt-2"></div>
-</div>
-
-@push('scripts')
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script>
-    var map = L.map('map').setView([{{ $kegiatan->latitude }}, {{ $kegiatan->longitude }}], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-    L.marker([{{ $kegiatan->latitude }}, {{ $kegiatan->longitude }}]).addTo(map)
-        .bindPopup('{{ $kegiatan->lokasi }}')
-        .openPopup();
-</script>
-@endpush
-@endif
 @endsection
