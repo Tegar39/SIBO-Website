@@ -94,56 +94,49 @@
     </div>
 
     <!-- Statistik -->
-    <div id="statistik" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div class="text-center mb-16 relative">
-            <div class="inline-block relative">
-                <h2 class="text-4xl md:text-5xl font-black text-gray-900 uppercase tracking-tighter italic relative z-10">
-                    DATA <span class="text-green-700">JUMLAH</span>
-                </h2>
-                <div class="absolute top-1/2 left-0 w-full h-3 bg-yellow-400 -rotate-1 -z-10"></div>
-            </div>
-            <p class="text-gray-500 font-bold mt-4 text-[11px] uppercase tracking-widest max-w-lg mx-auto leading-loose">
-                Real-time rekapitulasi anggota dan keaktifan PAC <br class="hidden md:block"> se-Kabupaten Kediri
-            </p>
+    <div id="statistik" class="relative py-32 overflow-hidden bg-white transition-colors duration-700" id="stat-container">
+        <div class="absolute inset-0 z-0 opacity-0 transition-all duration-[1200ms] ease-out scale-125" id="stat-bg">
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($heroImage): ?>
+                <img src="<?php echo e($heroImage); ?>" class="w-full h-full object-cover grayscale brightness-[0.3]">
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                <div class="text-5xl font-bold text-blue-600"><?php echo e($totalAnggota); ?></div>
-                <div class="text-gray-600 mt-2">Total Anggota</div>
-                <div class="text-sm text-gray-400 mt-1">Terdaftar aktif</div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-24 transition-all duration-700" id="stat-content">
+                <div class="inline-block relative">
+                    <h2 class="text-6xl md:text-8xl font-black text-gray-900 uppercase tracking-tighter italic leading-none transition-colors duration-500" id="stat-title">
+                        DATA <span class="text-green-600 transition-colors duration-500" id="stat-highlight">JUMLAH</span>
+                    </h2>
+                    <div class="absolute -bottom-2 left-0 w-full h-3 bg-yellow-400 -rotate-1 -z-10 opacity-90"></div>
+                </div>
+                <p class="text-gray-500 font-bold mt-8 text-[11px] uppercase tracking-[0.5em] max-w-lg mx-auto" id="stat-subtitle">
+                    Real-time rekapitulasi anggota se-Kabupaten Kediri
+                </p>
             </div>
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                <div class="text-5xl font-bold text-green-600"><?php echo e($totalKegiatan); ?></div>
-                <div class="text-gray-600 mt-2">Total Kegiatan</div>
-                <div class="text-sm text-gray-400 mt-1">Sepanjang waktu</div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                <div class="text-5xl font-bold text-purple-600"><?php echo e($totalPac ?? '0'); ?></div>
-                <div class="text-gray-600 mt-2">PAC Aktif</div>
-                <div class="text-sm text-gray-400 mt-1">Tersebar di Kabupaten Kediri</div>
-            </div>
-        </div>
 
-        <!-- Informasi Tambahan (opsional) -->
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 rounded-xl p-6">
-            <div class="flex items-start gap-3">
-                <svg class="w-6 h-6 text-blue-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div>
-                    <h3 class="font-semibold text-gray-800">Informasi Keanggotaan</h3>
-                    <p class="text-sm text-gray-600">Anggota terdiri dari Kader Desa Bersama (KDB) dan Kader Nuansa Baru (KNB) yang tersebar di berbagai PAC.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 relative z-20">
+                <?php
+                    $stats = [
+                        ['label' => 'Total Anggota', 'val' => $totalAnggota ?? 0],
+                        ['label' => 'Total Kegiatan', 'val' => $totalKegiatan ?? 0],
+                        ['label' => 'PAC Aktif', 'val' => $totalPac ?? 0],
+                    ];
+                ?>
+
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $stats; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $s): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                <div class="group text-center">
+                    <div class="text-8xl font-black text-gray-900 tracking-tighter mb-2 transition-colors duration-500 stat-number"><?php echo e($s['val']); ?></div>
+                    <div class="text-green-600 font-black uppercase italic tracking-widest text-xs transition-colors duration-500 stat-label"><?php echo e($s['label']); ?></div>
+                    <div class="w-10 h-1.5 bg-green-600 mx-auto mt-6 transition-all group-hover:w-20"></div>
                 </div>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
             </div>
-            <div class="flex items-start gap-3">
-                <svg class="w-6 h-6 text-green-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div>
-                    <h3 class="font-semibold text-gray-800">Kegiatan Rutin</h3>
-                    <p class="text-sm text-gray-600">Kegiatan bidang budaya (KDB) dan olahraga (KNB) dilaksanakan secara berkala.</p>
-                </div>
+            
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none select-none z-0">
+                <span class="stat-outline-dynamic text-[15rem] md:text-[22rem] font-black italic uppercase tracking-tighter block leading-none opacity-5 transition-all duration-700">
+                    STATISTIK
+                </span>
             </div>
         </div>
     </div>
@@ -334,6 +327,24 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeLightbox();
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('statistik');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    container.classList.add('stat-active');
+                } else {
+                    container.classList.remove('stat-active');
+                }
+            });
+        }, { 
+            threshold: 0.4 // Muncul pas 40% section masuk layar
+        });
+
+        observer.observe(container);
+    });
 </script>
 <?php $__env->stopPush(); ?>
 
@@ -374,6 +385,31 @@
         }
     .line-clamp-2 { -webkit-line-clamp: 2; }
     .line-clamp-3 { -webkit-line-clamp: 3; }
+
+    .stat-outline-dynamic {
+        color: transparent;
+        -webkit-text-stroke: 1.5px #000;
+    }
+    
+    /* State saat aktif (Terkena Sorot) */
+    .stat-active #stat-bg {
+        opacity: 0.4 !important; /* Intensitas gambar 40% */
+        transform: scale(1) !important; /* Efek Zoom Out */
+    }
+
+    .stat-active {
+        background-color: #050505 !important; /* Berubah jadi hitam */
+    }
+
+    .stat-active #stat-title, 
+    .stat-active .stat-number { color: white !important; }
+    
+    .stat-active #stat-highlight,
+    .stat-active .stat-label { color: #22c55e !important; } /* Green-500 */
+
+    .stat-active .stat-outline-dynamic {
+        -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.2);
+    }
 </style>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>

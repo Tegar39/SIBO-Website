@@ -70,15 +70,15 @@
                 <div class="p-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                     <div class="p-4 border-2 border-gray-900 bg-gray-50">
                         <p class="text-[9px] font-black text-gray-400 uppercase">Pendaftaran</p>
-                        <p class="text-3xl font-black text-gray-900">0</p>
+                        <p class="text-3xl font-black text-gray-900"><?php echo e($jumlahPendaftaran); ?></p>
                     </div>
                     <div class="p-4 border-2 border-gray-900 bg-green-50">
                         <p class="text-[9px] font-black text-gray-400 uppercase">Diikuti</p>
-                        <p class="text-3xl font-black text-green-700">0</p>
+                        <p class="text-3xl font-black text-green-700"><?php echo e($jumlahDiikuti); ?></p>
                     </div>
                     <div class="p-4 border-2 border-gray-900 bg-yellow-50">
                         <p class="text-[9px] font-black text-gray-400 uppercase">Selesai</p>
-                        <p class="text-3xl font-black text-yellow-600">0</p>
+                        <p class="text-3xl font-black text-yellow-600"><?php echo e($jumlahSelesai); ?></p>
                     </div>
                 </div>
             </div>
@@ -99,13 +99,31 @@
             <div class="p-4 border-b-2 border-gray-900 bg-yellow-400 font-black uppercase text-xs italic tracking-widest">
                 Agenda Mendatang
             </div>
-            <div class="p-12 text-center">
-                <div class="inline-block p-4 bg-gray-100 border-2 border-dashed border-gray-400 mb-4">
-                    <svg class="w-12 h-12 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($agendaMendatang->count() > 0): ?>
+                <div class="divide-y-2 divide-gray-900">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $agendaMendatang; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <div class="p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                            <div>
+                                <h4 class="font-black text-lg uppercase italic text-gray-900"><?php echo e($item->kegiatan->judul); ?></h4>
+                                <p class="text-xs font-bold text-green-700 uppercase"><?php echo e(\Carbon\Carbon::parse($item->kegiatan->tanggal)->translatedFormat('d F Y')); ?></p>
+                            </div>
+                            <span class="bg-black text-white text-[10px] font-black px-4 py-1 uppercase italic shadow-[3px_3px_0px_0px_rgba(21,128,61,1)]">
+                                <?php echo e($item->status_pendaftaran); ?>
+
+                            </span>
+                        </div>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                 </div>
-                <p class="text-gray-400 font-black uppercase italic tracking-widest">Belum ada kegiatan yang kamu ikuti</p>
-                <p class="text-[10px] text-gray-400 uppercase mt-1">Ayo daftar kegiatan budaya & olahraga sekarang!</p>
-            </div>
+            <?php else: ?>
+                <div class="p-12 text-center">
+                    <div class="inline-block p-4 bg-gray-100 border-2 border-dashed border-gray-400 mb-4">
+                        <svg class="w-12 h-12 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <p class="text-gray-400 font-black uppercase italic tracking-widest">Belum ada kegiatan yang kamu ikuti</p>
+                    <p class="text-[10px] text-gray-400 uppercase mt-1">Ayo daftar kegiatan budaya & olahraga sekarang!</p>
+                </div>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
 
     </div>

@@ -47,13 +47,16 @@ class PendaftaranController extends Controller
     }
 
     // Admin: daftar kegiatan yang memiliki pendaftar
-    public function index()
+    public function index(Request $request)
     {
-        // Kita ganti get() jadi paginate(3) biar konsisten sama request kamu
         $kegiatans = Kegiatan::withCount('pendaftarans')
-            ->with('pamflet') // Eager load pamflet biar gak berat
-            ->orderBy('tanggal', 'desc')
-            ->paginate(3); 
+            ->with('pamflet')
+            ->when($request->search, function ($query, $search) {
+                $query->where('judul', 'like', "%{$search}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(3)
+            ->withQueryString();
 
         return view('admin.pendaftaran.index', compact('kegiatans'));
     }

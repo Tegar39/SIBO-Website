@@ -62,9 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('anggota.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\DashboardAnggotaController::class, 'index'])->name('dashboard');
     Route::post('/daftar/{id_kegiatan}', [PendaftaranController::class, 'daftar'])->name('daftar');
     Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
     

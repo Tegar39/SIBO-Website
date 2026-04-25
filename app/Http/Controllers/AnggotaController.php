@@ -10,9 +10,21 @@ use Illuminate\Support\Facades\Storage;
 
 class AnggotaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $anggota = Anggota::with('user')->orderBy('created_at', 'desc')->paginate(3);
+        // Query dengan fitur Search dan Filter PAC
+        $anggota = Anggota::with('user')
+            ->when($request->search, function ($query, $search) {
+                $query->where('nama_lengkap', 'like', "%{$search}%")
+                      ->orWhere('nomor_anggota', 'like', "%{$search}%");
+            })
+            ->when($request->pac, function ($query, $pac) {
+                $query->where('pac', $pac);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(3) // Kembali ke 3 data per halaman sesuai request
+            ->withQueryString(); // Menjaga filter tetap aktif saat navigasi halaman
+
         return view('admin.anggota.index', compact('anggota'));
     }
 
@@ -34,36 +46,17 @@ class AnggotaController extends Controller
 
         $request->merge(['nomor_anggota' => $newNumber]);
 
-        $validated = $request->validate([
+        $request->validate([
             'nama_lengkap' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'nomor_anggota' => 'required|string|size:5|unique:anggotas,nomor_anggota',
             'password' => 'required|min:8',
             'kontak' => ['required', 'regex:/^(08|\+62)[0-9]{8,}$/'],
             'pac' => 'required|in:PAC-01,PAC-02,PAC-03,PAC-04,PAC-05',
-            'tempat_lahir' => 'nullable|string',
-            'tgl_lahir' => 'nullable|date',
-            'alamat' => 'nullable|string',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
-            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar.',
-            'nomor_anggota.required' => 'Nomor anggota wajib diisi.',
-            'nomor_anggota.size' => 'Nomor anggota harus tepat 5 digit angka.',
-            'nomor_anggota.unique' => 'Nomor anggota sudah digunakan.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 8 karakter.',
-            'kontak.required' => 'Kontak wajib diisi.',
-            'kontak.regex' => 'Format kontak harus diawali 08 atau +62 dan minimal 10 digit.',
-            'pac.required' => 'PAC wajib dipilih.',
-            'foto_profil.image' => 'File harus berupa gambar.',
-            'foto_profil.mimes' => 'Format gambar harus JPEG, PNG, atau JPG.',
-            'foto_profil.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        // Buat user
+        // Create User Account
         $user = User::create([
             'name' => $request->nama_lengkap,
             'email' => $request->email,
@@ -82,7 +75,6 @@ class AnggotaController extends Controller
             'pac' => $request->pac,
         ];
 
-        // Upload foto profil jika ada
         if ($request->hasFile('foto_profil')) {
             $path = $request->file('foto_profil')->store('foto_profil', 'public');
             $dataAnggota['foto_profil'] = $path;
@@ -91,7 +83,7 @@ class AnggotaController extends Controller
         Anggota::create($dataAnggota);
 
         return redirect()->route('admin.anggota.index')
-            ->with('success', "Anggota berhasil ditambahkan dengan nomor anggota {$newNumber}");
+            ->with('success', "Anggota berhasil ditambahkan (ID: {$newNumber})");
     }
 
     public function edit($id)
@@ -104,64 +96,43 @@ class AnggotaController extends Controller
     {
         $anggota = Anggota::findOrFail($id);
 
-        $validated = $request->validate([
+        $request->validate([
             'nama_lengkap' => 'required|string|max:100',
             'kontak' => ['required', 'regex:/^(08|\+62)[0-9]{8,}$/'],
             'pac' => 'required|in:PAC-01,PAC-02,PAC-03,PAC-04,PAC-05',
-            'tempat_lahir' => 'nullable|string',
-            'tgl_lahir' => 'nullable|date',
-            'alamat' => 'nullable|string',
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ], [
-            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
-            'kontak.required' => 'Kontak wajib diisi.',
-            'kontak.regex' => 'Format kontak harus diawali 08 atau +62 dan minimal 10 digit.',
-            'pac.required' => 'PAC wajib dipilih.',
-            'foto_profil.image' => 'File harus berupa gambar.',
-            'foto_profil.mimes' => 'Format gambar harus JPEG, PNG, atau JPG.',
-            'foto_profil.max' => 'Ukuran gambar maksimal 2MB.',
         ]);
 
-        $dataAnggota = [
-            'nama_lengkap' => $request->nama_lengkap,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tgl_lahir' => $request->tgl_lahir,
-            'alamat' => $request->alamat,
-            'kontak' => $request->kontak,
-            'pac' => $request->pac,
-        ];
+        $dataAnggota = $request->only(['nama_lengkap', 'tempat_lahir', 'tgl_lahir', 'alamat', 'kontak', 'pac']);
 
-        // Upload foto profil baru jika ada
         if ($request->hasFile('foto_profil')) {
-            // Hapus foto lama
             if ($anggota->foto_profil && Storage::disk('public')->exists($anggota->foto_profil)) {
                 Storage::disk('public')->delete($anggota->foto_profil);
             }
-            $path = $request->file('foto_profil')->store('foto_profil', 'public');
-            $dataAnggota['foto_profil'] = $path;
+            $dataAnggota['foto_profil'] = $request->file('foto_profil')->store('foto_profil', 'public');
         }
 
         $anggota->update($dataAnggota);
-
-        // Update nama di tabel users
         $anggota->user->update(['name' => $request->nama_lengkap]);
 
-        return redirect()->route('admin.anggota.index')
-            ->with('success', 'Anggota berhasil diperbarui');
+        return redirect()->route('admin.anggota.index')->with('success', 'Data anggota berhasil diperbarui');
     }
 
     public function destroy($id)
     {
         $anggota = Anggota::findOrFail($id);
-        // Hapus foto profil jika ada
-        if ($anggota->foto_profil && Storage::disk('public')->exists($anggota->foto_profil)) {
+        
+        if ($anggota->foto_profil) {
             Storage::disk('public')->delete($anggota->foto_profil);
         }
+
         $user = $anggota->user;
         $anggota->delete();
-        $user->delete();
+        
+        if ($user) {
+            $user->delete();
+        }
 
-        return redirect()->route('admin.anggota.index')
-            ->with('success', 'Anggota berhasil dihapus');
+        return redirect()->route('admin.anggota.index')->with('success', 'Anggota dan akun user berhasil dihapus');
     }
 }

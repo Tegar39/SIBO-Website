@@ -20,11 +20,11 @@ class Pendaftaran extends Model
 
     public function kegiatan()
     {
-        return $this->belongsTo(Kegiatan::class, 'id_kegiatan');
+        return $this->belongsTo(Kegiatan::class, 'id_kegiatan', 'id_kegiatan');
     }
 
     public function absensi()
     {
-        return $this->hasOne(Absensi::class, 'id_daftar');
+        return $this->hasOne(Absensi::class, 'id_daftar', 'id_daftar');
     }
 }

@@ -11,7 +11,11 @@ class GaleriController extends Controller
 {
     public function index()
     {
-        $kegiatans = Kegiatan::with('galeris')->orderBy('tanggal', 'desc')->get();
+        // Paginate 6 data per halaman agar tidak berat
+        $kegiatans = Kegiatan::with('galeris')
+            ->orderBy('tanggal', 'desc')
+            ->paginate(3);
+
         return view('admin.galeri.index', compact('kegiatans'));
     }
 
@@ -46,14 +50,16 @@ class GaleriController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.galeri.show', $id_kegiatan)->with('success', 'Foto diupload.');
+        return redirect()->route('admin.galeri.show', $id_kegiatan)->with('success', 'Foto berhasil diunggah.');
     }
 
     public function destroy($id_foto)
     {
         $foto = Galeri::findOrFail($id_foto);
-        Storage::disk('public')->delete($foto->path_file);
+        if ($foto->path_file) {
+            Storage::disk('public')->delete($foto->path_file);
+        }
         $foto->delete();
-        return back()->with('success', 'Foto dihapus.');
+        return back()->with('success', 'Foto berhasil dihapus.');
     }
 }

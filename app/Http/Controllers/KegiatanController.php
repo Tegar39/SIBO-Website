@@ -10,10 +10,23 @@ use Illuminate\Support\Facades\Storage;
 
 class KegiatanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kegiatans = Kegiatan::with('kategori', 'creator', 'pamflet')->latest()->paginate(3);
-        return view('admin.kegiatan.index', compact('kegiatans'));
+        $kategoris = Kategori::all();
+
+        $kegiatans = Kegiatan::with('kategori', 'creator', 'pamflet')
+            ->when($request->search, function ($query, $search) {
+                $query->where('judul', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%");
+            })
+            ->when($request->kategori, function ($query, $kategori) {
+                $query->where('id_kategori', $kategori);
+            })
+            ->latest()
+            ->paginate(3)
+            ->withQueryString();
+
+        return view('admin.kegiatan.index', compact('kegiatans', 'kategoris'));
     }
 
     public function create()

@@ -3,6 +3,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="py-12 bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b-4 border-gray-900 pb-6 gap-4">
             <div>
                 <h1 class="text-4xl font-black text-gray-900 uppercase italic tracking-tighter">
@@ -19,94 +20,98 @@
             </a>
         </div>
 
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
-            <div class="mb-8 bg-green-700 text-yellow-400 p-5 font-black text-xs uppercase tracking-widest shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center gap-4">
-                <div class="bg-yellow-400 text-green-800 rounded-full p-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        <div class="mb-10 bg-white border-4 border-gray-900 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <form action="<?php echo e(route('admin.anggota.index')); ?>" method="GET" class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1 relative">
+                    <input type="text" name="search" value="<?php echo e(request('search')); ?>" 
+                        placeholder="CARI NAMA ATAU ID ANGGOTA..." 
+                        class="w-full bg-gray-50 border-2 border-gray-900 px-4 py-3 font-black uppercase italic text-xs tracking-widest focus:ring-0 focus:border-green-700 transition-all">
                 </div>
-                <?php echo e(session('success')); ?>
 
-            </div>
-        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                <div class="md:w-64">
+                    <select name="pac" onchange="this.form.submit()" 
+                        class="w-full bg-white border-2 border-gray-900 px-4 py-3 font-black uppercase italic text-xs tracking-widest focus:ring-0 focus:border-green-700 appearance-none cursor-pointer">
+                        <option value="">SEMUA PAC</option>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['PAC-01', 'PAC-02', 'PAC-03', 'PAC-04', 'PAC-05']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pac): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                            <option value="<?php echo e($pac); ?>" <?php echo e(request('pac') == $pac ? 'selected' : ''); ?>>WILAYAH <?php echo e($pac); ?></option>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                    </select>
+                </div>
+
+                <button type="submit" class="bg-gray-900 text-white px-8 py-3 font-black uppercase italic text-[10px] hover:bg-green-700 transition-all shadow-[4px_4px_0px_0px_rgba(234,179,8,1)]">
+                    CARI
+                </button>
+
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(request('search') || request('pac')): ?>
+                    <a href="<?php echo e(route('admin.anggota.index')); ?>" 
+                    class="bg-red-500 text-white border-2 border-gray-900 px-6 py-3 font-black uppercase italic text-[10px] flex items-center justify-center hover:bg-red-600 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]">
+                        RESET
+                    </a>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+            </form>
+        </div>
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($anggota->count() > 0): ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $anggota; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $a): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                    <div class="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col group">
-                        <div class="relative bg-gradient-to-r from-green-700 to-green-800 px-4 py-4 flex items-center gap-3">
-                            <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-yellow-400 shadow-md">
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($a->foto_profil && Storage::disk('public')->exists($a->foto_profil)): ?>
-                                    <img src="<?php echo e(Storage::url($a->foto_profil)); ?>" alt="Foto" class="w-full h-full object-cover">
-                                <?php else: ?>
-                                    <svg class="w-10 h-10 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-bold text-white line-clamp-1 uppercase tracking-tighter"><?php echo e($a->nama_lengkap); ?></h3>
-                                <p class="text-yellow-200 text-xs font-mono">ID: <?php echo e($a->nomor_anggota); ?></p>
-                            </div>
-                            <span class="absolute top-2 right-2 bg-yellow-500 text-green-900 text-[10px] font-black px-2 py-0.5 rounded-full shadow">
-                                <?php echo e($a->pac); ?>
+                    <div class="relative bg-gray-900 rounded-xl"> <div class="relative z-10 bg-white rounded-xl border-2 border-gray-900 overflow-hidden flex flex-col transform transition-all duration-200 hover:-translate-y-[-8px] hover:-translate-x-[-8px]">
+                            
+                            <div class="bg-gradient-to-r from-green-700 to-green-800 px-4 py-4 flex items-center gap-3 border-b-2 border-gray-900">
+                                <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-yellow-400">
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($a->foto_profil && Storage::disk('public')->exists($a->foto_profil)): ?>
+                                        <img src="<?php echo e(Storage::url($a->foto_profil)); ?>" alt="Foto" class="w-full h-full object-cover">
+                                    <?php else: ?>
+                                        <svg class="w-8 h-8 text-green-700" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-sm font-black text-white uppercase italic tracking-tighter truncate"><?php echo e($a->nama_lengkap); ?></h3>
+                                    <p class="text-yellow-200 text-[10px] font-mono">ID: <?php echo e($a->nomor_anggota); ?></p>
+                                </div>
+                                <span class="bg-yellow-500 text-green-900 text-[9px] font-black px-2 py-0.5 rounded-full border border-gray-900">
+                                    <?php echo e($a->pac); ?>
 
-                            </span>
-                        </div>
+                                </span>
+                            </div>
 
-                        <div class="p-5 flex-1 space-y-3 text-sm">
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                <span class="truncate font-medium"><?php echo e($a->user->email); ?></span>
+                            <div class="p-5 flex-1 space-y-3 text-[11px] font-bold uppercase tracking-wider text-gray-700">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                    <span class="truncate"><?php echo e($a->user->email); ?></span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                    <span><?php echo e($a->kontak ?? '-'); ?></span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                                <span class="font-medium"><?php echo e($a->kontak ?? '-'); ?></span>
-                            </div>
-                            <div class="flex items-center gap-3 text-gray-600">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                <span class="line-clamp-1 italic text-xs"><?php echo e($a->tempat_lahir ? $a->tempat_lahir . ', ' . \Carbon\Carbon::parse($a->tgl_lahir)->format('d/m/Y') : '-'); ?></span>
-                            </div>
-                        </div>
 
-                        <div class="border-t border-gray-100 p-3 flex justify-between items-center bg-gray-50/50">
-                            <a href="<?php echo e(route('admin.anggota.edit', $a->id_anggota)); ?>" class="text-blue-600 hover:text-black font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-colors">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                                Edit Data
-                            </a>
-                            <form action="<?php echo e(route('admin.anggota.destroy', $a->id_anggota)); ?>" method="POST" onsubmit="return confirm('Yakin hapus anggota ini?')">
-                                <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-                                <button type="submit" class="text-red-600 hover:text-black font-black text-[10px] uppercase tracking-widest flex items-center gap-2 transition-colors">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    Hapus
-                                </button>
-                            </form>
+                            <div class="border-t-2 border-gray-900 flex divide-x-2 divide-gray-900 bg-gray-50">
+                                <a href="<?php echo e(route('admin.anggota.edit', $a->id_anggota)); ?>" class="flex-1 py-3 text-center text-blue-600 hover:bg-blue-100 font-black text-[10px] uppercase tracking-widest transition-colors">
+                                    EDIT
+                                </a>
+                                <form action="<?php echo e(route('admin.anggota.destroy', $a->id_anggota)); ?>" method="POST" class="flex-1 flex" onsubmit="return confirm('Hapus?')">
+                                    <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
+                                    <button type="submit" class="w-full py-3 text-red-600 hover:bg-red-100 font-black text-[10px] uppercase tracking-widest transition-colors">
+                                        HAPUS
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
             </div>
 
-            <div class="mt-12">
+            <div class="mt-16">
                 <?php echo e($anggota->links()); ?>
 
             </div>
         <?php else: ?>
-            <div class="text-center py-20 bg-white border-2 border-dashed border-gray-300 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)]">
-                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <h3 class="text-xl font-black text-gray-400 uppercase italic">Belum Ada Data Anggota</h3>
+            <div class="text-center py-20 bg-white border-4 border-dashed border-gray-300">
+                <h3 class="text-xl font-black text-gray-400 uppercase italic">Data Kosong</h3>
+                <a href="<?php echo e(route('admin.anggota.index')); ?>" class="text-green-700 underline font-black text-xs">RESET FILTER</a>
             </div>
         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     </div>
 </div>
 <?php $__env->stopSection(); ?>
-
-<?php $__env->startPush('styles'); ?>
-<style>
-    .line-clamp-1 {
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-</style>
-<?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\laragon\www\Sibo\resources\views/admin/anggota/index.blade.php ENDPATH**/ ?>

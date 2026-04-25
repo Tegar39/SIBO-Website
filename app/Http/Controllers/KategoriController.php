@@ -7,9 +7,17 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kategoris = Kategori::paginate(10);
+        $kategoris = Kategori::query()
+            ->when($request->search, function ($query, $search) {
+                $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->paginate(5)
+            ->withQueryString();
+
         return view('admin.kategori.index', compact('kategoris'));
     }
 
