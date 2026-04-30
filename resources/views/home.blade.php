@@ -366,7 +366,63 @@
         if(container) {
             observer.observe(container);
         }
+        
     });
+
+        // FITUR GESER GALERI
+    const scroller = document.querySelector('.animate-infinite-scroll');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    if (scroller) {
+        // Hentikan animasi otomatis saat user mulai menggeser
+        scroller.addEventListener('mousedown', (e) => {
+            isDown = true;
+            scroller.style.animationPlayState = 'paused';
+            startX = e.pageX - scroller.offsetLeft;
+            scrollLeft = scroller.scrollLeft;
+        });
+
+        scroller.addEventListener('mouseleave', () => {
+            isDown = false;
+            scroller.style.animationPlayState = 'running';
+        });
+
+        scroller.addEventListener('mouseup', () => {
+            isDown = false;
+            scroller.style.animationPlayState = 'running';
+        });
+
+        scroller.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - scroller.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            scroller.scrollLeft = scrollLeft - walk;
+        });
+
+        // Untuk touch device (mobile)
+        scroller.addEventListener('touchstart', (e) => {
+            isDown = true;
+            scroller.style.animationPlayState = 'paused';
+            startX = e.touches[0].pageX - scroller.offsetLeft;
+            scrollLeft = scroller.scrollLeft;
+        });
+
+        scroller.addEventListener('touchend', () => {
+            isDown = false;
+            scroller.style.animationPlayState = 'running';
+        });
+
+        scroller.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - scroller.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            scroller.scrollLeft = scrollLeft - walk;
+        });
+    }
 </script>
 @endpush
 
@@ -452,6 +508,39 @@
         animation: infinite-scroll 40s linear infinite;
         width: max-content;
     }
+    .hover\:animate-pause:hover {
+        animation-play-state: paused;
+    }
+        /* Perbaikan untuk container galeri agar bisa digeser */
+    .animate-infinite-scroll {
+        animation: infinite-scroll 40s linear infinite;
+        width: max-content;
+        display: flex;
+        cursor: grab;
+        user-select: none;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+    }
+    
+    .animate-infinite-scroll:active {
+        cursor: grabbing;
+    }
+    
+    /* Sembunyikan scrollbar tapi tetap bisa digeser */
+    .animate-infinite-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .animate-infinite-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    /* Tombol scroll manual bisa ditambahkan opsional */
+    .galeri-wrapper {
+        position: relative;
+    }
+    
     .hover\:animate-pause:hover {
         animation-play-state: paused;
     }
