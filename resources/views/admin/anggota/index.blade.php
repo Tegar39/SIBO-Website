@@ -37,9 +37,9 @@
                 <div class="md:w-64">
                     <select name="pac" onchange="this.form.submit()" 
                         class="w-full bg-slate-100/50 border-none px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer">
-                        <option value="">SEMUA WILAYAH (PAC)</option>
-                        @foreach(['PAC-01', 'PAC-02', 'PAC-03', 'PAC-04', 'PAC-05'] as $pac)
-                            <option value="{{ $pac }}" {{ request('pac') == $pac ? 'selected' : '' }}>WILAYAH {{ $pac }}</option>
+                        <option value="">SEMUA WILAYAH</option>
+                        @foreach(['BADAS','PARE','KANDANGAN','PURWOASRI','PAPAR','KUNJANG','PLEMAHAN','GAMPENGREJO','NGASEM','GURAH','PAGU','PLOSOKLATEN','WATES','KANDAT','KRAS','RINGINREJO','NGADILUWIH','SEMEN','MOJO','BANYAKAN','GROGOL','TAROKAN','KAYENKIDUL','NGANCAR','PUNCU','KEPUNG'] as $pac)
+                            <option value="{{ $pac }}" {{ request('pac') == $pac ? 'selected' : '' }}>PAC {{ $pac }}</option>
                         @endforeach
                     </select>
                 </div>

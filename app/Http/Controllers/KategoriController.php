@@ -15,7 +15,7 @@ class KategoriController extends Controller
                     ->orWhere('deskripsi', 'like', "%{$search}%");
             })
             ->latest()
-            ->paginate(5)
+            ->paginate(10)
             ->withQueryString();
 
         return view('admin.kategori.index', compact('kategoris'));

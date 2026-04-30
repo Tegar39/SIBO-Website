@@ -10,9 +10,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AnggotaController extends Controller
 {
+    // Daftar PAC yang valid
+    const PAC_LIST = [
+        'BADAS', 'PARE', 'KANDANGAN', 'PURWOASRI', 'PAPAR', 'KUNJANG', 'PLEMAHAN', 'GAMPENGREJO',
+        'NGASEM', 'GURAH', 'PAGU', 'PLOSOKLATEN', 'WATES', 'KANDAT', 'KRAS', 'RINGINREJO',
+        'NGADILUWIH', 'SEMEN', 'MOJO', 'BANYAKAN', 'GROGOL', 'TAROKAN', 'KAYENKIDUL', 'NGANCAR',
+        'PUNCU', 'KEPUNG'
+    ];
+
     public function index(Request $request)
     {
-        // Query dengan fitur Search dan Filter PAC
         $anggota = Anggota::with('user')
             ->when($request->search, function ($query, $search) {
                 $query->where('nama_lengkap', 'like', "%{$search}%")
@@ -22,8 +29,8 @@ class AnggotaController extends Controller
                 $query->where('pac', $pac);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(3) // Kembali ke 3 data per halaman sesuai request
-            ->withQueryString(); // Menjaga filter tetap aktif saat navigasi halaman
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.anggota.index', compact('anggota'));
     }
@@ -35,7 +42,6 @@ class AnggotaController extends Controller
 
     public function store(Request $request)
     {
-        // Auto-generate nomor anggota 5 digit
         $lastAnggota = Anggota::orderBy('id_anggota', 'desc')->first();
         if ($lastAnggota) {
             $lastNumber = (int) $lastAnggota->nomor_anggota;
@@ -52,11 +58,10 @@ class AnggotaController extends Controller
             'nomor_anggota' => 'required|string|size:5|unique:anggotas,nomor_anggota',
             'password' => 'required|min:8',
             'kontak' => ['required', 'regex:/^(08|\+62)[0-9]{8,}$/'],
-            'pac' => 'required|in:PAC-01,PAC-02,PAC-03,PAC-04,PAC-05',
+            'pac' => 'required|in:' . implode(',', self::PAC_LIST),
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Create User Account
         $user = User::create([
             'name' => $request->nama_lengkap,
             'email' => $request->email,
@@ -95,11 +100,10 @@ class AnggotaController extends Controller
     public function update(Request $request, $id)
     {
         $anggota = Anggota::findOrFail($id);
-
         $request->validate([
             'nama_lengkap' => 'required|string|max:100',
             'kontak' => ['required', 'regex:/^(08|\+62)[0-9]{8,}$/'],
-            'pac' => 'required|in:PAC-01,PAC-02,PAC-03,PAC-04,PAC-05',
+            'pac' => 'required|in:' . implode(',', self::PAC_LIST),
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -121,18 +125,12 @@ class AnggotaController extends Controller
     public function destroy($id)
     {
         $anggota = Anggota::findOrFail($id);
-        
         if ($anggota->foto_profil) {
             Storage::disk('public')->delete($anggota->foto_profil);
         }
-
         $user = $anggota->user;
         $anggota->delete();
-        
-        if ($user) {
-            $user->delete();
-        }
-
+        if ($user) $user->delete();
         return redirect()->route('admin.anggota.index')->with('success', 'Anggota dan akun user berhasil dihapus');
     }
 }

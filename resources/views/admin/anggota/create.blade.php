@@ -82,10 +82,10 @@
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilih Wilayah (PAC)</label>
                             <select name="pac" class="w-full bg-slate-100/50 border-none rounded-2xl p-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 transition-all" required>
-                                <option value="">- SELECT REGION -</option>
-                                @for($i=1; $i<=5; $i++)
-                                    <option value="PAC-0{{ $i }}">PAC-0{{ $i }}</option>
-                                @endfor
+                                <option value="">- SELECT PAC -</option>
+                                @foreach(['BADAS','PARE','KANDANGAN','PURWOASRI','PAPAR','KUNJANG','PLEMAHAN','GAMPENGREJO','NGASEM','GURAH','PAGU','PLOSOKLATEN','WATES','KANDAT','KRAS','RINGINREJO','NGADILUWIH','SEMEN','MOJO','BANYAKAN','GROGOL','TAROKAN','KAYENKIDUL','NGANCAR','PUNCU','KEPUNG'] as $pac)
+                                    <option value="{{ $pac }}">{{ $pac }}</option>
+                                @endforeach
                             </select>
                         </div>
 
