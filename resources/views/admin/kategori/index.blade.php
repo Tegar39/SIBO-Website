@@ -1,41 +1,47 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12 bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b-4 border-gray-900 pb-6 gap-4">
+        <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-                <h1 class="text-4xl font-black text-gray-900 uppercase italic tracking-tighter">
-                    Database <span class="text-green-700">Kategori</span>
+                <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">
+                    Database <span class="text-emerald-600">Kategori</span>
                 </h1>
-                <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Klasifikasi Kegiatan PC DESBOR</p>
+                <p class="text-slate-500 text-sm mt-1 font-medium flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    Klasifikasi Kegiatan PC DESBOR
+                </p>
             </div>
             <a href="{{ route('admin.kategori.create') }}" 
-               class="bg-gray-900 text-white text-[11px] font-black py-4 px-8 uppercase tracking-widest hover:bg-green-700 transition-all shadow-[6px_6px_0px_0px_rgba(234,179,8,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]">
-                + Tambah Kategori
+               class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-3 px-6 rounded-2xl transition-all shadow-lg shadow-emerald-200 hover:-translate-y-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Tambah Kategori
             </a>
         </div>
 
-        <div class="mb-10 bg-white border-4 border-gray-900 p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <div class="mb-10 bg-white/70 backdrop-blur-md border border-white/50 p-4 rounded-3xl shadow-sm">
             <form action="{{ route('admin.kategori.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1 relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
                     <input type="text" name="search" value="{{ request('search') }}" 
-                        placeholder="CARI NAMA KATEGORI ATAU DESKRIPSI..." 
-                        class="w-full bg-gray-50 border-2 border-gray-900 pl-12 pr-4 py-3 font-black uppercase italic text-xs tracking-widest focus:ring-0 focus:border-green-700 transition-all">
+                        placeholder="Cari nama kategori atau deskripsi..." 
+                        class="w-full bg-slate-100/50 border-none pl-11 pr-4 py-3 rounded-2xl text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 transition-all">
                 </div>
 
                 <div class="flex gap-2">
-                    <button type="submit" class="bg-gray-900 text-white px-8 py-3 font-black uppercase italic text-[10px] hover:bg-green-700 transition-all shadow-[4px_4px_0px_0px_rgba(234,179,8,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]">
+                    <button type="submit" class="bg-slate-800 text-white px-8 py-3 rounded-2xl font-bold text-sm hover:bg-slate-900 transition-all shadow-md shadow-slate-200">
                         FILTER
                     </button>
                     @if(request('search'))
-                        <a href="{{ route('admin.kategori.index') }}" class="bg-red-500 text-white border-2 border-gray-900 px-6 py-3 font-black uppercase italic text-[10px] flex items-center justify-center hover:bg-red-600 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]">
+                        <a href="{{ route('admin.kategori.index') }}" class="bg-rose-50 text-rose-600 px-6 py-3 rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-rose-100 transition-all">
                             RESET
                         </a>
                     @endif
@@ -44,50 +50,59 @@
         </div>
 
         @if(session('success'))
-            <div class="mb-8 bg-green-700 text-yellow-400 p-4 font-black text-xs uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                {{ session('success') }}
+            <div class="bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-4 rounded-2xl mb-8 flex items-center gap-3">
+                <div class="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <span class="text-sm font-bold">{{ session('success') }}</span>
             </div>
         @endif
 
-        <div class="bg-white border-4 border-gray-900 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+        <div class="bg-white/70 backdrop-blur-md rounded-3xl border border-white/50 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y-4 divide-gray-900">
-                    <thead class="bg-gray-900">
-                        <tr>
-                            <th class="px-6 py-5 text-left text-[11px] font-black text-yellow-400 uppercase tracking-[0.2em]">No</th>
-                            <th class="px-6 py-5 text-left text-[11px] font-black text-white uppercase tracking-[0.2em]">Nama Kategori</th>
-                            <th class="px-6 py-5 text-left text-[11px] font-black text-white uppercase tracking-[0.2em]">Deskripsi</th>
-                            <th class="px-6 py-5 text-center text-[11px] font-black text-white uppercase tracking-[0.2em]">Aksi</th>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800/5 text-slate-600 border-b border-slate-100 text-xs font-black uppercase tracking-wider">
+                            <th class="px-6 py-5 text-center">No</th>
+                            <th class="px-6 py-5">Nama Kategori</th>
+                            <th class="px-6 py-5">Deskripsi</th>
+                            <th class="px-6 py-5 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y-2 divide-gray-900 bg-white">
+                    <tbody class="divide-y divide-slate-100">
                         @forelse($kategoris as $key => $item)
-                        <tr class="hover:bg-green-50 transition-colors group">
-                            <td class="px-6 py-4 text-sm font-black text-gray-400 group-hover:text-gray-900">
-                                {{ $kategoris->firstItem() + $key }}
+                        <tr class="hover:bg-white/50 transition-colors group">
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-xs font-bold text-slate-400 group-hover:text-emerald-600 transition-colors">
+                                    {{ $kategoris->firstItem() + $key }}
+                                </span>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-black text-gray-900 uppercase italic tracking-tight group-hover:text-green-700 transition-colors">
+                            <td class="px-6 py-4 font-bold text-slate-800">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                                     {{ $item->nama }}
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <p class="text-[11px] text-gray-500 font-bold italic line-clamp-1">
+                                <p class="text-xs text-slate-500 font-medium line-clamp-1 italic">
                                     {{ $item->deskripsi ?? '--- Tidak ada deskripsi ---' }}
                                 </p>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center items-center gap-4">
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2">
                                     <a href="{{ route('admin.kategori.edit', $item->id_kategori) }}" 
-                                       class="text-[10px] font-black uppercase text-blue-600 hover:underline tracking-tighter">
-                                        Edit
+                                       class="p-2 bg-white border border-slate-200 rounded-xl text-blue-600 hover:bg-blue-50 transition-all shadow-sm"
+                                       title="Edit Kategori">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
                                     </a>
-                                    <div class="w-[2px] h-4 bg-gray-300"></div>
                                     <form action="{{ route('admin.kategori.destroy', $item->id_kategori) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="text-[10px] font-black uppercase text-red-600 hover:underline tracking-tighter">
-                                            Hapus
+                                        <button type="submit" class="p-2 bg-white border border-slate-200 rounded-xl text-rose-600 hover:bg-rose-50 transition-all shadow-sm" title="Hapus">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
                                         </button>
                                     </form>
                                 </div>
@@ -96,7 +111,12 @@
                         @empty
                         <tr>
                             <td colspan="4" class="px-6 py-20 text-center">
-                                <p class="text-sm font-black text-gray-300 uppercase italic tracking-widest">Kategori Tidak Ditemukan</p>
+                                <div class="flex flex-col items-center justify-center text-slate-300">
+                                    <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                    </svg>
+                                    <p class="text-sm font-bold uppercase tracking-widest text-slate-400">Kategori Tidak Ditemukan</p>
+                                </div>
                             </td>
                         </tr>
                         @endforelse

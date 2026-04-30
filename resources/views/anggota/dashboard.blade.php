@@ -1,130 +1,141 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12 bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 border-b-4 border-gray-900 pb-6 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 gap-6 border-b border-slate-200">
             <div>
-                <h1 class="text-4xl font-black text-gray-900 uppercase italic tracking-tighter">
-                    Halo, <span class="text-green-700">{{ Auth::user()->name }}!</span>
+                <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight leading-none uppercase">
+                    Halo, <span class="text-emerald-600">{{ Auth::user()->name }}!</span>
                 </h1>
-                <p class="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Selamat Datang di Portal Anggota SIBO</p>
+                <p class="text-slate-400 text-[11px] font-bold uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
+                    <span class="w-8 h-[2px] bg-emerald-500"></span>
+                    Portal Anggota SIBO
+                </p>
             </div>
-            <a href="{{ route('anggota.profil') }}" class="bg-yellow-400 border-2 border-gray-900 text-gray-900 px-6 py-3 text-[11px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2">
+            <a href="{{ route('anggota.profil') }}" class="group bg-white hover:bg-emerald-600 border border-slate-100 text-slate-700 hover:text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:shadow-xl hover:shadow-emerald-100 flex items-center gap-3">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                Profil Saya
+                Edit Profil Saya
             </a>
         </div>
 
         @if(Auth::user()->anggota)
-            <div class="bg-white border-4 border-gray-900 shadow-[10px_10px_0px_0px_rgba(21,128,61,1)] mb-12 flex flex-col md:flex-row">
-                <div class="bg-green-700 md:w-1/3 p-8 flex flex-col items-center justify-center text-center border-b-4 md:border-b-0 md:border-r-4 border-gray-900">
-                    <div class="w-32 h-32 bg-yellow-400 border-4 border-gray-900 rounded-none mb-4 overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
-                        @if(Auth::user()->anggota->foto_profil && Storage::disk('public')->exists(Auth::user()->anggota->foto_profil))
-                            {{-- Tampilkan Foto dari Database --}}
-                            <img src="{{ Storage::url(Auth::user()->anggota->foto_profil) }}" 
-                                alt="Foto {{ Auth::user()->name }}" 
-                                class="w-full h-full object-cover">
-                        @else
-                            {{-- Fallback: Icon Default jika foto tidak ada --}}
-                            <svg class="w-16 h-16 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        @endif
+            <div class="bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden mb-12 flex flex-col md:flex-row">
+                <div class="bg-emerald-600 md:w-1/3 p-10 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    
+                    <div class="w-36 h-36 bg-white/20 p-2 rounded-[2rem] mb-6 backdrop-blur-sm relative z-10">
+                        <div class="w-full h-full bg-emerald-100 rounded-[1.8rem] overflow-hidden flex items-center justify-center border-2 border-white shadow-inner">
+                            @if(Auth::user()->anggota->foto_profil && Storage::disk('public')->exists(Auth::user()->anggota->foto_profil))
+                                <img src="{{ Storage::url(Auth::user()->anggota->foto_profil) }}" class="w-full h-full object-cover">
+                            @else
+                                <svg class="w-16 h-16 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            @endif
+                        </div>
                     </div>
-                    <h2 class="text-white font-black uppercase tracking-tighter text-xl">{{ Auth::user()->anggota->nama_lengkap }}</h2>
-                    <span class="bg-black text-yellow-400 text-[10px] font-black px-3 py-1 mt-2 uppercase tracking-[0.2em]">Anggota Aktif</span>
+                    <h2 class="text-white font-extrabold uppercase tracking-tight text-2xl relative z-10">{{ Auth::user()->anggota->nama_lengkap }}</h2>
+                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-4 py-1.5 mt-4 rounded-full uppercase tracking-widest relative z-10 border border-white/30">Anggota Aktif</span>
                 </div>
                 
-                <div class="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="border-b-2 border-gray-100 pb-2">
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Nomor Anggota</p>
-                        <p class="text-lg font-black text-gray-900">{{ Auth::user()->anggota->nomor_anggota }}</p>
+                <div class="flex-1 p-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 bg-white/30">
+                    @php $fields = [
+                        ['label' => 'Nomor Anggota', 'val' => Auth::user()->anggota->nomor_anggota],
+                        ['label' => 'Wilayah (PAC)', 'val' => Auth::user()->anggota->pac ?? '-'],
+                        ['label' => 'WhatsApp', 'val' => Auth::user()->anggota->kontak ?? '-'],
+                        ['label' => 'Email Terdaftar', 'val' => Auth::user()->email]
+                    ]; @endphp
+
+                    @foreach($fields as $field)
+                    <div class="relative group">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-emerald-500 transition-colors">{{ $field['label'] }}</p>
+                        <p class="text-lg font-bold text-slate-800">{{ $field['val'] }}</p>
+                        <div class="w-full h-[1px] bg-slate-100 mt-2"></div>
                     </div>
-                    <div class="border-b-2 border-gray-100 pb-2">
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Wilayah (PAC)</p>
-                        <p class="text-lg font-black text-gray-900 uppercase italic">{{ Auth::user()->anggota->pac ?? '-' }}</p>
-                    </div>
-                    <div class="border-b-2 border-gray-100 pb-2">
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">WhatsApp</p>
-                        <p class="text-lg font-black text-gray-900">{{ Auth::user()->anggota->kontak ?? '-' }}</p>
-                    </div>
-                    <div class="border-b-2 border-gray-100 pb-2">
-                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Email Terdaftar</p>
-                        <p class="text-lg font-black text-gray-900">{{ Auth::user()->email }}</p>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         @else
-            <div class="bg-red-50 border-4 border-gray-900 p-6 mb-12 shadow-[8px_8px_0px_0px_rgba(185,28,28,1)]">
-                <p class="font-black uppercase text-red-700 italic">⚠️ Data Anggota Belum Lengkap. Segera hubungi admin untuk validasi data!</p>
+            <div class="bg-rose-50 border border-rose-100 p-8 rounded-[2rem] mb-12 flex items-center gap-6 shadow-sm">
+                <div class="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-white shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <div>
+                    <p class="font-black uppercase text-rose-700 tracking-wider">Lengkapi Data Anda</p>
+                    <p class="text-rose-500 text-sm font-medium mt-1 uppercase italic">Segera hubungi admin untuk validasi data agar dapat mengikuti kegiatan.</p>
+                </div>
             </div>
         @endif
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="md:col-span-2 bg-white border-2 border-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col">
-                <div class="p-4 bg-gray-900 text-white font-black uppercase text-xs italic tracking-widest">
-                    Ringkasan Aktivitas
+            <div class="md:col-span-2 bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden flex flex-col">
+                <div class="p-6 bg-slate-800 text-white font-black uppercase text-[10px] tracking-[0.3em] px-10">
+                    Statistik Aktivitas
                 </div>
-                <div class="p-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                    <div class="p-4 border-2 border-gray-900 bg-gray-50">
-                        <p class="text-[9px] font-black text-gray-400 uppercase">Pendaftaran</p>
-                        <p class="text-3xl font-black text-gray-900">{{ $jumlahPendaftaran }}</p>
+                <div class="p-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    @php $stats = [
+                        ['label' => 'Pendaftaran', 'val' => $jumlahPendaftaran, 'bg' => 'bg-slate-50', 'text' => 'text-slate-800'],
+                        ['label' => 'Diikuti', 'val' => $jumlahDiikuti, 'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600'],
+                        ['label' => 'Selesai', 'val' => $jumlahSelesai, 'bg' => 'bg-slate-800', 'text' => 'text-white']
+                    ]; @endphp
+                    
+                    @foreach($stats as $s)
+                    <div class="{{ $s['bg'] }} p-6 rounded-[2rem] flex flex-col items-center justify-center shadow-sm">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ $s['label'] }}</p>
+                        <p class="text-4xl font-black {{ $s['text'] }}">{{ $s['val'] }}</p>
                     </div>
-                    <div class="p-4 border-2 border-gray-900 bg-green-50">
-                        <p class="text-[9px] font-black text-gray-400 uppercase">Diikuti</p>
-                        <p class="text-3xl font-black text-green-700">{{ $jumlahDiikuti }}</p>
-                    </div>
-                    <div class="p-4 border-2 border-gray-900 bg-yellow-50">
-                        <p class="text-[9px] font-black text-gray-400 uppercase">Selesai</p>
-                        <p class="text-3xl font-black text-yellow-600">{{ $jumlahSelesai }}</p>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
-            <div class="flex flex-col gap-4">
-                <a href="{{ route('kegiatan.publik.index') }}" class="flex-1 bg-green-700 border-2 border-gray-900 text-white p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex flex-col justify-center items-center group">
-                    <span class="text-xl font-black uppercase italic tracking-tighter group-hover:underline">Cari Kegiatan</span>
-                    <span class="text-[10px] font-bold uppercase opacity-70">Lihat agenda terbaru</span>
+            <div class="flex flex-col gap-6">
+                <a href="{{ route('kegiatan.publik.index') }}" class="group flex-1 bg-emerald-600 p-8 rounded-[2.5rem] text-white shadow-lg shadow-emerald-100 hover:shadow-emerald-200 transition-all flex flex-col justify-center items-center text-center">
+                    <span class="text-2xl font-extrabold uppercase tracking-tight group-hover:scale-105 transition-transform">Cari Kegiatan</span>
+                    <span class="text-[10px] font-bold uppercase opacity-60 tracking-[0.2em] mt-2 italic">— Lihat agenda terbaru</span>
                 </a>
-                <a href="{{ route('anggota.riwayat') }}" class="flex-1 bg-white border-2 border-gray-900 text-gray-900 p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex flex-col justify-center items-center group">
-                    <span class="text-xl font-black uppercase italic tracking-tighter group-hover:underline text-gray-700">Riwayat Saya</span>
-                    <span class="text-[10px] font-bold uppercase opacity-50 text-gray-500">Cek status pendaftaran</span>
+                <a href="{{ route('anggota.riwayat') }}" class="group flex-1 bg-white p-8 rounded-[2.5rem] text-slate-800 border border-slate-100 shadow-xl hover:shadow-emerald-100 transition-all flex flex-col justify-center items-center text-center">
+                    <span class="text-2xl font-extrabold uppercase tracking-tight group-hover:scale-105 transition-transform">Riwayat Saya</span>
+                    <span class="text-[10px] font-bold uppercase text-slate-400 tracking-[0.2em] mt-2 italic">— Cek status pendaftaran</span>
                 </a>
             </div>
         </div>
 
-        <div class="mt-12 bg-white border-2 border-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div class="p-4 border-b-2 border-gray-900 bg-yellow-400 font-black uppercase text-xs italic tracking-widest">
-                Agenda Mendatang
+        <div class="mt-12 bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden">
+            <div class="p-6 border-b border-white bg-white/30 flex items-center justify-between px-10">
+                <span class="font-black uppercase text-[10px] tracking-[0.3em] text-slate-800">Agenda Mendatang</span>
+                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
             </div>
             
-            @if($agendaMendatang->count() > 0)
-                <div class="divide-y-2 divide-gray-900">
-                    @foreach($agendaMendatang as $item)
-                        <div class="p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                            <div>
-                                <h4 class="font-black text-lg uppercase italic text-gray-900">{{ $item->kegiatan->judul }}</h4>
-                                <p class="text-xs font-bold text-green-700 uppercase">{{ \Carbon\Carbon::parse($item->kegiatan->tanggal)->translatedFormat('d F Y') }}</p>
-                            </div>
-                            <span class="bg-black text-white text-[10px] font-black px-4 py-1 uppercase italic shadow-[3px_3px_0px_0px_rgba(21,128,61,1)]">
-                                {{ $item->status_pendaftaran }}
-                            </span>
+            <div class="p-4">
+                @forelse($agendaMendatang as $item)
+                    <div class="p-6 m-2 bg-white border border-slate-50 rounded-3xl flex flex-col md:flex-row justify-between items-center hover:shadow-md transition-all group">
+                        <div class="text-center md:text-left mb-4 md:mb-0">
+                            <h4 class="font-extrabold text-lg text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors">{{ $item->kegiatan->judul }}</h4>
+                            <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-1">{{ \Carbon\Carbon::parse($item->kegiatan->tanggal)->translatedFormat('d F Y') }}</p>
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="p-12 text-center">
-                    <div class="inline-block p-4 bg-gray-100 border-2 border-dashed border-gray-400 mb-4">
-                        <svg class="w-12 h-12 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <div class="px-6 py-2.5 bg-slate-50 rounded-full border border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                            {{ $item->status_pendaftaran }}
+                        </div>
                     </div>
-                    <p class="text-gray-400 font-black uppercase italic tracking-widest">Belum ada kegiatan yang kamu ikuti</p>
-                    <p class="text-[10px] text-gray-400 uppercase mt-1">Ayo daftar kegiatan budaya & olahraga sekarang!</p>
-                </div>
-            @endif
+                @empty
+                    <div class="py-20 text-center">
+                        <div class="inline-flex p-6 bg-slate-50 rounded-full mb-6">
+                            <svg class="w-12 h-12 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <p class="text-slate-300 font-bold uppercase italic tracking-widest text-xs">Belum ada kegiatan yang kamu ikuti</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
 
     </div>
 </div>
+
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+</style>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;  // <--- TAMBAHKAN INI
 
 class Kegiatan extends Model
 {
@@ -45,5 +46,46 @@ class Kegiatan extends Model
     public function getJumlahPesertaAttribute()
     {
         return $this->pendaftarans()->where('status', 'disetujui')->count();
+    }
+
+    // Scope untuk kegiatan yang bisa didaftar
+    public function scopeBisaDidaftar($query)
+    {
+        return $query->where('status', 'aktif')
+            ->where(function($q) {
+                $q->whereDate('tanggal', '>', now())
+                ->orWhere(function($sub) {
+                    $sub->whereDate('tanggal', now()->toDateString())
+                        ->whereTime('waktu', '>', now()->format('H:i:s'));
+                });
+            });
+    }
+
+    // Cek apakah kegiatan masih bisa didaftar
+    public function getBisaDaftarAttribute()
+    {
+        if ($this->status !== 'aktif') return false;
+        
+        $now = now('Asia/Jakarta');
+        $tanggalKegiatan = Carbon::parse($this->tanggal);
+        
+        if ($tanggalKegiatan->isToday()) {
+            $waktuKegiatan = Carbon::parse($this->waktu ?? '23:59:59');
+            return $now->lt($waktuKegiatan);
+        }
+        
+        return $tanggalKegiatan->isFuture();
+    }
+
+    // Cek apakah sudah bisa diabsen
+    public function getBisaAbsenAttribute()
+    {
+        if ($this->status !== 'selesai') return false;
+        
+        $now = now('Asia/Jakarta');
+        $waktuKegiatan = Carbon::parse($this->tanggal . ' ' . ($this->waktu ?? '00:00:00'), 'Asia/Jakarta');
+        $batasAbsen = $waktuKegiatan->copy()->addHour();
+        
+        return $now->gt($batasAbsen);
     }
 }

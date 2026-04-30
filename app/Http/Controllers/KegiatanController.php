@@ -7,9 +7,13 @@ use App\Models\Kategori;
 use App\Models\Pamflet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class KegiatanController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
         $kategoris = Kategori::all();
@@ -23,18 +27,24 @@ class KegiatanController extends Controller
                 $query->where('id_kategori', $kategori);
             })
             ->latest()
-            ->paginate(3)
+            ->paginate(10)
             ->withQueryString();
 
         return view('admin.kegiatan.index', compact('kegiatans', 'kategoris'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $kategoris = Kategori::all();
         return view('admin.kegiatan.create', compact('kategoris'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,7 +53,7 @@ class KegiatanController extends Controller
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'waktu' => 'nullable',
-            'lokasi' => 'nullable|string',
+            'lokasi' => 'nullable|string|max:255',
             'kuota' => 'nullable|integer|min:0',
             'status' => 'required|in:aktif,selesai,batal',
             'pamflet' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -51,10 +61,6 @@ class KegiatanController extends Controller
 
         $data = $request->except('pamflet');
         $data['created_by'] = auth()->id();
-
-        if (!$data['created_by']) {
-            return back()->withErrors('Anda harus login sebagai admin.')->withInput();
-        }
 
         $kegiatan = Kegiatan::create($data);
 
@@ -69,9 +75,22 @@ class KegiatanController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.kegiatan.index')->with('success', 'Kegiatan berhasil ditambahkan');
+        return redirect()->route('admin.kegiatan.index')
+            ->with('success', 'Kegiatan berhasil ditambahkan');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        $kegiatan = Kegiatan::with('kategori', 'pamflet', 'creator')->findOrFail($id);
+        return view('admin.kegiatan.show', compact('kegiatan'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit($id)
     {
         $kegiatan = Kegiatan::with('pamflet')->findOrFail($id);
@@ -79,16 +98,20 @@ class KegiatanController extends Controller
         return view('admin.kegiatan.edit', compact('kegiatan', 'kategoris'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, $id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
+        
         $request->validate([
             'id_kategori' => 'required|exists:kategoris,id_kategori',
             'judul' => 'required|string|max:200',
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'waktu' => 'nullable',
-            'lokasi' => 'nullable|string',
+            'lokasi' => 'nullable|string|max:255',
             'kuota' => 'nullable|integer|min:0',
             'status' => 'required|in:aktif,selesai,batal',
             'pamflet' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -99,10 +122,13 @@ class KegiatanController extends Controller
         ]));
 
         if ($request->hasFile('pamflet')) {
+            // Hapus pamflet lama
             if ($kegiatan->pamflet) {
                 Storage::disk('public')->delete($kegiatan->pamflet->path_file);
                 $kegiatan->pamflet->delete();
             }
+            
+            // Upload pamflet baru
             $file = $request->file('pamflet');
             $path = $file->store('pamflets', 'public');
             Pamflet::create([
@@ -113,17 +139,62 @@ class KegiatanController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.kegiatan.index')->with('success', 'Kegiatan berhasil diupdate');
+        return redirect()->route('admin.kegiatan.index')
+            ->with('success', 'Kegiatan berhasil diupdate');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy($id)
     {
         $kegiatan = Kegiatan::findOrFail($id);
+        
+        // Hapus pamflet jika ada
         if ($kegiatan->pamflet) {
             Storage::disk('public')->delete($kegiatan->pamflet->path_file);
             $kegiatan->pamflet->delete();
         }
+        
+        // Hapus kegiatan
         $kegiatan->delete();
-        return redirect()->route('admin.kegiatan.index')->with('success', 'Kegiatan berhasil dihapus');
+        
+        return redirect()->route('admin.kegiatan.index')
+            ->with('success', 'Kegiatan berhasil dihapus');
+    }
+
+    /**
+     * Update status kegiatan secara otomatis (manual trigger)
+     */
+    public function updateStatusOtomatis()
+    {
+        $now = Carbon::now('Asia/Jakarta');
+        
+        // Tutup kegiatan H-1
+        $tomorrow = $now->copy()->addDay();
+        $updatedTutup = Kegiatan::where('status', 'aktif')
+            ->whereDate('tanggal', $tomorrow->toDateString())
+            ->update(['status' => 'tutup']);
+        
+        // Selesai kegiatan 1 jam setelah jadwal
+        $kegiatanSelesai = Kegiatan::whereIn('status', ['aktif', 'tutup'])->get();
+        $updatedSelesai = 0;
+        
+        foreach ($kegiatanSelesai as $kegiatan) {
+            $waktuKegiatan = Carbon::parse($kegiatan->tanggal . ' ' . ($kegiatan->waktu ?? '00:00:00'), 'Asia/Jakarta');
+            $batasSelesai = $waktuKegiatan->copy()->addHour();
+            
+            if ($now->gt($batasSelesai)) {
+                $kegiatan->update(['status' => 'selesai']);
+                $updatedSelesai++;
+            }
+        }
+        
+        $message = "Status kegiatan diperbarui: ";
+        $message .= "$updatedTutup kegiatan ditutup, ";
+        $message .= "$updatedSelesai kegiatan selesai.";
+        
+        return redirect()->route('admin.kegiatan.index')
+            ->with('success', $message);
     }
 }

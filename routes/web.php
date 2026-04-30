@@ -60,16 +60,25 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 |--------------------------------------------------------------------------
 | Anggota Group
 |--------------------------------------------------------------------------
+/*
+|--------------------------------------------------------------------------
+| Anggota Group
+|--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\DashboardAnggotaController::class, 'index'])->name('dashboard');
     Route::post('/daftar/{id_kegiatan}', [PendaftaranController::class, 'daftar'])->name('daftar');
     Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
     
-    // Perbaikan: hapus 'anggota.' dari nama route
+    // Profil - 2 halaman terpisah
     Route::get('/profil', [AnggotaProfilController::class, 'index'])->name('profil');
     Route::put('/profil/update', [AnggotaProfilController::class, 'update'])->name('profil.update');
-    Route::put('/profil/update-password', [AnggotaProfilController::class, 'updatePassword'])->name('profil.update-password');
+    
+    Route::get('/keamanan', [AnggotaProfilController::class, 'keamanan'])->name('keamanan');
+    Route::put('/keamanan/update-password', [AnggotaProfilController::class, 'updatePassword'])->name('keamanan.update-password');
+    
+    // Atau tambahkan ini jika ingin menggunakan nama route yang lama
+    // Route::put('/profil/update-password', [AnggotaProfilController::class, 'updatePassword'])->name('profil.update-password');
 });
 
 require __DIR__.'/auth.php';

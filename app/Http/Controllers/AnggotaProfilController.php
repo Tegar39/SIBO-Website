@@ -11,13 +11,21 @@ use App\Models\User;
 
 class AnggotaProfilController extends Controller
 {
+    // Halaman Profil (Edit Data Personal)
     public function index()
     {
         $user = Auth::user();
         $anggota = $user->anggota; // relasi di model User
-        return view('anggota.profil', compact('user', 'anggota'));
+        return view('anggota.profil.index', compact('user', 'anggota'));
     }
 
+    // Halaman Keamanan (Ganti Password)
+    public function keamanan()
+    {
+        return view('anggota.profil.keamanan');
+    }
+
+    // Update Profil
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -66,6 +74,7 @@ class AnggotaProfilController extends Controller
         return redirect()->route('anggota.profil')->with('success', 'Profil berhasil diperbarui.');
     }
 
+    // Update Password (dari halaman keamanan)
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -86,6 +95,7 @@ class AnggotaProfilController extends Controller
 
         $user->update(['password' => Hash::make($request->new_password)]);
 
-        return redirect()->route('anggota.profil')->with('success', 'Password berhasil diubah.');
+        // Redirect ke halaman keamanan (bukan profil)
+        return redirect()->route('anggota.keamanan')->with('success', 'Password berhasil diubah.');
     }
 }
