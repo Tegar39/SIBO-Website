@@ -5,12 +5,14 @@ use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\KegiatanPublikController;
+use App\Http\Controllers\GaleriPublikController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\AnggotaProfilController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardPacController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/kegiatan', [KegiatanPublikController::class, 'index'])->name('kegiatan.publik.index');
 Route::get('/kegiatan/{id}', [KegiatanPublikController::class, 'show'])->name('kegiatan.publik.show');
+Route::get('/galeri', [GaleriPublikController::class, 'index'])->name('galeri.publik.index');
+Route::get('/galeri/{id}', [GaleriPublikController::class, 'show'])->name('galeri.publik.show');
+Route::middleware(['auth', 'role.pac'])->prefix('pac')->name('pac.')->group(function () {
+Route::get('/dashboard', [DashboardPacController::class, 'index'])->name('dashboard');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -43,11 +50,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('anggota', AnggotaController::class);
     Route::resource('kategori', KategoriController::class);
     Route::resource('kegiatan', KegiatanController::class);
+    // Pendaftaran
     Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
     Route::get('/pendaftaran/{id_kegiatan}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
+    Route::get('/pendaftaran/{id_kegiatan}/tambah', [PendaftaranController::class, 'createByAdmin'])->name('pendaftaran.create');
+    Route::post('/pendaftaran/{id_kegiatan}', [PendaftaranController::class, 'storeByAdmin'])->name('pendaftaran.store');
     Route::put('/pendaftaran/{id_daftar}', [PendaftaranController::class, 'updateStatus'])->name('pendaftaran.update');
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/{id_kegiatan}/create', [AbsensiController::class, 'create'])->name('absensi.create');
+    Route::get('/absensi/{id_kegiatan}', [AbsensiController::class, 'show'])->name('admin.absensi.show');
+    Route::get('/absensi/{id_kegiatan}/export', [AbsensiController::class, 'export'])->name('admin.absensi.export');
     Route::post('/absensi/{id_kegiatan}', [AbsensiController::class, 'store'])->name('absensi.store');
     Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri.index');
     Route::get('/galeri/{id_kegiatan}', [GaleriController::class, 'show'])->name('galeri.show');

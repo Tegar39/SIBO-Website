@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;  // <--- TAMBAHKAN INI
+use Carbon\Carbon;
 
 class Kegiatan extends Model
 {
@@ -15,6 +15,12 @@ class Kegiatan extends Model
     protected $fillable = [
         'id_kategori', 'judul', 'deskripsi', 'tanggal', 'waktu',
         'lokasi', 'kuota', 'status', 'created_by'
+    ];
+
+    // TAMBAHKAN CASTS INI
+    protected $casts = [
+        'tanggal' => 'date',
+        'waktu' => 'datetime',
     ];
 
     public function kategori()
@@ -42,13 +48,11 @@ class Kegiatan extends Model
         return $this->hasMany(Galeri::class, 'id_kegiatan');
     }
 
-    // Hitung jumlah peserta yang disetujui
     public function getJumlahPesertaAttribute()
     {
         return $this->pendaftarans()->where('status', 'disetujui')->count();
     }
 
-    // Scope untuk kegiatan yang bisa didaftar
     public function scopeBisaDidaftar($query)
     {
         return $query->where('status', 'aktif')
@@ -61,29 +65,27 @@ class Kegiatan extends Model
             });
     }
 
-    // Cek apakah kegiatan masih bisa didaftar
     public function getBisaDaftarAttribute()
     {
         if ($this->status !== 'aktif') return false;
         
         $now = now('Asia/Jakarta');
-        $tanggalKegiatan = Carbon::parse($this->tanggal);
+        $tanggalKegiatan = $this->tanggal; // sudah jadi Carbon karena casting
         
         if ($tanggalKegiatan->isToday()) {
-            $waktuKegiatan = Carbon::parse($this->waktu ?? '23:59:59');
+            $waktuKegiatan = $this->waktu ?? now()->setTime(23,59,59);
             return $now->lt($waktuKegiatan);
         }
         
         return $tanggalKegiatan->isFuture();
     }
 
-    // Cek apakah sudah bisa diabsen
     public function getBisaAbsenAttribute()
     {
         if ($this->status !== 'selesai') return false;
         
         $now = now('Asia/Jakarta');
-        $waktuKegiatan = Carbon::parse($this->tanggal . ' ' . ($this->waktu ?? '00:00:00'), 'Asia/Jakarta');
+        $waktuKegiatan = Carbon::parse($this->tanggal->format('Y-m-d') . ' ' . ($this->waktu ? $this->waktu->format('H:i:s') : '00:00:00'), 'Asia/Jakarta');
         $batasAbsen = $waktuKegiatan->copy()->addHour();
         
         return $now->gt($batasAbsen);

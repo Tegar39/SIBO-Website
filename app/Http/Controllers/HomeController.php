@@ -20,10 +20,13 @@ class HomeController extends Controller
             ->get();
         
         // Ambil foto galeri unggulan (is_unggulan = 1) atau foto terbaru
-        $galeri = Galeri::where('is_unggulan', 1)
-            ->orWhere('is_unggulan', 0)
-            ->latest()
-            ->take(8)
+        $galeri = Galeri::with('kegiatan')
+            ->whereHas('kegiatan', function($q) {
+                $q->where('status', 'selesai');
+            })
+            ->whereNotNull('path_file')
+            ->orderBy('created_at', 'desc')
+            ->take(12) // ambil sejumlah untuk carousel
             ->get();
 
         return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri', 'totalPac'));

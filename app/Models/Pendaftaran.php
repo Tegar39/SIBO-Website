@@ -11,7 +11,10 @@ class Pendaftaran extends Model
 
     protected $table = 'pendaftarans';
     protected $primaryKey = 'id_daftar';
-    protected $fillable = ['id_anggota', 'id_kegiatan', 'tgl_daftar', 'status', 'keterangan'];
+    protected $fillable = [
+        'id_kegiatan', 'id_anggota', 'nama_peserta', 'kontak_peserta',
+        'tgl_daftar', 'status', 'keterangan', 'created_by'
+    ];
 
     public function anggota()
     {
@@ -20,11 +23,34 @@ class Pendaftaran extends Model
 
     public function kegiatan()
     {
-        return $this->belongsTo(Kegiatan::class, 'id_kegiatan', 'id_kegiatan');
+        return $this->belongsTo(Kegiatan::class, 'id_kegiatan');
     }
 
     public function absensi()
     {
-        return $this->hasOne(Absensi::class, 'id_daftar', 'id_daftar');
+        return $this->hasOne(Absensi::class, 'id_daftar');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Nama peserta (prioritas: nama_peserta, lalu nama anggota)
+    public function getDisplayNameAttribute()
+    {
+        if ($this->nama_peserta) {
+            return $this->nama_peserta;
+        }
+        return $this->anggota?->nama_lengkap ?? 'Peserta Tanpa Akun';
+    }
+
+    // Kontak peserta
+    public function getDisplayContactAttribute()
+    {
+        if ($this->kontak_peserta) {
+            return $this->kontak_peserta;
+        }
+        return $this->anggota?->kontak ?? '-';
     }
 }

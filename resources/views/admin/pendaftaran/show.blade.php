@@ -15,10 +15,17 @@
                     Daftar pendaftar yang masuk ke sistem
                 </p>
             </div>
-            <a href="{{ route('admin.pendaftaran.index') }}" class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Kembali
-            </a>
+            <div class="flex gap-3">
+                <a href="{{ route('admin.pendaftaran.create', $kegiatan->id_kegiatan) }}" 
+                   class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-md shadow-emerald-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Tambah Peserta
+                </a>
+                <a href="{{ route('admin.pendaftaran.index') }}" class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Kembali
+                </a>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
@@ -30,12 +37,26 @@
                 <p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider mb-1">Status Kegiatan</p>
                 <p class="text-2xl font-black text-white uppercase">{{ $kegiatan->status }}</p>
             </div>
+            <div class="bg-white/70 backdrop-blur-md border border-white/50 p-6 rounded-3xl shadow-sm">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Total Pendaftar</p>
+                <p class="text-2xl font-black text-slate-800">{{ $pendaftarans->total() }}</p>
+            </div>
+            <div class="bg-white/70 backdrop-blur-md border border-white/50 p-6 rounded-3xl shadow-sm">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Disetujui</p>
+                <p class="text-2xl font-black text-emerald-600">{{ $pendaftarans->where('status','disetujui')->count() }}</p>
+            </div>
         </div>
 
         @if(session('success'))
             <div class="mb-8 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-4 rounded-2xl font-bold text-sm shadow-sm animate-fade-in">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="mb-8 flex items-center gap-3 bg-rose-50 border border-rose-100 text-rose-700 px-6 py-4 rounded-2xl font-bold text-sm shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                {{ session('error') }}
             </div>
         @endif
 
@@ -45,24 +66,30 @@
                     <thead class="bg-slate-50/50 border-b border-white">
                         <tr>
                             <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">No</th>
-                            <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">Informasi Anggota</th>
-                            <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">PAC</th>
+                            <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">Nama Peserta</th>
+                            <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">Kontak</th>
                             <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">Status</th>
-                            <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">Aksi Manajemen</th>
+                            <th class="px-6 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/60">
-                        @foreach($pendaftarans as $key => $p)
+                        @forelse($pendaftarans as $key => $p)
                         <tr class="hover:bg-slate-50/50 transition-colors group">
                             <td class="px-6 py-5 text-xs font-bold text-slate-400 text-center">
                                 {{ $pendaftarans->firstItem() + $key }}
                             </td>
                             <td class="px-6 py-5">
-                                <div class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors uppercase">{{ $p->anggota->nama_lengkap }}</div>
-                                <div class="text-[11px] font-medium text-slate-400">{{ $p->anggota->nomor_anggota }}</div>
+                                <div class="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">
+                                    {{ $p->display_name }}
+                                </div>
+                                @if($p->nama_peserta)
+                                    <div class="text-[10px] text-slate-400 italic mt-0.5">(Didaftarkan oleh akun)</div>
+                                @elseif($p->anggota)
+                                    <div class="text-[10px] text-slate-400 mt-0.5">Anggota: {{ $p->anggota->nomor_anggota }}</div>
+                                @endif
                             </td>
-                            <td class="px-6 py-5">
-                                <span class="text-xs font-bold text-slate-600 uppercase">{{ $p->anggota->pac ?? '-' }}</span>
+                            <td class="px-6 py-5 text-sm font-medium text-slate-600">
+                                {{ $p->display_contact }}
                             </td>
                             <td class="px-6 py-5 text-center">
                                 <span class="inline-block px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider
@@ -77,10 +104,10 @@
                                 <form action="{{ route('admin.pendaftaran.update', $p->id_daftar) }}" method="POST" class="flex items-center gap-2 justify-center">
                                     @csrf @method('PUT')
                                     <select name="status" class="text-[11px] font-bold bg-white/50 border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 rounded-xl py-2 px-3 uppercase outline-none transition-all">
-                                        <option value="pending" {{ $p->status=='pending'?'selected':'' }}>Pending</option>
-                                        <option value="disetujui" {{ $p->status=='disetujui'?'selected':'' }}>Setujui</option>
-                                        <option value="ditolak" {{ $p->status=='ditolak'?'selected':'' }}>Tolak</option>
-                                        <option value="batal" {{ $p->status=='batal'?'selected':'' }}>Batal</option>
+                                        <option value="pending" {{ $p->status=='pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="disetujui" {{ $p->status=='disetujui' ? 'selected' : '' }}>Setujui</option>
+                                        <option value="ditolak" {{ $p->status=='ditolak' ? 'selected' : '' }}>Tolak</option>
+                                        <option value="batal" {{ $p->status=='batal' ? 'selected' : '' }}>Batal</option>
                                     </select>
                                     <button type="submit" class="bg-slate-800 text-white p-2.5 rounded-xl hover:bg-emerald-600 transition-all shadow-sm group/btn">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -88,7 +115,15 @@
                                 </form>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-16 text-center text-slate-400 italic">
+                                Belum ada pendaftar untuk kegiatan ini.
+                                <br>
+                                <a href="{{ route('admin.pendaftaran.create', $kegiatan->id_kegiatan) }}" class="text-emerald-600 font-bold underline mt-2 inline-block">+ Tambah peserta baru</a>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

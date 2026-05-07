@@ -6,6 +6,10 @@ use App\Models\Kegiatan;
 use App\Models\Pendaftaran;
 use App\Models\Absensi;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PesertaKegiatanExport;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AbsensiNotifikasi;
 
 class AbsensiController extends Controller
 {
@@ -46,5 +50,25 @@ class AbsensiController extends Controller
         }
 
         return redirect()->route('admin.absensi.index')->with('success', 'Absensi disimpan.');
+    }
+    public function show($id_kegiatan)
+    {
+        $kegiatan = Kegiatan::findOrFail($id_kegiatan);
+        $pendaftarans = Pendaftaran::with(['anggota', 'absensi'])
+            ->where('id_kegiatan', $id_kegiatan)
+            ->where('status', 'disetujui')
+            ->get();
+
+        $hadirCount = $pendaftarans->filter(function ($p) {
+            return $p->absensi && $p->absensi->hadir;
+        })->count();
+
+        return view('admin.absensi.show', compact('kegiatan', 'pendaftarans', 'hadirCount'));
+    }
+    
+    public function export($id_kegiatan)
+    {
+        $kegiatan = Kegiatan::findOrFail($id_kegiatan);
+        return Excel::download(new PesertaKegiatanExport($id_kegiatan), 'absensi_' . $kegiatan->slug . '.xlsx');
     }
 }

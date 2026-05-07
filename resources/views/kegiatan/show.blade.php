@@ -97,13 +97,12 @@
                             @auth
                                 @if(auth()->user()->role == 'anggota')
                                     @php
+                                        // MUAT MODEL DENGAN NAMESPACE LENGKAP
                                         $pendaftaran = \App\Models\Pendaftaran::where('id_anggota', auth()->user()->anggota->id_anggota)
                                             ->where('id_kegiatan', $kegiatan->id_kegiatan)
                                             ->first();
-                                        
-                                        $bisaDaftar = $kegiatan->status == 'aktif' && $kegiatan->bisaDaftar;
                                     @endphp
-
+                                    
                                     @if($pendaftaran)
                                         <div class="p-6 rounded-[2rem] border text-center shadow-inner
                                             @if($pendaftaran->status == 'disetujui') bg-emerald-50 border-emerald-100 text-emerald-600 
@@ -111,38 +110,53 @@
                                             @else bg-amber-50 border-amber-100 text-amber-600 @endif">
                                             <p class="text-[10px] font-black uppercase tracking-widest mb-1 italic">Status Pendaftaran</p>
                                             <p class="text-lg font-black uppercase tracking-tighter">{{ $pendaftaran->status }}</p>
-                                            <p class="text-[9px] font-bold opacity-70 mt-2 leading-tight">
-                                                {{ $pendaftaran->status == 'pending' ? 'Mohon tunggu konfirmasi administrator.' : 'Silakan cek email atau dashboard riwayat.' }}
-                                            </p>
                                         </div>
-                                    @elseif($kegiatan->status == 'tutup')
-                                        <div class="w-full bg-orange-50 text-orange-600 text-center py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-orange-100">
-                                            ⏰ Pendaftaran Ditutup (H-1 Kegiatan)
-                                        </div>
-                                    @elseif($kegiatan->status == 'selesai')
-                                        <div class="w-full bg-slate-100 text-slate-400 text-center py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-slate-200">
-                                            ✓ Kegiatan Telah Selesai
-                                        </div>
-                                    @elseif($kegiatan->status != 'aktif')
-                                        <div class="w-full bg-slate-100 text-slate-400 text-center py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-slate-200">
-                                            Pendaftaran {{ strtoupper($kegiatan->status) }}
-                                        </div>
-                                    @elseif($kegiatan->kuota > 0 && $jumlahPeserta >= $kegiatan->kuota)
-                                        <div class="w-full bg-rose-50 text-rose-600 text-center py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-rose-100">
-                                            Mohon Maaf, Kuota Penuh
-                                        </div>
-                                    @elseif(!$bisaDaftar)
-                                        <div class="w-full bg-amber-50 text-amber-600 text-center py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest border border-amber-100">
-                                            ⚠️ Pendaftaran Ditutup (Waktu Habis)
-                                        </div>
-                                    @else
-                                        <form action="{{ route('anggota.daftar', $kegiatan->id_kegiatan) }}" method="POST">
+                                    @elseif($kegiatan->status == 'aktif' && $kegiatan->bisaDaftar && ($kegiatan->kuota == 0 || $jumlahPeserta < $kegiatan->kuota))
+                                        <form action="{{ route('anggota.daftar', $kegiatan->id_kegiatan) }}" method="POST" id="formDaftar">
                                             @csrf
+                                            <div class="mb-4 border rounded-2xl p-4 bg-white/50">
+                                                <label class="flex items-center mb-3 cursor-pointer">
+                                                    <input type="radio" name="jenis_daftar" value="self" checked class="mr-2" onchange="toggleOtherForm()">
+                                                    <span class="text-sm font-bold text-slate-700">Daftar untuk diri sendiri</span>
+                                                </label>
+                                                <label class="flex items-center cursor-pointer">
+                                                    <input type="radio" name="jenis_daftar" value="other" class="mr-2" onchange="toggleOtherForm()">
+                                                    <span class="text-sm font-bold text-slate-700">Daftar untuk orang lain</span>
+                                                </label>
+                                            </div>
+
+                                            <div id="otherForm" class="hidden mb-4 p-4 border rounded-2xl bg-slate-50">
+                                                <div class="mb-3">
+                                                    <label class="block text-xs font-bold uppercase mb-1 text-slate-600">Nama Peserta</label>
+                                                    <input type="text" name="nama_peserta" class="w-full p-2 border rounded-lg" placeholder="Contoh: Ahmad Khoirul">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="block text-xs font-bold uppercase mb-1 text-slate-600">Kontak (HP)</label>
+                                                    <input type="text" name="kontak_peserta" class="w-full p-2 border rounded-lg" placeholder="08123456789">
+                                                </div>
+                                            </div>
+
                                             <button type="submit" class="w-full bg-emerald-600 hover:bg-slate-800 text-white font-black py-5 rounded-2xl uppercase tracking-[0.2em] transition-all transform active:scale-95 shadow-xl shadow-emerald-100 flex items-center justify-center gap-3 group">
                                                 Daftar Sekarang
                                                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                             </button>
                                         </form>
+                                        <script>
+                                            function toggleOtherForm() {
+                                                const radios = document.querySelectorAll('input[name="jenis_daftar"]');
+                                                const otherForm = document.getElementById('otherForm');
+                                                if (document.querySelector('input[name="jenis_daftar"]:checked')?.value === 'other') {
+                                                    otherForm.classList.remove('hidden');
+                                                } else {
+                                                    otherForm.classList.add('hidden');
+                                                }
+                                            }
+                                            toggleOtherForm();
+                                        </script>
+                                    @else
+                                        <div class="text-center p-4 bg-slate-100 rounded-2xl text-slate-500 text-sm">
+                                            Pendaftaran tidak tersedia
+                                        </div>
                                     @endif
                                 @else
                                     <div class="p-5 bg-sky-50 rounded-2xl border border-sky-100 text-sky-700 text-[10px] font-black uppercase leading-relaxed text-center italic">

@@ -2,8 +2,9 @@
 
 @section('content')
 <div class="bg-slate-50 font-sans text-slate-800 selection:bg-green-200 selection:text-green-900">
+    <!-- Hero Section -->
     <section id="home" 
-        class="relative overflow-hidden h-[100dvh] min-h-[600px] scroll-mt-20 group"
+        class="relative overflow-hidden h-screen min-h-[600px] scroll-mt-20 group"
         onmouseenter="document.getElementById('hero-overlay').classList.add('hovered')"
         onmouseleave="document.getElementById('hero-overlay').classList.remove('hovered')">
         @php
@@ -59,9 +60,9 @@
         </div>
     </section>
 
+    <!-- Tentang SIBO (Profil) -->
     <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            
             <div class="relative order-2 lg:order-1">
                 <div class="mb-10 relative">
                     <span class="flex items-center text-green-600 font-bold text-sm uppercase tracking-[0.2em] mb-4">
@@ -71,12 +72,10 @@
                         Tentang <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-500">Organisasi</span>
                     </h2>
                 </div>
-                
                 <div class="space-y-8">
                     <p class="text-slate-600 text-lg leading-relaxed text-justify">
                         IPNU (Ikatan Pelajar Nahdlatul Ulama) dan IPPNU (Ikatan Pelajar Putri Nahdlatul Ulama) adalah badan otonom NU yang menjadi wadah kaderisasi pelajar dan mahasiswa, bertujuan membentuk pelajar religius, berilmu, berakhlak mulia, serta cinta tanah air berdasarkan Pancasila dan Aswaja. IPNU khusus untuk pelajar putra (berdiri 1954) dan IPPNU untuk pelajar putri (berdiri 1955), keduanya merupakan organisasi kepelajaran, kekeluargaan, kemasyarakatan, dan keagamaan yang berfokus pada pendidikan, pengkaderan, dan pengabdian masyarakat.
                     </p>
-
                     <div class="grid grid-cols-1 gap-4">
                         <div class="group bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300">
                             <div class="flex items-center gap-3 mb-3">
@@ -89,7 +88,6 @@
                                 "Mewujudkan pelajar bangsa yang bertaqwa, berilmu, berakhlakul karimah, dan berwawasan kebangsaan, yang bertanggung jawab menegakkan syariat Islam Ahlussunnah Wal Jama'ah berdasarkan Pancasila dan UUD 1945, serta menjadi wadah pengembangan potensi pelajar Nahdlatul Ulama untuk membangun peradaban bangsa yang berkeadilan"
                             </p>
                         </div>
-
                         <div class="group bg-green-50/50 p-6 rounded-2xl border border-green-100/50 hover:bg-green-50 transition-all duration-300">
                             <div class="flex items-center gap-3 mb-3">
                                 <div class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center shadow-lg shadow-slate-200">
@@ -104,11 +102,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex justify-center relative order-1 lg:order-2">
                 <div class="absolute inset-0 bg-gradient-to-tr from-green-200 to-green-50 rounded-[3rem] transform rotate-3 scale-105 -z-10 opacity-60"></div>
                 <div class="absolute inset-0 bg-white/40 backdrop-blur-3xl rounded-[3rem] -z-10"></div>
-                
                 <div class="relative rounded-[2.5rem] bg-white p-8 md:p-12 shadow-[0_30px_60px_rgba(0,0,0,0.08)] border border-slate-100 w-full max-w-md group overflow-hidden">
                     <img src="{{ asset('images/logo-desbor.png') }}" alt="PC DESBOR" class="w-full h-auto object-contain transform group-hover:scale-110 transition-transform duration-700 drop-shadow-2xl">
                     <div class="absolute top-0 right-0 p-4 opacity-10">
@@ -118,6 +114,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Statistik -->
     <div id="statistik" class="relative py-32 overflow-hidden bg-white transition-colors duration-700">
         <div class="absolute inset-0 z-0 opacity-0 transition-all duration-[1200ms] ease-out scale-110" id="stat-bg">
             @if($heroImage)
@@ -125,7 +123,6 @@
             @endif
             <div class="absolute inset-0 bg-slate-900/95 backdrop-blur-sm"></div>
         </div>
-
         <div class="max-w-7xl mx-auto px-4 relative z-10">
             <div class="text-center mb-20 transition-all duration-700" id="stat-content">
                 <div class="inline-block relative">
@@ -137,7 +134,6 @@
                     Real-time Rekapitulasi Anggota
                 </p>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative z-20">
                 @php
                     $stats = [
@@ -146,11 +142,9 @@
                         ['label' => 'PAC Aktif', 'val' => $totalPac ?? 0, 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
                     ];
                 @endphp
-
                 @foreach($stats as $s)
                 <div class="group text-center bg-white rounded-[2rem] py-12 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 transition-all duration-500 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 stat-card relative overflow-hidden">
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-green-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 ease-out z-0"></div>
-                    
                     <div class="relative z-10 flex flex-col items-center">
                         <div class="w-16 h-16 mb-6 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center transition-colors duration-500 stat-icon-container">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $s['icon'] }}"></path></svg>
@@ -161,7 +155,6 @@
                 </div>
                 @endforeach
             </div>
-            
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none select-none z-0 overflow-hidden">
                 <span class="stat-outline-dynamic text-[8rem] md:text-[18rem] font-black uppercase tracking-tighter block leading-none opacity-5 transition-all duration-700 whitespace-nowrap">
                     STATISTIK
@@ -170,11 +163,10 @@
         </div>
     </div>
 
+    <!-- ========== INFORMASI & KEGIATAN (Horizontal Scroll FIXED) ========== -->
     <div id="kegiatan-terbaru" class="bg-slate-50/50 py-24 relative">
         <div class="absolute inset-0 bg-top bg-no-repeat bg-[url('data:image/svg+xml,%3Csvg width=\"100%25\" height=\"100%25\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cdefs%3E%3Cpattern id=\"grid\" width=\"40\" height=\"40\" patternUnits=\"userSpaceOnUse\"%3E%3Cpath d=\"M0 40L40 0H20L0 20M40 40V20L20 40\" fill=\"none\" stroke=\"%23e2e8f0\" stroke-opacity=\"0.4\"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\"100%25\" height=\"100%25\" fill=\"url(%23grid)\"/%3E%3C/svg%3E')]"></div>
-        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
                     <span class="flex items-center text-green-600 font-bold text-sm uppercase tracking-[0.2em] mb-3">
@@ -192,54 +184,43 @@
                 </div>
             </div>
 
-            <div class="relative group">
-                <div class="flex overflow-x-auto pb-12 gap-6 snap-x snap-mandatory scrollbar-hide px-2 -mx-2" id="scroll-container">
+            <!-- SCROLL HORIZONTAL: overflow-x-auto pada parent, w-max pada flex container -->
+            <div class="w-full overflow-x-auto pb-6 scrollbar-hide" style="-webkit-overflow-scrolling: touch;">
+                <div class="flex gap-6 w-max px-2">
                     @forelse($kegiatanTerbaru as $kegiatan)
-                        <div class="flex-none w-[85vw] sm:w-[340px] snap-center sm:snap-start">
+                        <div class="w-[85vw] sm:w-[340px] flex-none">
                             <div class="bg-white rounded-[2rem] border border-slate-100/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 flex flex-col h-full group/card relative overflow-hidden">
-                                
                                 <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 m-2 rounded-[1.5rem]">
                                     @php
-                                        $imgPath = ($kegiatan->pamflet && $kegiatan->pamflet->path_file) 
-                                                   ? Storage::url($kegiatan->pamflet->path_file) 
-                                                   : null;
+                                        $imgPath = ($kegiatan->pamflet && $kegiatan->pamflet->path_file) ? Storage::url($kegiatan->pamflet->path_file) : null;
                                     @endphp
-                                    
                                     @if($imgPath)
-                                        <img src="{{ $imgPath }}" 
-                                             alt="{{ $kegiatan->judul }}"
-                                             class="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110">
+                                        <img src="{{ $imgPath }}" class="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110">
                                     @else
                                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 bg-slate-100">
                                             <svg class="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                             <span class="text-sm font-medium">Tidak Ada Poster</span>
                                         </div>
                                     @endif
-
                                     <div class="absolute top-4 left-4 z-10">
                                         <span class="bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold px-4 py-2 rounded-full shadow-sm border border-white/50">
                                             {{ $kegiatan->kategori->nama ?? 'EVENT' }}
                                         </span>
                                     </div>
                                 </div>
-
                                 <div class="p-6 flex-grow flex flex-col relative z-10">
                                     <div class="flex items-center gap-2 text-xs font-bold text-green-600 mb-4 bg-green-50 w-fit px-3 py-1.5 rounded-lg">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                         {{ \Carbon\Carbon::parse($kegiatan->tanggal)->translatedFormat('d M Y') }}
                                     </div>
-                                    
                                     <h3 class="text-xl font-bold text-slate-900 leading-tight mb-3 transition-colors group-hover/card:text-green-600 line-clamp-2">
                                         {{ $kegiatan->judul }}
                                     </h3>
-                                    
                                     <p class="text-sm text-slate-500 leading-relaxed line-clamp-3 mb-6">
                                         {{ $kegiatan->deskripsi }}
                                     </p>
-
                                     <div class="mt-auto pt-5 border-t border-slate-100">
-                                        <a href="{{ route('kegiatan.publik.show', $kegiatan->id_kegiatan) }}" 
-                                           class="w-full inline-flex items-center justify-center text-sm font-bold text-white bg-slate-900 hover:bg-green-600 py-3 rounded-xl transition-colors duration-300">
+                                        <a href="{{ route('kegiatan.publik.show', $kegiatan->id_kegiatan) }}" class="w-full inline-flex items-center justify-center text-sm font-bold text-white bg-slate-900 hover:bg-green-600 py-3 rounded-xl transition-colors duration-300">
                                             Detail Kegiatan 
                                         </a>
                                     </div>
@@ -256,13 +237,17 @@
                     @endforelse
                 </div>
             </div>
+            <div class="md:hidden flex justify-center items-center gap-2 mt-6 text-slate-400 text-xs font-bold uppercase tracking-wider animate-pulse">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                Geser untuk melihat kegiatan lainnya
+            </div>
         </div>
     </div>
 
+    <!-- Galeri -->
     @if($galeri->count() > 0)
     <div id="galeri" class="py-24 md:py-32 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
             <div class="text-center mb-16 md:mb-20">
                 <span class="text-green-600 font-bold text-sm uppercase tracking-[0.2em] mb-4 block">
                     Visual Archive
@@ -271,31 +256,20 @@
                     Galeri <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400">Kegiatan</span>
                 </h2>
             </div>
-
             <div class="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
                 <div class="flex gap-6 animate-infinite-scroll py-4 hover:animate-pause">
-
                     @foreach($galeri->merge($galeri) as $foto)
-                        @php
-                            $fotoPath = $foto->path_file ? Storage::url($foto->path_file) : null;
-                        @endphp
-
+                        @php $fotoPath = $foto->path_file ? Storage::url($foto->path_file) : null; @endphp
                         @if($fotoPath)
                             <div class="flex-none w-64 h-64 md:w-80 md:h-80 group relative overflow-hidden rounded-[2rem] shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] cursor-pointer transition-all duration-500"
                                 onclick="openLightbox('{{ $fotoPath }}', '{{ addslashes($foto->judul_foto ?? '') }}')">
-
                                 <div class="w-full h-full overflow-hidden bg-slate-100">
-                                    <img src="{{ $fotoPath }}" 
-                                        alt="{{ $foto->judul_foto ?? 'Galeri' }}" 
-                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                    <img src="{{ $fotoPath }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 </div>
-
                                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex flex-col justify-end p-6 md:p-8 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-                                    
                                     <h4 class="text-white font-bold text-lg md:text-xl leading-tight mb-3">
                                         {{ $foto->judul_foto ?? 'Dokumentasi' }}
                                     </h4>
-
                                     <div class="text-xs md:text-sm text-slate-300 space-y-2 font-medium">
                                         <p class="flex items-center gap-2">
                                             <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -310,14 +284,20 @@
                             </div>
                         @endif
                     @endforeach
-
                 </div>
+            </div>
+            <div class="text-center mt-16">
+                <a href="{{ route('galeri.publik.index') }}" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all transform hover:-translate-y-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Lihat Galeri Lengkap
+                </a>
             </div>
         </div>
     </div>
     @endif
 </div>
 
+<!-- Lightbox Modal -->
 <div id="lightbox" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden items-center justify-center transition-opacity" onclick="closeLightbox()">
     <div class="relative max-w-6xl mx-auto p-4 w-full flex flex-col items-center justify-center h-full" onclick="event.stopPropagation()">
         <button class="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all" onclick="closeLightbox()">
@@ -347,82 +327,18 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeLightbox();
     });
-
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('statistik');
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    container.classList.add('stat-active');
-                } else {
-                    container.classList.remove('stat-active');
-                }
-            });
-        }, { 
-            threshold: 0.4
-        });
-
         if(container) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) container.classList.add('stat-active');
+                    else container.classList.remove('stat-active');
+                });
+            }, { threshold: 0.4 });
             observer.observe(container);
         }
-        
     });
-
-        // FITUR GESER GALERI
-    const scroller = document.querySelector('.animate-infinite-scroll');
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-
-    if (scroller) {
-        // Hentikan animasi otomatis saat user mulai menggeser
-        scroller.addEventListener('mousedown', (e) => {
-            isDown = true;
-            scroller.style.animationPlayState = 'paused';
-            startX = e.pageX - scroller.offsetLeft;
-            scrollLeft = scroller.scrollLeft;
-        });
-
-        scroller.addEventListener('mouseleave', () => {
-            isDown = false;
-            scroller.style.animationPlayState = 'running';
-        });
-
-        scroller.addEventListener('mouseup', () => {
-            isDown = false;
-            scroller.style.animationPlayState = 'running';
-        });
-
-        scroller.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - scroller.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            scroller.scrollLeft = scrollLeft - walk;
-        });
-
-        // Untuk touch device (mobile)
-        scroller.addEventListener('touchstart', (e) => {
-            isDown = true;
-            scroller.style.animationPlayState = 'paused';
-            startX = e.touches[0].pageX - scroller.offsetLeft;
-            scrollLeft = scroller.scrollLeft;
-        });
-
-        scroller.addEventListener('touchend', () => {
-            isDown = false;
-            scroller.style.animationPlayState = 'running';
-        });
-
-        scroller.addEventListener('touchmove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.touches[0].pageX - scroller.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            scroller.scrollLeft = scrollLeft - walk;
-        });
-    }
 </script>
 @endpush
 
@@ -435,115 +351,25 @@
     .animate-fade-in-up {
         animation: fade-in-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    
-    .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-    }
-    .scrollbar-hide {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .line-clamp-2, .line-clamp-3 {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .line-clamp-2 { -webkit-line-clamp: 2; }
-    .line-clamp-3 { -webkit-line-clamp: 3; }
-
-    .stat-outline-dynamic {
-        color: transparent;
-        -webkit-text-stroke: 1px #e2e8f0;
-    }
-    
-    .stat-active #stat-bg {
-        opacity: 1 !important;
-        transform: scale(1) !important;
-    }
-
-    .stat-active {
-        background-color: #020617 !important;
-    }
-
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .stat-outline-dynamic { color: transparent; -webkit-text-stroke: 1px #e2e8f0; }
+    .stat-active #stat-bg { opacity: 1 !important; transform: scale(1) !important; }
+    .stat-active { background-color: #020617 !important; }
     .stat-active #stat-title { color: white !important; }
     .stat-active #stat-highlight { color: #22c55e !important; }
-    
-    .stat-active .stat-card {
-        background-color: rgba(30, 41, 59, 0.4) !important;
-        border-color: rgba(255, 255, 255, 0.05) !important;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stat-active .stat-card:hover {
-        background-color: rgba(30, 41, 59, 0.6) !important;
-        border-color: rgba(34, 197, 94, 0.3) !important;
-    }
-
+    .stat-active .stat-card { background-color: rgba(30, 41, 59, 0.4) !important; border-color: rgba(255, 255, 255, 0.05) !important; backdrop-filter: blur(12px); }
     .stat-active .stat-number { color: white !important; }
     .stat-active .stat-label { color: #4ade80 !important; }
-    .stat-active .stat-icon-container { 
-        background-color: rgba(34, 197, 94, 0.1) !important; 
-        color: #4ade80 !important; 
-    }
-
-    .stat-active .stat-outline-dynamic {
-        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.03);
-    }
-    
-    #hero-overlay {
-        transition: background-color 0.8s ease, backdrop-filter 0.8s ease;
-    }
-    #hero-overlay.hovered {
-        background-color: rgba(2, 6, 23, 0.85) !important;
-        backdrop-filter: blur(8px);
-    }
-    
-    @keyframes infinite-scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-50% - 12px)); }
-    }
-    .animate-infinite-scroll {
-        animation: infinite-scroll 40s linear infinite;
-        width: max-content;
-    }
-    .hover\:animate-pause:hover {
-        animation-play-state: paused;
-    }
-        /* Perbaikan untuk container galeri agar bisa digeser */
-    .animate-infinite-scroll {
-        animation: infinite-scroll 40s linear infinite;
-        width: max-content;
-        display: flex;
-        cursor: grab;
-        user-select: none;
-        overflow-x: auto;
-        scroll-behavior: smooth;
-    }
-    
-    .animate-infinite-scroll:active {
-        cursor: grabbing;
-    }
-    
-    /* Sembunyikan scrollbar tapi tetap bisa digeser */
-    .animate-infinite-scroll::-webkit-scrollbar {
-        display: none;
-    }
-    
-    .animate-infinite-scroll {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-    
-    /* Tombol scroll manual bisa ditambahkan opsional */
-    .galeri-wrapper {
-        position: relative;
-    }
-    
-    .hover\:animate-pause:hover {
-        animation-play-state: paused;
-    }
+    .stat-active .stat-icon-container { background-color: rgba(34, 197, 94, 0.1) !important; color: #4ade80 !important; }
+    .stat-active .stat-outline-dynamic { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.03); }
+    #hero-overlay { transition: background-color 0.8s ease, backdrop-filter 0.8s ease; }
+    #hero-overlay.hovered { background-color: rgba(2, 6, 23, 0.85) !important; backdrop-filter: blur(8px); }
+    @keyframes infinite-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 12px)); } }
+    .animate-infinite-scroll { animation: infinite-scroll 40s linear infinite; width: max-content; }
+    .hover\:animate-pause:hover { animation-play-state: paused; }
 </style>
 @endpush
 @endsection
