@@ -37,6 +37,7 @@
                             <a href="<?php echo e(route('admin.pendaftaran.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.pendaftaran.*') ? 'active' : ''); ?>">Pendaftaran</a>
                             <a href="<?php echo e(route('admin.absensi.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.absensi.*') ? 'active' : ''); ?>">Absensi</a>
                             <a href="<?php echo e(route('admin.galeri.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.galeri.*') ? 'active' : ''); ?>">Galeri</a>
+                            <a href="<?php echo e(route('admin.laporan.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.laporan.*') ? 'active' : ''); ?>">Laporan</a>
                         <?php else: ?>
                             <a href="<?php echo e(route('anggota.dashboard')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('anggota.dashboard') ? 'active' : ''); ?>">Dashboard</a>
                             <a href="<?php echo e(route('kegiatan.publik.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('kegiatan.publik.*') ? 'active' : ''); ?>">Kegiatan</a>
@@ -109,16 +110,39 @@
          class="sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-100">
         <div class="px-4 py-6 space-y-3">
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->guest()): ?>
-                <a href="<?php echo e(route('home')); ?>#home" wire:navigate class="nav-item-mobile">Beranda</a>
-                <a href="<?php echo e(route('home')); ?>#tentang" wire:navigate class="nav-item-mobile">Profil</a>
-                <a href="<?php echo e(route('home')); ?>#statistik" wire:navigate class="nav-item-mobile">Jumlah Data</a>
-                <a href="<?php echo e(route('home')); ?>#kegiatan-terbaru" wire:navigate class="nav-item-mobile">Informasi</a>
-                <a href="<?php echo e(route('home')); ?>#galeri" wire:navigate class="nav-item-mobile">Galeri</a>
-
-                <a href="<?php echo e(route('login')); ?>" wire:navigate
-                   class="block text-center mt-6 px-4 py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em]">
+                <a href="<?php echo e(route('home')); ?>#home" wire:navigate class="nav-item-mobile" @click="open = false">Beranda</a>
+                <a href="<?php echo e(route('home')); ?>#tentang" wire:navigate class="nav-item-mobile" @click="open = false">Profil</a>
+                <a href="<?php echo e(route('home')); ?>#statistik" wire:navigate class="nav-item-mobile" @click="open = false">Jumlah Data</a>
+                <a href="<?php echo e(route('home')); ?>#kegiatan-terbaru" wire:navigate class="nav-item-mobile" @click="open = false">Informasi</a>
+                <a href="<?php echo e(route('home')); ?>#galeri" wire:navigate class="nav-item-mobile" @click="open = false">Galeri</a>
+                <a href="<?php echo e(route('login')); ?>" wire:navigate class="block text-center mt-6 px-4 py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em]" @click="open = false">
                     Log In
                 </a>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user()->role == 'admin'): ?>
+                    <a href="<?php echo e(route('admin.dashboard')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.dashboard') ? 'active' : ''); ?>" @click="open = false">Dashboard</a>
+                    <a href="<?php echo e(route('admin.anggota.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.anggota.*') ? 'active' : ''); ?>" @click="open = false">Anggota</a>
+                    <a href="<?php echo e(route('admin.kategori.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.kategori.*') ? 'active' : ''); ?>" @click="open = false">Kategori</a>
+                    <a href="<?php echo e(route('admin.kegiatan.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.kegiatan.*') ? 'active' : ''); ?>" @click="open = false">Kegiatan</a>
+                    <a href="<?php echo e(route('admin.pendaftaran.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.pendaftaran.*') ? 'active' : ''); ?>" @click="open = false">Pendaftaran</a>
+                    <a href="<?php echo e(route('admin.absensi.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.absensi.*') ? 'active' : ''); ?>" @click="open = false">Absensi</a>
+                    <a href="<?php echo e(route('admin.galeri.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.galeri.*') ? 'active' : ''); ?>" @click="open = false">Galeri</a>
+                    <a href="<?php echo e(route('admin.laporan.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.laporan.*') ? 'active' : ''); ?>" @click="open = false">Laporan</a>
+                <?php else: ?>
+                    <a href="<?php echo e(route('anggota.dashboard')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('anggota.dashboard') ? 'active' : ''); ?>" @click="open = false">Dashboard</a>
+                    <a href="<?php echo e(route('kegiatan.publik.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('kegiatan.publik.*') ? 'active' : ''); ?>" @click="open = false">Kegiatan</a>
+                    <a href="<?php echo e(route('anggota.riwayat')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('anggota.riwayat') ? 'active' : ''); ?>" @click="open = false">Riwayat</a>
+                    <a href="<?php echo e(route('anggota.profil')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('anggota.profil') ? 'active' : ''); ?>" @click="open = false">Profil</a>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                
+                <form method="POST" action="<?php echo e(route('logout')); ?>" class="mt-6">
+                    <?php echo csrf_field(); ?>
+                    <button class="w-full text-center px-4 py-4 bg-rose-500 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em]" @click="open = false">
+                        Logout
+                    </button>
+                </form>
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
     </div>
@@ -136,7 +160,7 @@ html {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #64748b; /* slate-500 */
+    color: #64748b;
     padding: 10px 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -148,7 +172,7 @@ html {
     left: 50%;
     width: 0%;
     height: 2px;
-    background: #059669; /* emerald-600 */
+    background: #059669;
     transition: all 0.3s ease;
     transform: translateX(-50%);
     border-radius: 2px;
@@ -178,7 +202,7 @@ html {
 }
 
 .nav-item-mobile.active {
-    background: #ecfdf5; /* emerald-50 */
+    background: #ecfdf5;
     color: #059669;
 }
 
@@ -188,7 +212,6 @@ html {
 </style>
 
 <script>
-// Logic initNavbar tetap sama (tidak merubah fungsionalitas)
 function initNavbar() {
     if (window.location.pathname !== '/') return;
 

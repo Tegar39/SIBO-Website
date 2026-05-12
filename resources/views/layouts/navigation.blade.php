@@ -37,6 +37,7 @@
                             <a href="{{ route('admin.pendaftaran.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}">Pendaftaran</a>
                             <a href="{{ route('admin.absensi.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}">Absensi</a>
                             <a href="{{ route('admin.galeri.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}">Galeri</a>
+                            <a href="{{ route('admin.laporan.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">Laporan</a>
                         @else
                             <a href="{{ route('anggota.dashboard') }}" wire:navigate class="nav-item {{ request()->routeIs('anggota.dashboard') ? 'active' : '' }}">Dashboard</a>
                             <a href="{{ route('kegiatan.publik.index') }}" wire:navigate class="nav-item {{ request()->routeIs('kegiatan.publik.*') ? 'active' : '' }}">Kegiatan</a>
@@ -108,17 +109,40 @@
          class="sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-100">
         <div class="px-4 py-6 space-y-3">
             @guest
-                <a href="{{ route('home') }}#home" wire:navigate class="nav-item-mobile">Beranda</a>
-                <a href="{{ route('home') }}#tentang" wire:navigate class="nav-item-mobile">Profil</a>
-                <a href="{{ route('home') }}#statistik" wire:navigate class="nav-item-mobile">Jumlah Data</a>
-                <a href="{{ route('home') }}#kegiatan-terbaru" wire:navigate class="nav-item-mobile">Informasi</a>
-                <a href="{{ route('home') }}#galeri" wire:navigate class="nav-item-mobile">Galeri</a>
-
-                <a href="{{ route('login') }}" wire:navigate
-                   class="block text-center mt-6 px-4 py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em]">
+                <a href="{{ route('home') }}#home" wire:navigate class="nav-item-mobile" @click="open = false">Beranda</a>
+                <a href="{{ route('home') }}#tentang" wire:navigate class="nav-item-mobile" @click="open = false">Profil</a>
+                <a href="{{ route('home') }}#statistik" wire:navigate class="nav-item-mobile" @click="open = false">Jumlah Data</a>
+                <a href="{{ route('home') }}#kegiatan-terbaru" wire:navigate class="nav-item-mobile" @click="open = false">Informasi</a>
+                <a href="{{ route('home') }}#galeri" wire:navigate class="nav-item-mobile" @click="open = false">Galeri</a>
+                <a href="{{ route('login') }}" wire:navigate class="block text-center mt-6 px-4 py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em]" @click="open = false">
                     Log In
                 </a>
             @endguest
+
+            @auth
+                @if(auth()->user()->role == 'admin')
+                    <a href="{{ route('admin.dashboard') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" @click="open = false">Dashboard</a>
+                    <a href="{{ route('admin.anggota.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.anggota.*') ? 'active' : '' }}" @click="open = false">Anggota</a>
+                    <a href="{{ route('admin.kategori.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}" @click="open = false">Kategori</a>
+                    <a href="{{ route('admin.kegiatan.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.kegiatan.*') ? 'active' : '' }}" @click="open = false">Kegiatan</a>
+                    <a href="{{ route('admin.pendaftaran.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}" @click="open = false">Pendaftaran</a>
+                    <a href="{{ route('admin.absensi.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}" @click="open = false">Absensi</a>
+                    <a href="{{ route('admin.galeri.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}" @click="open = false">Galeri</a>
+                    <a href="{{ route('admin.laporan.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" @click="open = false">Laporan</a>
+                @else
+                    <a href="{{ route('anggota.dashboard') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('anggota.dashboard') ? 'active' : '' }}" @click="open = false">Dashboard</a>
+                    <a href="{{ route('kegiatan.publik.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('kegiatan.publik.*') ? 'active' : '' }}" @click="open = false">Kegiatan</a>
+                    <a href="{{ route('anggota.riwayat') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('anggota.riwayat') ? 'active' : '' }}" @click="open = false">Riwayat</a>
+                    <a href="{{ route('anggota.profil') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('anggota.profil') ? 'active' : '' }}" @click="open = false">Profil</a>
+                @endif
+                
+                <form method="POST" action="{{ route('logout') }}" class="mt-6">
+                    @csrf
+                    <button class="w-full text-center px-4 py-4 bg-rose-500 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em]" @click="open = false">
+                        Logout
+                    </button>
+                </form>
+            @endauth
         </div>
     </div>
 </nav>
@@ -135,7 +159,7 @@ html {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #64748b; /* slate-500 */
+    color: #64748b;
     padding: 10px 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -147,7 +171,7 @@ html {
     left: 50%;
     width: 0%;
     height: 2px;
-    background: #059669; /* emerald-600 */
+    background: #059669;
     transition: all 0.3s ease;
     transform: translateX(-50%);
     border-radius: 2px;
@@ -177,7 +201,7 @@ html {
 }
 
 .nav-item-mobile.active {
-    background: #ecfdf5; /* emerald-50 */
+    background: #ecfdf5;
     color: #059669;
 }
 
@@ -187,7 +211,6 @@ html {
 </style>
 
 <script>
-// Logic initNavbar tetap sama (tidak merubah fungsionalitas)
 function initNavbar() {
     if (window.location.pathname !== '/') return;
 
