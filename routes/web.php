@@ -110,3 +110,8 @@ Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')
 });
 
 require __DIR__.'/auth.php';
+
+Route::post('/api/pac-list', [App\Http\Controllers\Api\AnggotaApiController::class, 'getPacList']);
+Route::post('/api/anggota', [App\Http\Controllers\Api\AnggotaApiController::class, 'showData']);
+Route::post('/api/anggota-crud', [App\Http\Controllers\Api\AnggotaApiController::class, 'queryCrud']);
+Route::post('/api/stats', [App\Http\Controllers\Api\AnggotaApiController::class, 'getStats']);
