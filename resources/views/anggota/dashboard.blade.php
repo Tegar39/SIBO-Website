@@ -67,6 +67,42 @@
             </div>
         @endif
 
+        {{-- ========== NOTIFIKASI ALFA ========== --}}
+        @if(isset($unreadCount) && $unreadCount > 0)
+        <div class="mb-6 bg-rose-50 border-l-4 border-rose-500 p-4 rounded-xl shadow-sm">
+            <div class="flex justify-between items-center">
+                <p class="font-bold text-rose-700">
+                    ⚠️ Anda memiliki {{ $unreadCount }} notifikasi alfa (tidak hadir tanpa keterangan).
+                </p>
+                <a href="{{ route('anggota.notifikasi') }}" class="text-sm text-rose-600 underline hover:text-rose-800">
+                    Lihat Semua
+                </a>
+            </div>
+        </div>
+        @endif
+
+        @if(isset($notifikasi) && $notifikasi->count() > 0)
+        <div class="mb-6 bg-white p-4 rounded-xl shadow-sm border">
+            <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                Notifikasi Terbaru
+            </h3>
+            @foreach($notifikasi as $notif)
+                <div class="border-b py-2 {{ $notif->is_read ? 'opacity-60' : '' }}">
+                    <p class="font-semibold text-sm">{{ $notif->judul }}</p>
+                    <p class="text-xs text-slate-500">{{ $notif->pesan }}</p>
+                    <small class="text-[10px] text-slate-400">{{ $notif->created_at->diffForHumans() }}</small>
+                </div>
+            @endforeach
+            @if($notifikasi->count() > 0)
+                <div class="mt-3 text-right">
+                    <a href="{{ route('anggota.notifikasi') }}" class="text-xs text-emerald-600 hover:underline">Lihat semua →</a>
+                </div>
+            @endif
+        </div>
+        @endif
+        {{-- ========== AKHIR NOTIFIKASI ========== --}}
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="md:col-span-2 bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden flex flex-col">
                 <div class="p-6 bg-slate-800 text-white font-black uppercase text-[10px] tracking-[0.3em] px-10">

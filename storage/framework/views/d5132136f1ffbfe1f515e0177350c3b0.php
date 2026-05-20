@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -18,17 +16,18 @@
             </div>
         </div>
 
-        @if(session('success'))
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
             <div class="mb-8 flex items-center gap-3 bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-4 rounded-2xl font-bold text-sm animate-fade-in shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                {{ session('success') }}
+                <?php echo e(session('success')); ?>
+
             </div>
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-white shadow-xl overflow-hidden">
-            @if($pendaftarans->count() > 0)
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($pendaftarans->count() > 0): ?>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -42,29 +41,31 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
-                            @foreach($pendaftarans as $key => $p)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $pendaftarans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <tr class="hover:bg-emerald-50/30 transition-all group">
                                     <td class="px-8 py-8 text-center">
-                                        <span class="text-slate-300 font-black italic text-lg">{{ $pendaftarans->firstItem() + $key }}</span>
+                                        <span class="text-slate-300 font-black italic text-lg"><?php echo e($pendaftarans->firstItem() + $key); ?></span>
                                     </td>
 
                                     <td class="px-8 py-8">
                                         <div class="flex items-center gap-5">
                                             <div class="relative shrink-0">
-                                                @if($p->kegiatan->pamflet && $p->kegiatan->pamflet->path_file)
-                                                    <img src="{{ asset('storage/'.$p->kegiatan->pamflet->path_file) }}" class="w-14 h-14 rounded-2xl object-cover shadow-md group-hover:scale-105 transition-transform duration-300 border-2 border-white">
-                                                @else
+                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($p->kegiatan->pamflet && $p->kegiatan->pamflet->path_file): ?>
+                                                    <img src="<?php echo e(asset('storage/'.$p->kegiatan->pamflet->path_file)); ?>" class="w-14 h-14 rounded-2xl object-cover shadow-md group-hover:scale-105 transition-transform duration-300 border-2 border-white">
+                                                <?php else: ?>
                                                     <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm">
                                                         <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                                     </div>
-                                                @endif
+                                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                             </div>
                                             <div>
                                                 <p class="font-extrabold text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors text-base leading-tight">
-                                                    {{ $p->kegiatan->judul }}
+                                                    <?php echo e($p->kegiatan->judul); ?>
+
                                                 </p>
                                                 <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md mt-1 inline-block uppercase tracking-wider">
-                                                    {{ $p->kegiatan->kategori->nama ?? 'Umum' }}
+                                                    <?php echo e($p->kegiatan->kategori->nama ?? 'Umum'); ?>
+
                                                 </span>
                                             </div>
                                         </div>
@@ -77,7 +78,8 @@
                                                 Pelaksanaan
                                             </div>
                                             <span class="text-sm font-bold text-slate-700 bg-slate-100 px-4 py-1.5 rounded-xl border border-slate-200/50">
-                                                {{ \Carbon\Carbon::parse($p->kegiatan->tanggal)->translatedFormat('d M Y') }}
+                                                <?php echo e(\Carbon\Carbon::parse($p->kegiatan->tanggal)->translatedFormat('d M Y')); ?>
+
                                             </span>
                                         </div>
                                     </td>
@@ -85,68 +87,71 @@
                                     <td class="px-8 py-8 text-center">
                                         <div class="flex flex-col gap-0.5">
                                             <span class="text-[11px] text-slate-500 font-bold tracking-wider">
-                                                {{ \Carbon\Carbon::parse($p->tgl_daftar)->format('d/m/y') }}
+                                                <?php echo e(\Carbon\Carbon::parse($p->tgl_daftar)->format('d/m/y')); ?>
+
                                             </span>
                                             <span class="text-[10px] text-slate-300 font-medium tracking-tight">
-                                                {{ \Carbon\Carbon::parse($p->tgl_daftar)->format('H:i') }} WIB
+                                                <?php echo e(\Carbon\Carbon::parse($p->tgl_daftar)->format('H:i')); ?> WIB
                                             </span>
                                         </div>
                                     </td>
 
                                     <td class="px-8 py-8 text-center">
-                                        @php
+                                        <?php
                                             $statusClasses = [
                                                 'pending' => 'bg-amber-50 text-amber-600 border-amber-100',
                                                 'disetujui' => 'bg-emerald-50 text-emerald-600 border-emerald-100',
                                                 'ditolak' => 'bg-rose-50 text-rose-600 border-rose-100',
                                             ];
                                             $currentClass = $statusClasses[$p->status] ?? 'bg-slate-50 text-slate-500 border-slate-100';
-                                        @endphp
+                                        ?>
                                         <div class="flex flex-col items-center gap-2">
-                                            <span class="px-5 py-2 rounded-2xl border {{ $currentClass }} text-[10px] font-black uppercase italic tracking-widest shadow-sm inline-block min-w-[100px]">
-                                                {{ $p->status }}
+                                            <span class="px-5 py-2 rounded-2xl border <?php echo e($currentClass); ?> text-[10px] font-black uppercase italic tracking-widest shadow-sm inline-block min-w-[100px]">
+                                                <?php echo e($p->status); ?>
+
                                             </span>
-                                            {{-- Tampilkan status kehadiran jika kegiatan sudah selesai dan ada absensi --}}
-                                            @if($p->absensi && in_array($p->kegiatan->status, ['selesai', 'tutup']))
-                                                @if($p->absensi->hadir)
+                                            
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($p->absensi && in_array($p->kegiatan->status, ['selesai', 'tutup'])): ?>
+                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($p->absensi->hadir): ?>
                                                     <span class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-wider">✔ Hadir</span>
-                                                @else
+                                                <?php else: ?>
                                                     <span class="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-[9px] font-bold uppercase tracking-wider">⚠ Alfa (Tidak Hadir)</span>
-                                                @endif
-                                            @elseif($p->kegiatan->status == 'aktif' && $p->status == 'disetujui')
+                                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                            <?php elseif($p->kegiatan->status == 'aktif' && $p->status == 'disetujui'): ?>
                                                 <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-wider">⏳ Belum absensi</span>
-                                            @endif
+                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                     </td>
 
                                     <td class="px-8 py-8 text-right">
                                         <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ route('kegiatan.publik.show', $p->kegiatan->id_kegiatan) }}" 
+                                            <a href="<?php echo e(route('kegiatan.publik.show', $p->kegiatan->id_kegiatan)); ?>" 
                                                class="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm group/btn">
                                                 Detail
                                                 <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                                             </a>
                                             
-                                            @if($p->status === 'disetujui' && $p->absensi && $p->absensi->hadir && $p->certificate)
-                                                <a href="{{ route('certificate.download', $p->certificate->id) }}" 
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($p->status === 'disetujui' && $p->absensi && $p->absensi->hadir && $p->certificate): ?>
+                                                <a href="<?php echo e(route('certificate.download', $p->certificate->id)); ?>" 
                                                 class="inline-flex items-center gap-2 bg-emerald-600 text-white border border-emerald-200 hover:bg-emerald-700 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm">
                                                     Sertifikat
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6"></path></svg>
                                                 </a>
-                                            @endif
+                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="p-8 bg-slate-50/30 border-t border-slate-100">
-                    {{ $pendaftarans->links() }}
+                    <?php echo e($pendaftarans->links()); ?>
+
                 </div>
 
-            @else
+            <?php else: ?>
                 <div class="p-24 text-center flex flex-col items-center justify-center">
                     <div class="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mb-6 border-2 border-dashed border-slate-200 shadow-inner">
                         <svg class="w-10 h-10 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,11 +159,11 @@
                         </svg>
                     </div>
                     <p class="font-extrabold uppercase italic text-slate-300 tracking-[0.3em] text-xs">Belum ada jejak pendaftaran</p>
-                    <a href="{{ route('kegiatan.publik.index') }}" class="mt-8 inline-flex bg-emerald-600 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-emerald-100 active:scale-95">
+                    <a href="<?php echo e(route('kegiatan.publik.index')); ?>" class="mt-8 inline-flex bg-emerald-600 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-emerald-100 active:scale-95">
                         Cari kegiatan sekarang
                     </a>
                 </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
     </div>
 </div>
@@ -173,4 +178,5 @@
     /* Pagination styling */
     .pagination svg { width: 1.25rem; height: 1.25rem; }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\laragon\www\sibo\resources\views/anggota/riwayat.blade.php ENDPATH**/ ?>

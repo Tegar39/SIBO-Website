@@ -53,4 +53,8 @@ class Pendaftaran extends Model
         }
         return $this->anggota?->kontak ?? '-';
     }
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class, 'id_pendaftaran', 'id_daftar');
+    }
 }

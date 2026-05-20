@@ -11,7 +11,8 @@ use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\AnggotaProfilController;
-use App\Http\Controllers\Admin\LaporanController; // TAMBAHKAN INI
+use App\Http\Controllers\Admin\LaporanController; 
+use App\Http\Controllers\CertificateController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardPacController;
 
@@ -100,6 +101,8 @@ Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')
     Route::get('/dashboard', [App\Http\Controllers\DashboardAnggotaController::class, 'index'])->name('dashboard');
     Route::post('/daftar/{id_kegiatan}', [PendaftaranController::class, 'daftar'])->name('daftar');
     Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('anggota.notifikasi');
+    Route::put('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('anggota.notifikasi.read');
     
     // Profil - 2 halaman terpisah
     Route::get('/profil', [AnggotaProfilController::class, 'index'])->name('profil');
@@ -108,6 +111,11 @@ Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')
     Route::get('/keamanan', [AnggotaProfilController::class, 'keamanan'])->name('keamanan');
     Route::put('/keamanan/update-password', [AnggotaProfilController::class, 'updatePassword'])->name('keamanan.update-password');
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/certificate/download/{id}', [App\Http\Controllers\CertificateController::class, 'download'])->name('certificate.download');
+});
+
 
 require __DIR__.'/auth.php';
 

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pendaftaran; // Pastikan model ini ada
+use App\Models\Pendaftaran;
+use App\Models\Notifikasi;
 
 class DashboardAnggotaController extends Controller
 {
@@ -12,45 +13,57 @@ class DashboardAnggotaController extends Controller
         $user = auth()->user();
         $anggota = $user->anggota;
 
-        // Default value biar gak error Undefined Variable di Blade
+        // Default values
         $jumlahPendaftaran = 0;
         $jumlahDiikuti = 0;
         $jumlahSelesai = 0;
         $agendaMendatang = collect();
+        $notifikasi = collect();
+        $unreadCount = 0;
 
         if ($anggota) {
-            // 1. Total Pendaftaran (Berdasarkan id_anggota)
-            $jumlahPendaftaran = \App\Models\Pendaftaran::where('id_anggota', $anggota->id_anggota)->count();
+            // 1. Total Pendaftaran
+            $jumlahPendaftaran = Pendaftaran::where('id_anggota', $anggota->id_anggota)->count();
 
-            // 2. Diikuti (Pakai kolom 'status' dan value 'disetujui' sesuai gambar)
-            $jumlahDiikuti = \App\Models\Pendaftaran::where('id_anggota', $anggota->id_anggota)
-                ->where('status', 'disetujui') 
+            // 2. Diikuti (status disetujui)
+            $jumlahDiikuti = Pendaftaran::where('id_anggota', $anggota->id_anggota)
+                ->where('status', 'disetujui')
                 ->count();
 
-            // 3. Selesai (Menghitung pendaftaran yang sudah ada recordnya di tabel absensis dan hadir=1)
-            // Ini pakai relasi 'absensi' yang ada di model Pendaftaran
-            $jumlahSelesai = \App\Models\Pendaftaran::where('id_anggota', $anggota->id_anggota)
+            // 3. Selesai (sudah absen hadir)
+            $jumlahSelesai = Pendaftaran::where('id_anggota', $anggota->id_anggota)
                 ->whereHas('absensi', function($query) {
                     $query->where('hadir', 1);
                 })->count();
 
-            // 4. Ambil Agenda Mendatang
-            $agendaMendatang = \App\Models\Pendaftaran::where('id_anggota', $anggota->id_anggota)
-                ->where('status', 'disetujui') // Cuma yang sudah disetujui admin
+            // 4. Agenda mendatang (kegiatan yang akan datang)
+            $agendaMendatang = Pendaftaran::where('id_anggota', $anggota->id_anggota)
+                ->where('status', 'disetujui')
                 ->whereHas('kegiatan', function($query) {
                     $query->where('tanggal', '>=', now());
                 })
                 ->with('kegiatan')
                 ->get();
+
+            // 5. Notifikasi alfa
+            $notifikasi = Notifikasi::where('id_anggota', $anggota->id_anggota)
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+            $unreadCount = Notifikasi::where('id_anggota', $anggota->id_anggota)
+                ->where('is_read', false)
+                ->count();
         }
 
         return view('anggota.dashboard', compact(
-            'user', 
-            'anggota', 
-            'jumlahPendaftaran', 
-            'jumlahDiikuti', 
-            'jumlahSelesai', 
-            'agendaMendatang'
+            'user',
+            'anggota',
+            'jumlahPendaftaran',
+            'jumlahDiikuti',
+            'jumlahSelesai',
+            'agendaMendatang',
+            'notifikasi',
+            'unreadCount'
         ));
     }
 }

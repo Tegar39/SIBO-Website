@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
+            // Perbaikan foreign key: merujuk ke id_daftar
             $table->unsignedBigInteger('id_pendaftaran');
-            // Perbaikan: merujuk ke 'id_daftar' di tabel 'pendaftarans'
             $table->foreign('id_pendaftaran')->references('id_daftar')->on('pendaftarans')->onDelete('cascade');
             $table->string('certificate_number')->unique();
             $table->string('file_path')->nullable();

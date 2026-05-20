@@ -14,36 +14,25 @@ class UpdateKegiatanStatus extends Command
     public function handle()
     {
         $now = Carbon::now('Asia/Jakarta');
-        
-        // 1. Update kegiatan yang H-1 -> status menjadi 'tutup' (tidak bisa daftar)
+
+        // 1. Kegiatan yang H-1 dari sekarang -> tutup (tidak bisa daftar)
         $tomorrow = $now->copy()->addDay();
-        $kegiatanTutup = Kegiatan::where('status', 'aktif')
+        Kegiatan::where('status', 'aktif')
             ->whereDate('tanggal', $tomorrow->toDateString())
-            ->get();
-        
-        foreach ($kegiatanTutup as $kegiatan) {
-            $kegiatan->update(['status' => 'tutup']);
-            $this->info("Kegiatan '{$kegiatan->judul}' ditutup (H-1)");
-        }
-        
-        // 2. Update kegiatan yang sudah lewat 1 jam dari jadwal -> status 'selesai'
-        $kegiatanSelesai = Kegiatan::where('status', 'tutup')
-            ->orWhere('status', 'aktif')
-            ->get();
-        
+            ->update(['status' => 'tutup']);
+
+        // 2. Kegiatan yang sudah lewat 1 jam dari jadwal selesai -> selesai
+        $kegiatanSelesai = Kegiatan::whereIn('status', ['aktif', 'tutup'])->get();
         foreach ($kegiatanSelesai as $kegiatan) {
             $waktuKegiatan = Carbon::parse($kegiatan->tanggal . ' ' . ($kegiatan->waktu ?? '00:00:00'), 'Asia/Jakarta');
             $batasAbsen = $waktuKegiatan->copy()->addHour();
-            
-            // Jika sekarang sudah melebihi batas absen (1 jam setelah kegiatan selesai)
             if ($now->gt($batasAbsen) && $kegiatan->status != 'selesai') {
                 $kegiatan->update(['status' => 'selesai']);
-                $this->info("Kegiatan '{$kegiatan->judul}' selesai (melebihi 1 jam)");
+                $this->info("Kegiatan '{$kegiatan->judul}' telah selesai.");
             }
         }
-        
-        $this->info('Status kegiatan berhasil diperbarui!');
-        
+
+        $this->info('Status kegiatan diperbarui.');
         return Command::SUCCESS;
     }
 }

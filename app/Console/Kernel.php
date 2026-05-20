@@ -7,24 +7,30 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    /**
+     * The Artisan commands provided by your application.
+     *
+     * @var array
+     */
     protected $commands = [
         Commands\UpdateKegiatanStatus::class,
     ];
 
-    protected function schedule(Schedule $schedule)
+    /**
+     * Define the application's command schedule.
+     */
+    protected function schedule(Schedule $schedule): void
     {
+        // Update status kegiatan setiap jam
         $schedule->command('kegiatan:update-status')->hourly();
     }
 
-    protected function commands()
+    /**
+     * Register the commands for the application.
+     */
+    protected function commands(): void
     {
         $this->load(__DIR__.'/Commands');
         require base_path('routes/console.php');
     }
-
-    protected $routeMiddleware = [
-    // ... middleware lainnya
-    'role' => \App\Http\Middleware\CheckRole::class,
-    ];
-    
 }
