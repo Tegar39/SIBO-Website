@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kegiatan;
 use App\Models\Pendaftaran;
+use App\Events\PendaftaranSelesai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -120,7 +121,7 @@ class PendaftaranController extends Controller
             }
         }
 
-        Pendaftaran::create([
+        $pendaftaran = Pendaftaran::create([
             'id_kegiatan' => $kegiatan->id_kegiatan,
             'nama_peserta' => $request->nama_peserta,
             'kontak_peserta' => $request->kontak_peserta,
@@ -129,6 +130,11 @@ class PendaftaranController extends Controller
             'created_by' => Auth::id(),
             'id_anggota' => null,
         ]);
+
+        // 🔔 Trigger event jika status = disetujui
+        if ($request->status == 'disetujui') {
+            event(new PendaftaranSelesai($pendaftaran));
+        }
 
         return redirect()->route('admin.pendaftaran.show', $id_kegiatan)
             ->with('success', 'Peserta berhasil ditambahkan.');
@@ -149,6 +155,12 @@ class PendaftaranController extends Controller
         }
 
         $pendaftaran->update(['status' => $request->status]);
+
+        // Trigger event jika status baru menjadi 'disetujui'
+        if ($request->status == 'disetujui') {
+            event(new PendaftaranSelesai($pendaftaran));
+        }
+
         return back()->with('success', 'Status pendaftaran diupdate.');
     }
 }
