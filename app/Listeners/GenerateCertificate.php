@@ -7,15 +7,20 @@ use App\Services\CertificateService;
 
 class GenerateCertificate
 {
-    protected $certificateService;
-
-    public function __construct(CertificateService $certificateService)
+    public function __construct(protected CertificateService $certificateService)
     {
-        $this->certificateService = $certificateService;
     }
 
-    public function handle(PendaftaranSelesai $event)
+    public function handle(PendaftaranSelesai $event): void
     {
-        $this->certificateService->generateForPendaftaran($event->pendaftaran);
+        $pendaftaran = $event->pendaftaran->loadMissing('absensi');
+
+        // Sertifikat hanya layak dibuat setelah peserta benar-benar hadir.
+        // Approval pendaftaran saja belum cukup untuk mendapatkan sertifikat.
+        if (! $pendaftaran->absensi || ! $pendaftaran->absensi->hadir) {
+            return;
+        }
+
+        $this->certificateService->generateForPendaftaran($pendaftaran);
     }
 }

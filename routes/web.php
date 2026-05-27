@@ -15,6 +15,10 @@ use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\CertificateController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardPacController;
+use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\PublicPacController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\Admin\SecurityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +30,10 @@ Route::get('/kegiatan', [KegiatanPublikController::class, 'index'])->name('kegia
 Route::get('/kegiatan/{id}', [KegiatanPublikController::class, 'show'])->name('kegiatan.publik.show');
 Route::get('/galeri', [GaleriPublikController::class, 'index'])->name('galeri.publik.index');
 Route::get('/galeri/{id}', [GaleriPublikController::class, 'show'])->name('galeri.publik.show');
+
+Route::get('/pac', [PublicPacController::class, 'index'])->name('pac.public.index');
+Route::get('/pac/{pac}', [PublicPacController::class, 'show'])->where('pac', '^(?!dashboard$).+')->name('pac.public.show');
+
 Route::middleware(['auth', 'role.pac'])->prefix('pac')->name('pac.')->group(function () {
     Route::get('/dashboard', [DashboardPacController::class, 'index'])->name('dashboard');
 });
@@ -38,6 +46,9 @@ Route::middleware(['auth', 'role.pac'])->prefix('pac')->name('pac.')->group(func
 Route::get('/dashboard', function () {
     if (auth()->user()->role == 'admin') {
         return redirect()->route('admin.dashboard');
+    }
+    if (auth()->user()->role == 'pac') {
+        return redirect()->route('pac.dashboard');
     }
     return redirect()->route('anggota.dashboard');
 })->middleware(['auth'])->name('dashboard');
@@ -63,8 +74,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Absensi
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/absensi/{id_kegiatan}/create', [AbsensiController::class, 'create'])->name('absensi.create');
-    Route::get('/absensi/{id_kegiatan}', [AbsensiController::class, 'show'])->name('admin.absensi.show');
-    Route::get('/absensi/{id_kegiatan}/export', [AbsensiController::class, 'export'])->name('admin.absensi.export');
+    Route::get('/absensi/{id_kegiatan}', [AbsensiController::class, 'show'])->name('absensi.show');
+    Route::get('/absensi/{id_kegiatan}/export', [AbsensiController::class, 'export'])->name('absensi.export');
     Route::post('/absensi/{id_kegiatan}', [AbsensiController::class, 'store'])->name('absensi.store');
     
     // Galeri
@@ -79,6 +90,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/', [LaporanController::class, 'index'])->name('index');
         Route::get('/anggota', [LaporanController::class, 'anggota'])->name('anggota');
         Route::get('/kegiatan', [LaporanController::class, 'kegiatan'])->name('kegiatan');
+        Route::get('/absensi', [LaporanController::class, 'absensi'])->name('absensi');
         
         // Export Anggota
         Route::get('/anggota/export/excel', [LaporanController::class, 'exportAnggotaExcel'])->name('anggota.export.excel');
@@ -87,8 +99,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         
         // Export Kegiatan
         Route::get('/kegiatan/export/excel', [LaporanController::class, 'exportKegiatanExcel'])->name('kegiatan.export.excel');
+        Route::get('/kegiatan/export/csv', [LaporanController::class, 'exportKegiatanCsv'])->name('kegiatan.export.csv');
         Route::get('/kegiatan/export/pdf', [LaporanController::class, 'exportKegiatanPdf'])->name('kegiatan.export.pdf');
+
+        // Export Absensi
+        Route::get('/absensi/export/excel', [LaporanController::class, 'exportAbsensiExcel'])->name('absensi.export.excel');
+        Route::get('/absensi/export/csv', [LaporanController::class, 'exportAbsensiCsv'])->name('absensi.export.csv');
+        Route::get('/absensi/export/pdf', [LaporanController::class, 'exportAbsensiPdf'])->name('absensi.export.pdf');
     });
+    // Keamanan sistem
+    Route::get('/security', [SecurityController::class, 'index'])->name('security.index');
+    Route::put('/security/users/{user}', [SecurityController::class, 'updateUser'])->name('security.user.update');
+
+    // Integrasi inventaris eksternal
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/sync', [InventoryController::class, 'sync'])->name('inventory.sync');
+
     // ========== END ROUTE LAPORAN ==========
 });
 
@@ -101,8 +127,8 @@ Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')
     Route::get('/dashboard', [App\Http\Controllers\DashboardAnggotaController::class, 'index'])->name('dashboard');
     Route::post('/daftar/{id_kegiatan}', [PendaftaranController::class, 'daftar'])->name('daftar');
     Route::get('/riwayat', [PendaftaranController::class, 'riwayat'])->name('riwayat');
-    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('anggota.notifikasi');
-    Route::put('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('anggota.notifikasi.read');
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
+    Route::put('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
     
     // Profil - 2 halaman terpisah
     Route::get('/profil', [AnggotaProfilController::class, 'index'])->name('profil');

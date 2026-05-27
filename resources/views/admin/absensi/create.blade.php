@@ -71,6 +71,7 @@
                                             <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 w-24 text-center">No</th>
                                             <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">Data Anggota</th>
                                             <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 text-center">Status Kehadiran</th>
+                                            <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">Keterangan</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 bg-white/40">
@@ -83,11 +84,11 @@
                                             </td>
                                             <td class="px-8 py-6">
                                                 <div class="font-bold text-slate-800 uppercase text-[13px] group-hover/row:text-emerald-700 transition-colors">
-                                                    {{ $p->anggota->nama_lengkap }}
+                                                    {{ $p->display_name }}
                                                 </div>
                                                 <div class="text-[10px] font-bold text-slate-400 mt-1 flex items-center gap-1.5">
                                                     <span class="w-1 h-1 bg-slate-200 rounded-full"></span>
-                                                    ID: {{ $p->anggota->nomor_anggota }}
+                                                    ID: {{ $p->anggota->nomor_anggota ?? 'Peserta Umum' }}
                                                 </div>
                                             </td>
                                             <td class="px-8 py-6">
@@ -102,6 +103,9 @@
                                                         </span>
                                                     </label>
                                                 </div>
+                                            </td>
+                                            <td class="px-8 py-6">
+                                                <input type="text" name="keterangan[{{ $p->id_daftar }}]" value="{{ old('keterangan.' . $p->id_daftar, $p->absensi->keterangan ?? '') }}" placeholder="Izin/sakit/alfa/catatan" class="w-full rounded-xl border-slate-200 text-xs focus:border-emerald-500 focus:ring-emerald-500">
                                             </td>
                                         </tr>
                                         @endforeach

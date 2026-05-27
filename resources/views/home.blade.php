@@ -60,6 +60,34 @@
         </div>
     </section>
 
+
+
+    <!-- Direktori PAC Aktif -->
+    <section id="pac" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+            <div>
+                <span class="text-emerald-600 font-black uppercase tracking-[0.25em] text-xs">PAC Aktif</span>
+                <h2 class="mt-2 text-3xl md:text-4xl font-black text-slate-900">Informasi PAC</h2>
+                <p class="mt-3 text-slate-500 max-w-2xl">Klik kartu PAC untuk membuka halaman informasi PAC yang aktif beserta nama, jumlah anggota, dan riwayat kegiatannya.</p>
+            </div>
+            <a href="{{ route('pac.public.index') }}" class="inline-flex justify-center bg-slate-900 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition">Lihat Semua PAC</a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @forelse($pacList ?? [] as $pac)
+                <a href="{{ route('pac.public.show', urlencode($pac->pac)) }}" class="group bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div class="flex items-center justify-between">
+                        <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">PAC</div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600">Aktif</span>
+                    </div>
+                    <h3 class="mt-5 text-xl font-black text-slate-900 group-hover:text-emerald-600 transition">{{ $pac->pac }}</h3>
+                    <p class="mt-2 text-sm text-slate-500">{{ $pac->total_anggota }} anggota terdaftar</p>
+                </a>
+            @empty
+                <div class="col-span-full bg-white rounded-3xl p-8 text-center text-slate-400 font-bold border border-slate-100">Belum ada data PAC aktif.</div>
+            @endforelse
+        </div>
+    </section>
+
     <!-- Tentang SIBO (Profil) -->
     <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">

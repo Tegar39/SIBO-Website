@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Anggota;
 use App\Models\Kegiatan;
 use App\Models\Galeri;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -13,6 +14,13 @@ class HomeController extends Controller
         $totalAnggota = Anggota::count();
         $totalKegiatan = Kegiatan::count();
         $totalPac = Anggota::whereNotNull('pac')->distinct('pac')->count('pac');
+        $pacList = Anggota::select('pac', DB::raw('count(*) as total_anggota'))
+            ->whereNotNull('pac')
+            ->where('pac', '<>', '')
+            ->groupBy('pac')
+            ->orderBy('pac')
+            ->take(6)
+            ->get();
         $kegiatanTerbaru = Kegiatan::with('pamflet', 'kategori')
             ->where('status', 'aktif')
             ->orderBy('tanggal', 'desc')
@@ -29,6 +37,6 @@ class HomeController extends Controller
             ->take(12) // ambil sejumlah untuk carousel
             ->get();
 
-        return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri', 'totalPac'));
+        return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri', 'totalPac', 'pacList'));
     }
 }

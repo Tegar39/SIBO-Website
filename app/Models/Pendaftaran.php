@@ -13,7 +13,7 @@ class Pendaftaran extends Model
     protected $primaryKey = 'id_daftar';
     protected $fillable = [
         'id_kegiatan', 'id_anggota', 'nama_peserta', 'kontak_peserta',
-        'tgl_daftar', 'status', 'keterangan', 'created_by'
+        'tgl_daftar', 'status', 'keterangan', 'created_by', 'jenis_daftar'
     ];
 
     public function anggota()

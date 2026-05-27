@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use App\Models\Pamflet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Services\AuditService;
 use Carbon\Carbon;
 
 class KegiatanController extends Controller
@@ -45,7 +46,7 @@ class KegiatanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, AuditService $audit)
     {
         $request->validate([
             'id_kategori' => 'required|exists:kategoris,id_kategori',
@@ -55,7 +56,7 @@ class KegiatanController extends Controller
             'waktu' => 'nullable',
             'lokasi' => 'nullable|string|max:255',
             'kuota' => 'nullable|integer|min:0',
-            'status' => 'required|in:aktif,selesai,batal',
+            'status' => 'required|in:aktif,tutup,selesai,batal',
             'pamflet' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -63,6 +64,7 @@ class KegiatanController extends Controller
         $data['created_by'] = auth()->id();
 
         $kegiatan = Kegiatan::create($data);
+        $audit->log('create_kegiatan', 'kegiatan', $kegiatan, null, $kegiatan->only(['judul', 'tanggal', 'lokasi', 'status']), $request);
 
         if ($request->hasFile('pamflet')) {
             $file = $request->file('pamflet');
@@ -101,7 +103,7 @@ class KegiatanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, AuditService $audit)
     {
         $kegiatan = Kegiatan::findOrFail($id);
         
@@ -113,13 +115,15 @@ class KegiatanController extends Controller
             'waktu' => 'nullable',
             'lokasi' => 'nullable|string|max:255',
             'kuota' => 'nullable|integer|min:0',
-            'status' => 'required|in:aktif,selesai,batal',
+            'status' => 'required|in:aktif,tutup,selesai,batal',
             'pamflet' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        $old = $kegiatan->only(['judul', 'tanggal', 'lokasi', 'status']);
         $kegiatan->update($request->only([
             'id_kategori', 'judul', 'deskripsi', 'tanggal', 'waktu', 'lokasi', 'kuota', 'status'
         ]));
+        $audit->log('update_kegiatan', 'kegiatan', $kegiatan, $old, $kegiatan->only(['judul', 'tanggal', 'lokasi', 'status']), $request);
 
         if ($request->hasFile('pamflet')) {
             // Hapus pamflet lama
@@ -146,7 +150,7 @@ class KegiatanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($id, AuditService $audit)
     {
         $kegiatan = Kegiatan::findOrFail($id);
         
@@ -156,6 +160,8 @@ class KegiatanController extends Controller
             $kegiatan->pamflet->delete();
         }
         
+        $old = $kegiatan->only(['judul', 'tanggal', 'lokasi', 'status']);
+        $audit->log('delete_kegiatan', 'kegiatan', $kegiatan, $old, null, request());
         // Hapus kegiatan
         $kegiatan->delete();
         

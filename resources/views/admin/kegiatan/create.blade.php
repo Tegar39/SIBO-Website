@@ -86,6 +86,7 @@
                                 <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status Publikasi</label>
                                 <select name="status" class="w-full bg-slate-100/50 border-none rounded-2xl p-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 transition-all">
                                     <option value="aktif">Aktif / Publikasikan</option>
+                                    <option value="tutup">Tutup Pendaftaran</option>
                                     <option value="selesai">Selesai</option>
                                     <option value="batal">Batal</option>
                                 </select>

@@ -81,6 +81,7 @@
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6"/><path d="M12 18v-4M8 18v-4M16 18v-4"/></svg>
                                 Excel
                             </a>
+                            <a href="{{ route('admin.laporan.kegiatan.export.csv') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition">CSV</a>
                             <a href="{{ route('admin.laporan.kegiatan.export.pdf') }}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
                                 PDF
@@ -90,6 +91,22 @@
                 </div>
             </div>
         </div>
+
+        <div class="mt-8 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-6 py-5 bg-gradient-to-r from-indigo-700 to-slate-800">
+                <h2 class="text-white font-bold text-lg">Laporan Absensi</h2>
+                <p class="text-indigo-100 text-xs">Hadir: {{ $totalHadir ?? 0 }} · Tidak Hadir: {{ $totalTidakHadir ?? 0 }}</p>
+            </div>
+            <div class="p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <a href="{{ route('admin.laporan.absensi') }}" class="text-center bg-slate-800 hover:bg-emerald-600 text-white px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all">Lihat Detail Absensi</a>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ route('admin.laporan.absensi.export.excel') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold">Excel</a>
+                    <a href="{{ route('admin.laporan.absensi.export.csv') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold">CSV</a>
+                    <a href="{{ route('admin.laporan.absensi.export.pdf') }}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-bold">PDF</a>
+                </div>
+            </div>
+        </div>
+
 
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">

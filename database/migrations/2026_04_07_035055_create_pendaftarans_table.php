@@ -8,20 +8,25 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('certificates', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('id_pendaftaran');
-            // Perbaikan: merujuk ke 'id_daftar' di tabel 'pendaftarans'
-            $table->foreign('id_pendaftaran')->references('id_daftar')->on('pendaftarans')->onDelete('cascade');
-            $table->string('certificate_number')->unique();
-            $table->string('file_path')->nullable();
-            $table->text('metadata')->nullable();
+        Schema::create('pendaftarans', function (Blueprint $table) {
+            $table->id('id_daftar');
+            $table->foreignId('id_kegiatan')
+                ->constrained('kegiatans', 'id_kegiatan')
+                ->onDelete('cascade');
+            $table->foreignId('id_anggota')
+                ->constrained('anggotas', 'id_anggota')
+                ->onDelete('cascade');
+            $table->dateTime('tgl_daftar')->useCurrent();
+            $table->enum('status', ['pending', 'disetujui', 'ditolak', 'batal'])->default('pending');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
+
+            $table->unique(['id_anggota', 'id_kegiatan']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('certificates');
+        Schema::dropIfExists('pendaftarans');
     }
 };

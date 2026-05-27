@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -33,6 +34,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    Route::get('otp', [OtpController::class, 'show'])->name('otp.show');
+    Route::post('otp', [OtpController::class, 'verify'])->middleware('throttle:5,1')->name('otp.verify');
+    Route::post('otp/resend', [OtpController::class, 'resend'])->middleware('throttle:3,1')->name('otp.resend');
 });
 
 Route::middleware('auth')->group(function () {
@@ -51,6 +56,18 @@ Route::middleware('auth')->group(function () {
         ->name('password.confirm');
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+
+    Route::post('password/otp', [OtpController::class, 'requestPasswordOtp'])
+        ->middleware('throttle:3,1')
+        ->name('password.otp.request');
+    Route::get('password/otp', [OtpController::class, 'showPasswordOtp'])
+        ->name('password.otp.show');
+    Route::post('password/otp/verify', [OtpController::class, 'verifyPasswordOtp'])
+        ->middleware('throttle:5,1')
+        ->name('password.otp.verify');
+    Route::post('password/otp/resend', [OtpController::class, 'resendPasswordOtp'])
+        ->middleware('throttle:3,1')
+        ->name('password.otp.resend');
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 

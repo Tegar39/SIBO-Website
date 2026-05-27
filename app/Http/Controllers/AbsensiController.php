@@ -2,110 +2,134 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kegiatan;
-use App\Models\Pendaftaran;
-use App\Models\Absensi;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PesertaKegiatanExport;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Absensi;
+use App\Models\Kegiatan;
 use App\Models\Notifikasi;
-use App\Events\PendaftaranSelesai;
+use App\Models\Pendaftaran;
 use App\Services\CertificateService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-        $kegiatans = Kegiatan::where('status', 'selesai')->orderBy('tanggal', 'desc')->get();
+        $kegiatans = Kegiatan::whereIn('status', ['selesai', 'tutup'])->orderBy('tanggal', 'desc')->get();
         return view('admin.absensi.index', compact('kegiatans'));
     }
 
     public function create($id_kegiatan)
     {
         $kegiatan = Kegiatan::findOrFail($id_kegiatan);
-        $pendaftarans = Pendaftaran::with('anggota')
+        $pendaftarans = Pendaftaran::with(['anggota', 'absensi'])
             ->where('id_kegiatan', $id_kegiatan)
             ->where('status', 'disetujui')
+            ->orderBy('nama_peserta')
             ->get();
+
         return view('admin.absensi.create', compact('kegiatan', 'pendaftarans'));
     }
 
     public function store(Request $request, $id_kegiatan)
     {
         $request->validate([
-            'hadir' => 'required|array',
-            'hadir.*' => 'boolean',
+            'hadir' => 'nullable|array',
+            'hadir.*' => 'nullable|boolean',
+            'keterangan' => 'nullable|array',
+            'keterangan.*' => 'nullable|string|max:255',
         ]);
 
         $kegiatan = Kegiatan::findOrFail($id_kegiatan);
-        $certificateService = new CertificateService();
+        $certificateService = app(CertificateService::class);
+        $hadirInput = $request->input('hadir', []);
+        $keteranganInput = $request->input('keterangan', []);
 
-        foreach ($request->hadir as $id_daftar => $hadir) {
-            $pendaftaran = Pendaftaran::with('anggota')->find($id_daftar);
-            if (!$pendaftaran) continue;
-
-            $absensi = Absensi::where('id_daftar', $id_daftar)->first();
-            if ($absensi) {
-                $absensi->update([
-                    'hadir' => $hadir,
-                    'waktu_hadir' => $hadir ? now() : null,
-                ]);
-            } else {
-                $absensi = Absensi::create([
-                    'id_daftar' => $id_daftar,
-                    'hadir' => $hadir,
-                    'waktu_hadir' => $hadir ? now() : null,
-                ]);
-            }
-
-            // 🔔 NOTIFIKASI ALFA (tidak hadir)
-            if (!$hadir && $pendaftaran->anggota) {
-                // Cek apakah sudah pernah dikirim notifikasi alfa untuk kegiatan ini
-                $sudahDikirim = Notifikasi::where('id_anggota', $pendaftaran->anggota->id_anggota)
-                    ->where('tipe', 'alfa')
-                    ->where('pesan', 'like', "%{$kegiatan->judul}%")
-                    ->exists();
-
-                if (!$sudahDikirim) {
-                    Notifikasi::create([
-                        'id_anggota' => $pendaftaran->anggota->id_anggota,
-                        'judul' => 'Tidak Hadir Tanpa Keterangan',
-                        'pesan' => "Anda dinyatakan tidak hadir (alfa) pada kegiatan '{$kegiatan->judul}' tanpa keterangan.",
-                        'tipe' => 'alfa',
-                        'is_read' => false,
-                    ]);
-                }
-            }
-
-            // 🎓 GENERATE SERTIFIKAT OTOMATIS jika hadir & status pendaftaran disetujui
-            if ($hadir && $pendaftaran->status === 'disetujui' && !$pendaftaran->certificate) {
-                // Panggil service untuk generate sertifikat
-                $certificateService->generateForPendaftaran($pendaftaran);
-            }
-        }
-
-        return redirect()->route('admin.absensi.index')
-            ->with('success', 'Absensi disimpan. Notifikasi alfa dan sertifikat telah diproses.');
-    }
-    public function show($id_kegiatan)
-    {
-        $kegiatan = Kegiatan::findOrFail($id_kegiatan);
-        $pendaftarans = Pendaftaran::with(['anggota', 'absensi'])
+        $pendaftarans = Pendaftaran::with(['anggota.user', 'certificate'])
             ->where('id_kegiatan', $id_kegiatan)
             ->where('status', 'disetujui')
             ->get();
 
-        $hadirCount = $pendaftarans->filter(function ($p) {
-            return $p->absensi && $p->absensi->hadir;
-        })->count();
+        $hadirCount = 0;
+        $tidakHadirCount = 0;
+
+        foreach ($pendaftarans as $pendaftaran) {
+            $idDaftar = $pendaftaran->id_daftar;
+            $hadir = (bool) ($hadirInput[$idDaftar] ?? false);
+            $keterangan = $keteranganInput[$idDaftar] ?? null;
+
+            $absensi = Absensi::updateOrCreate(
+                ['id_daftar' => $idDaftar],
+                [
+                    'hadir' => $hadir,
+                    'waktu_hadir' => $hadir ? now() : null,
+                    'keterangan' => $keterangan,
+                ]
+            );
+
+            if ($hadir) {
+                $hadirCount++;
+                if (! $pendaftaran->certificate) {
+                    $certificateService->generateForPendaftaran($pendaftaran->fresh(['anggota', 'kegiatan', 'certificate']));
+                }
+                continue;
+            }
+
+            $tidakHadirCount++;
+            if ($pendaftaran->anggota) {
+                $this->kirimNotifikasiTidakHadir($pendaftaran, $kegiatan, $keterangan);
+            }
+        }
+
+        return redirect()->route('admin.absensi.show', $kegiatan->id_kegiatan)
+            ->with('success', "Absensi disimpan. Hadir: {$hadirCount}, tidak hadir: {$tidakHadirCount}. Sertifikat dan notifikasi diproses otomatis.");
+    }
+
+    public function show($id_kegiatan)
+    {
+        $kegiatan = Kegiatan::findOrFail($id_kegiatan);
+        $pendaftarans = Pendaftaran::with(['anggota', 'absensi', 'certificate'])
+            ->where('id_kegiatan', $id_kegiatan)
+            ->where('status', 'disetujui')
+            ->get();
+
+        $hadirCount = $pendaftarans->filter(fn ($p) => $p->absensi && $p->absensi->hadir)->count();
 
         return view('admin.absensi.show', compact('kegiatan', 'pendaftarans', 'hadirCount'));
     }
-    
+
     public function export($id_kegiatan)
     {
         $kegiatan = Kegiatan::findOrFail($id_kegiatan);
-        return Excel::download(new PesertaKegiatanExport($id_kegiatan), 'absensi_' . $kegiatan->slug . '.xlsx');
+        return Excel::download(new PesertaKegiatanExport($id_kegiatan), 'absensi_' . Str::slug($kegiatan->judul) . '.xlsx');
+    }
+
+    private function kirimNotifikasiTidakHadir(Pendaftaran $pendaftaran, Kegiatan $kegiatan, ?string $keterangan = null): void
+    {
+        $pesan = "Anda dinyatakan tidak hadir pada kegiatan '{$kegiatan->judul}'.";
+        if ($keterangan) {
+            $pesan .= " Keterangan: {$keterangan}";
+        }
+
+        Notifikasi::updateOrCreate(
+            [
+                'id_anggota' => $pendaftaran->anggota->id_anggota,
+                'tipe' => 'ketidakhadiran',
+                'judul' => 'Notifikasi Ketidakhadiran',
+                'pesan' => $pesan,
+            ],
+            ['is_read' => false]
+        );
+
+        if ($pendaftaran->anggota->user?->email) {
+            try {
+                Mail::to($pendaftaran->anggota->user->email)
+                    ->send(new \App\Mail\AbsensiNotifikasi($pendaftaran, $kegiatan));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
     }
 }

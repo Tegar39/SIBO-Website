@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+
+
+    'inventory' => [
+        'base_url' => env('INVENTORY_API_URL'),
+        'token' => env('INVENTORY_API_TOKEN'),
+        'timeout' => env('INVENTORY_API_TIMEOUT', 10),
+    ],
 ];

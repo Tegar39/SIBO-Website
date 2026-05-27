@@ -22,6 +22,7 @@
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->guest()): ?>
                         <a href="<?php echo e(route('home')); ?>#home" wire:navigate data-section="home" class="nav-item">Beranda</a>
                         <a href="<?php echo e(route('home')); ?>#tentang" wire:navigate data-section="tentang" class="nav-item">Profil Organisasi</a>
+                        <a href="<?php echo e(route('home')); ?>#pac" wire:navigate data-section="pac" class="nav-item">PAC</a>
                         <a href="<?php echo e(route('home')); ?>#statistik" wire:navigate data-section="statistik" class="nav-item">Jumlah Data</a>
                         <a href="<?php echo e(route('home')); ?>#kegiatan-terbaru" wire:navigate data-section="kegiatan-terbaru" class="nav-item">Informasi Kegiatan</a>
                         <a href="<?php echo e(route('home')); ?>#galeri" wire:navigate data-section="galeri" class="nav-item">Galeri</a>
@@ -36,8 +37,13 @@
                             <a href="<?php echo e(route('admin.kegiatan.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.kegiatan.*') ? 'active' : ''); ?>">Kegiatan</a>
                             <a href="<?php echo e(route('admin.pendaftaran.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.pendaftaran.*') ? 'active' : ''); ?>">Pendaftaran</a>
                             <a href="<?php echo e(route('admin.absensi.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.absensi.*') ? 'active' : ''); ?>">Absensi</a>
+                            <a href="<?php echo e(route('admin.inventory.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.inventory.*') ? 'active' : ''); ?>">Inventaris</a>
                             <a href="<?php echo e(route('admin.galeri.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.galeri.*') ? 'active' : ''); ?>">Galeri</a>
                             <a href="<?php echo e(route('admin.laporan.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.laporan.*') ? 'active' : ''); ?>">Laporan</a>
+                            <a href="<?php echo e(route('admin.security.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('admin.security.*') ? 'active' : ''); ?>">Keamanan</a>
+                        <?php elseif(auth()->user()->role == 'pac'): ?>
+                            <a href="<?php echo e(route('pac.dashboard')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('pac.dashboard') ? 'active' : ''); ?>">Dashboard PAC</a>
+                            <a href="<?php echo e(route('pac.public.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('pac.public.*') ? 'active' : ''); ?>">Direktori PAC</a>
                         <?php else: ?>
                             <a href="<?php echo e(route('anggota.dashboard')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('anggota.dashboard') ? 'active' : ''); ?>">Dashboard</a>
                             <a href="<?php echo e(route('kegiatan.publik.index')); ?>" wire:navigate class="nav-item <?php echo e(request()->routeIs('kegiatan.publik.*') ? 'active' : ''); ?>">Kegiatan</a>
@@ -112,6 +118,7 @@
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->guest()): ?>
                 <a href="<?php echo e(route('home')); ?>#home" wire:navigate class="nav-item-mobile" @click="open = false">Beranda</a>
                 <a href="<?php echo e(route('home')); ?>#tentang" wire:navigate class="nav-item-mobile" @click="open = false">Profil</a>
+                <a href="<?php echo e(route('home')); ?>#pac" wire:navigate class="nav-item-mobile" @click="open = false">PAC</a>
                 <a href="<?php echo e(route('home')); ?>#statistik" wire:navigate class="nav-item-mobile" @click="open = false">Jumlah Data</a>
                 <a href="<?php echo e(route('home')); ?>#kegiatan-terbaru" wire:navigate class="nav-item-mobile" @click="open = false">Informasi</a>
                 <a href="<?php echo e(route('home')); ?>#galeri" wire:navigate class="nav-item-mobile" @click="open = false">Galeri</a>
@@ -128,8 +135,13 @@
                     <a href="<?php echo e(route('admin.kegiatan.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.kegiatan.*') ? 'active' : ''); ?>" @click="open = false">Kegiatan</a>
                     <a href="<?php echo e(route('admin.pendaftaran.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.pendaftaran.*') ? 'active' : ''); ?>" @click="open = false">Pendaftaran</a>
                     <a href="<?php echo e(route('admin.absensi.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.absensi.*') ? 'active' : ''); ?>" @click="open = false">Absensi</a>
+                    <a href="<?php echo e(route('admin.inventory.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.inventory.*') ? 'active' : ''); ?>" @click="open = false">Inventaris</a>
                     <a href="<?php echo e(route('admin.galeri.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.galeri.*') ? 'active' : ''); ?>" @click="open = false">Galeri</a>
                     <a href="<?php echo e(route('admin.laporan.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.laporan.*') ? 'active' : ''); ?>" @click="open = false">Laporan</a>
+                    <a href="<?php echo e(route('admin.security.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('admin.security.*') ? 'active' : ''); ?>" @click="open = false">Keamanan</a>
+                <?php elseif(auth()->user()->role == 'pac'): ?>
+                    <a href="<?php echo e(route('pac.dashboard')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('pac.dashboard') ? 'active' : ''); ?>" @click="open = false">Dashboard PAC</a>
+                    <a href="<?php echo e(route('pac.public.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('pac.public.*') ? 'active' : ''); ?>" @click="open = false">Direktori PAC</a>
                 <?php else: ?>
                     <a href="<?php echo e(route('anggota.dashboard')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('anggota.dashboard') ? 'active' : ''); ?>" @click="open = false">Dashboard</a>
                     <a href="<?php echo e(route('kegiatan.publik.index')); ?>" wire:navigate class="nav-item-mobile <?php echo e(request()->routeIs('kegiatan.publik.*') ? 'active' : ''); ?>" @click="open = false">Kegiatan</a>

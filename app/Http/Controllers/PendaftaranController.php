@@ -7,6 +7,7 @@ use App\Models\Pendaftaran;
 use App\Events\PendaftaranSelesai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PendaftaranController extends Controller
 {
@@ -30,6 +31,52 @@ class PendaftaranController extends Controller
             'kontak_peserta' => 'required_if:jenis_daftar,other|nullable|string|max:20',
         ]);
 
+        $jenisDaftar = $request->jenis_daftar;
+        $namaPeserta = $jenisDaftar === 'self'
+            ? $anggota->nama_lengkap
+            : trim((string) $request->nama_peserta);
+        $kontakPeserta = $jenisDaftar === 'self'
+            ? $anggota->kontak
+            : trim((string) $request->kontak_peserta);
+
+        // Check database: satu anggota hanya boleh mendaftarkan dirinya sendiri satu kali
+        // pada kegiatan yang sama selama statusnya masih aktif/pending/disetujui.
+        if ($jenisDaftar === 'self') {
+            $sudahDaftarSelf = Pendaftaran::query()
+                ->where('id_kegiatan', $kegiatan->id_kegiatan)
+                ->where('id_anggota', $anggota->id_anggota)
+                ->where('jenis_daftar', 'self')
+                ->whereIn('status', ['pending', 'disetujui'])
+                ->exists();
+
+            if ($sudahDaftarSelf) {
+                return back()->with('error', 'Kamu sudah mendaftar untuk kegiatan ini.');
+            }
+        }
+
+        // Check database: daftar untuk orang lain boleh lebih dari satu kali,
+        // tetapi orang yang sama tidak boleh didaftarkan dua kali oleh akun yang sama
+        // pada kegiatan yang sama. Pengecekan memakai nama + kontak agar tetap fleksibel.
+        if ($jenisDaftar === 'other') {
+            $namaNormal = $this->normalisasiNamaPeserta($namaPeserta);
+            $kontakNormal = $this->normalisasiKontakPeserta($kontakPeserta);
+
+            $duplikatPeserta = Pendaftaran::query()
+                ->where('id_kegiatan', $kegiatan->id_kegiatan)
+                ->where('created_by', $user->id)
+                ->where('jenis_daftar', 'other')
+                ->whereIn('status', ['pending', 'disetujui'])
+                ->get()
+                ->contains(function (Pendaftaran $pendaftaran) use ($namaNormal, $kontakNormal) {
+                    return $this->normalisasiNamaPeserta($pendaftaran->nama_peserta) === $namaNormal
+                        && $this->normalisasiKontakPeserta($pendaftaran->kontak_peserta) === $kontakNormal;
+                });
+
+            if ($duplikatPeserta) {
+                return back()->with('error', 'Peserta tersebut sudah pernah kamu daftarkan pada kegiatan ini.');
+            }
+        }
+
         // Cek kuota (hitung yang sudah disetujui)
         $jumlahDisetujui = Pendaftaran::where('id_kegiatan', $id_kegiatan)
             ->where('status', 'disetujui')->count();
@@ -37,26 +84,22 @@ class PendaftaranController extends Controller
             return back()->with('error', 'Kuota kegiatan sudah penuh.');
         }
 
-        $data = [
+        Pendaftaran::create([
             'id_kegiatan' => $kegiatan->id_kegiatan,
+            'id_anggota' => $anggota->id_anggota,
+            'nama_peserta' => $namaPeserta,
+            'kontak_peserta' => $kontakPeserta,
+            'jenis_daftar' => $jenisDaftar,
             'tgl_daftar' => now(),
             'status' => 'pending',
             'created_by' => $user->id,
-        ];
+        ]);
 
-        if ($request->jenis_daftar == 'self') {
-            $data['id_anggota'] = $anggota->id_anggota;
-            $data['nama_peserta'] = $anggota->nama_lengkap;
-            $data['kontak_peserta'] = $anggota->kontak;
-        } else {
-            $data['id_anggota'] = $anggota->id_anggota; // tetap catat pendaftar
-            $data['nama_peserta'] = $request->nama_peserta;
-            $data['kontak_peserta'] = $request->kontak_peserta;
-        }
+        $pesan = $jenisDaftar === 'other'
+            ? 'Pendaftaran peserta atas nama ' . $namaPeserta . ' berhasil dikirim.'
+            : 'Pendaftaran berhasil dikirim.';
 
-        Pendaftaran::create($data);
-
-        return redirect()->route('anggota.riwayat')->with('success', 'Pendaftaran berhasil dikirim.');
+        return redirect()->route('anggota.riwayat')->with('success', $pesan);
     }
 
     public function riwayat()
@@ -66,7 +109,7 @@ class PendaftaranController extends Controller
         if (!$anggota) {
             return redirect()->route('home')->with('error', 'Data anggota tidak ditemukan.');
         }
-        $pendaftarans = Pendaftaran::with('kegiatan')
+        $pendaftarans = Pendaftaran::with(['kegiatan', 'absensi', 'certificate'])
             ->where(function ($q) use ($anggota, $user) {
                 $q->where('id_anggota', $anggota->id_anggota)
                   ->orWhere('created_by', $user->id);
@@ -129,6 +172,7 @@ class PendaftaranController extends Controller
             'status' => $request->status,
             'created_by' => Auth::id(),
             'id_anggota' => null,
+            'jenis_daftar' => 'admin',
         ]);
 
         // 🔔 Trigger event jika status = disetujui
@@ -162,5 +206,15 @@ class PendaftaranController extends Controller
         }
 
         return back()->with('success', 'Status pendaftaran diupdate.');
+    }
+
+    private function normalisasiNamaPeserta(?string $nama): string
+    {
+        return Str::of((string) $nama)->lower()->squish()->toString();
+    }
+
+    private function normalisasiKontakPeserta(?string $kontak): string
+    {
+        return preg_replace('/\D+/', '', (string) $kontak) ?: '';
     }
 }

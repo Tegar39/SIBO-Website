@@ -17,7 +17,7 @@ return new class extends Migration
             $table->time('waktu')->nullable();
             $table->string('lokasi')->nullable();
             $table->integer('kuota')->default(0); // 0 = tidak terbatas
-            $table->enum('status', ['aktif', 'selesai', 'batal'])->default('aktif');
+            $table->enum('status', ['aktif', 'tutup', 'selesai', 'batal'])->default('aktif');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

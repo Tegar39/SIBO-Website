@@ -111,7 +111,7 @@
 
         <div class="nomor">NOMOR : {{ $certificate_number }}</div>
 
-        <div class="nama">{{ $peserta->nama_lengkap }}</div>
+        <div class="nama">{{ $nama_peserta }}</div>
         <div class="sebagai">sebagai</div>
         <div class="sebagai" style="font-weight:bold; margin-bottom:20px">PESERTA</div>
 

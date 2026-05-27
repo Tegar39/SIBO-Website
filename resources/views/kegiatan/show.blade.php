@@ -97,32 +97,54 @@
                             @auth
                                 @if(auth()->user()->role == 'anggota')
                                     @php
-                                        // MUAT MODEL DENGAN NAMESPACE LENGKAP
-                                        $pendaftaran = \App\Models\Pendaftaran::where('id_anggota', auth()->user()->anggota->id_anggota)
+                                        $anggotaLogin = auth()->user()->anggota;
+                                        $pendaftaranSelf = $anggotaLogin
+                                            ? \App\Models\Pendaftaran::where('id_anggota', $anggotaLogin->id_anggota)
+                                                ->where('id_kegiatan', $kegiatan->id_kegiatan)
+                                                ->where('jenis_daftar', 'self')
+                                                ->whereIn('status', ['pending', 'disetujui'])
+                                                ->first()
+                                            : null;
+                                        $jumlahDaftarOrangLain = \App\Models\Pendaftaran::where('created_by', auth()->id())
                                             ->where('id_kegiatan', $kegiatan->id_kegiatan)
-                                            ->first();
+                                            ->where('jenis_daftar', 'other')
+                                            ->count();
+                                        $pendaftaranTersedia = $kegiatan->status == 'aktif'
+                                            && $kegiatan->bisaDaftar
+                                            && ($kegiatan->kuota == 0 || $jumlahPeserta < $kegiatan->kuota);
                                     @endphp
-                                    
-                                    @if($pendaftaran)
-                                        <div class="p-6 rounded-[2rem] border text-center shadow-inner
-                                            @if($pendaftaran->status == 'disetujui') bg-emerald-50 border-emerald-100 text-emerald-600 
-                                            @elseif($pendaftaran->status == 'ditolak') bg-rose-50 border-rose-100 text-rose-600 
+
+                                    @if($pendaftaranSelf)
+                                        <div class="p-6 mb-4 rounded-[2rem] border text-center shadow-inner
+                                            @if($pendaftaranSelf->status == 'disetujui') bg-emerald-50 border-emerald-100 text-emerald-600
+                                            @elseif($pendaftaranSelf->status == 'ditolak') bg-rose-50 border-rose-100 text-rose-600
                                             @else bg-amber-50 border-amber-100 text-amber-600 @endif">
-                                            <p class="text-[10px] font-black uppercase tracking-widest mb-1 italic">Status Pendaftaran</p>
-                                            <p class="text-lg font-black uppercase tracking-tighter">{{ $pendaftaran->status }}</p>
+                                            <p class="text-[10px] font-black uppercase tracking-widest mb-1 italic">Status Pendaftaran Diri Sendiri</p>
+                                            <p class="text-lg font-black uppercase tracking-tighter">{{ $pendaftaranSelf->status }}</p>
+                                            <p class="text-xs font-bold mt-2 opacity-80">Kamu tetap bisa mendaftarkan orang lain selama kuota masih tersedia.</p>
                                         </div>
-                                    @elseif($kegiatan->status == 'aktif' && $kegiatan->bisaDaftar && ($kegiatan->kuota == 0 || $jumlahPeserta < $kegiatan->kuota))
+                                    @endif
+
+                                    @if($pendaftaranTersedia)
                                         <form action="{{ route('anggota.daftar', $kegiatan->id_kegiatan) }}" method="POST" id="formDaftar">
                                             @csrf
                                             <div class="mb-4 border rounded-2xl p-4 bg-white/50">
-                                                <label class="flex items-center mb-3 cursor-pointer">
-                                                    <input type="radio" name="jenis_daftar" value="self" checked class="mr-2" onchange="toggleOtherForm()">
-                                                    <span class="text-sm font-bold text-slate-700">Daftar untuk diri sendiri</span>
-                                                </label>
+                                                @unless($pendaftaranSelf)
+                                                    <label class="flex items-center mb-3 cursor-pointer">
+                                                        <input type="radio" name="jenis_daftar" value="self" checked class="mr-2" onchange="toggleOtherForm()">
+                                                        <span class="text-sm font-bold text-slate-700">Daftar untuk diri sendiri</span>
+                                                    </label>
+                                                @endunless
                                                 <label class="flex items-center cursor-pointer">
-                                                    <input type="radio" name="jenis_daftar" value="other" class="mr-2" onchange="toggleOtherForm()">
+                                                    <input type="radio" name="jenis_daftar" value="other" class="mr-2" onchange="toggleOtherForm()" @if($pendaftaranSelf) checked @endif>
                                                     <span class="text-sm font-bold text-slate-700">Daftar untuk orang lain</span>
                                                 </label>
+                                                <p class="text-[11px] text-slate-400 mt-3 leading-relaxed">
+                                                    Daftar untuk orang lain boleh dilakukan lebih dari satu kali. Sistem akan mengecek database agar nama dan kontak peserta yang sama tidak terdaftar ganda pada kegiatan ini.
+                                                </p>
+                                                @if($jumlahDaftarOrangLain > 0)
+                                                    <p class="text-[11px] font-bold text-emerald-600 mt-2">Kamu sudah mendaftarkan {{ $jumlahDaftarOrangLain }} peserta lain untuk kegiatan ini.</p>
+                                                @endif
                                             </div>
 
                                             <div id="otherForm" class="hidden mb-4 p-4 border rounded-2xl bg-slate-50">
@@ -143,7 +165,6 @@
                                         </form>
                                         <script>
                                             function toggleOtherForm() {
-                                                const radios = document.querySelectorAll('input[name="jenis_daftar"]');
                                                 const otherForm = document.getElementById('otherForm');
                                                 if (document.querySelector('input[name="jenis_daftar"]:checked')?.value === 'other') {
                                                     otherForm.classList.remove('hidden');

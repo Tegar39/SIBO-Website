@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Services\AuditService;
 
 class AnggotaController extends Controller
 {
@@ -40,7 +41,7 @@ class AnggotaController extends Controller
         return view('admin.anggota.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, AuditService $audit)
     {
         $lastAnggota = Anggota::orderBy('id_anggota', 'desc')->first();
         if ($lastAnggota) {
@@ -85,7 +86,8 @@ class AnggotaController extends Controller
             $dataAnggota['foto_profil'] = $path;
         }
 
-        Anggota::create($dataAnggota);
+        $anggota = Anggota::create($dataAnggota);
+        $audit->log('create_anggota', 'anggota', $anggota, null, $anggota->only(['nomor_anggota', 'nama_lengkap', 'pac']), $request);
 
         return redirect()->route('admin.anggota.index')
             ->with('success', "Anggota berhasil ditambahkan (ID: {$newNumber})");
@@ -97,7 +99,7 @@ class AnggotaController extends Controller
         return view('admin.anggota.edit', compact('anggota'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, AuditService $audit)
     {
         $anggota = Anggota::findOrFail($id);
         $request->validate([
@@ -116,19 +118,23 @@ class AnggotaController extends Controller
             $dataAnggota['foto_profil'] = $request->file('foto_profil')->store('foto_profil', 'public');
         }
 
+        $old = $anggota->only(['nama_lengkap', 'kontak', 'pac']);
         $anggota->update($dataAnggota);
         $anggota->user->update(['name' => $request->nama_lengkap]);
+        $audit->log('update_anggota', 'anggota', $anggota, $old, $anggota->only(['nama_lengkap', 'kontak', 'pac']), $request);
 
         return redirect()->route('admin.anggota.index')->with('success', 'Data anggota berhasil diperbarui');
     }
 
-    public function destroy($id)
+    public function destroy($id, AuditService $audit)
     {
         $anggota = Anggota::findOrFail($id);
         if ($anggota->foto_profil) {
             Storage::disk('public')->delete($anggota->foto_profil);
         }
         $user = $anggota->user;
+        $old = $anggota->only(['nomor_anggota', 'nama_lengkap', 'pac']);
+        $audit->log('delete_anggota', 'anggota', $anggota, $old, null, request());
         $anggota->delete();
         if ($user) $user->delete();
         return redirect()->route('admin.anggota.index')->with('success', 'Anggota dan akun user berhasil dihapus');

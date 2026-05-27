@@ -9,7 +9,19 @@ class KategoriSeeder extends Seeder
 {
     public function run()
     {
-        Kategori::firstOrCreate(['nama' => 'KDB'], ['deskripsi' => 'Kader Desa Bersama (Budaya)']);
-        Kategori::firstOrCreate(['nama' => 'KNB'], ['deskripsi' => 'Kader Nuansa Baru (Olahraga)']);
+        Kategori::firstOrCreate(
+            ['nama' => 'pelatihan'],
+            ['deskripsi' => 'Kategori kegiatan pelatihan anggota.']
+        );
+
+        Kategori::firstOrCreate(
+            ['nama' => 'rutinan'],
+            ['deskripsi' => 'Kategori kegiatan rutin organisasi.']
+        );
+
+        Kategori::firstOrCreate(
+            ['nama' => 'penampilan / kontes'],
+            ['deskripsi' => 'Kategori kegiatan penampilan, lomba, atau kontes.']
+        );
     }
 }
