@@ -27,16 +27,23 @@ class HomeController extends Controller
             ->take(6) // ambil 6 kegiatan
             ->get();
         
-        // Ambil foto galeri unggulan (is_unggulan = 1) atau foto terbaru
         $galeri = Galeri::with('kegiatan')
             ->whereHas('kegiatan', function($q) {
                 $q->where('status', 'selesai');
             })
             ->whereNotNull('path_file')
             ->orderBy('created_at', 'desc')
-            ->take(12) // ambil sejumlah untuk carousel
+            ->take(12)
             ->get();
 
-        return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri', 'totalPac', 'pacList'));
+        $galeriFolders = Kegiatan::where('status', 'selesai')
+            ->whereHas('galeris')
+            ->withCount('galeris')
+            ->with(['galeris' => fn ($q) => $q->orderByDesc('is_unggulan')->orderByDesc('tgl_upload')->limit(1)])
+            ->orderByDesc('tanggal')
+            ->take(6)
+            ->get();
+
+        return view('home', compact('totalAnggota', 'totalKegiatan', 'kegiatanTerbaru', 'galeri', 'galeriFolders', 'totalPac', 'pacList'));
     }
 }

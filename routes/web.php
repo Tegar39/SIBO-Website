@@ -135,6 +135,9 @@ Route::middleware(['auth', 'role:anggota'])->prefix('anggota')->name('anggota.')
     Route::put('/profil/update', [AnggotaProfilController::class, 'update'])->name('profil.update');
     
     Route::get('/keamanan', [AnggotaProfilController::class, 'keamanan'])->name('keamanan');
+    Route::post('/keamanan/otp/request', [AnggotaProfilController::class, 'requestPasswordOtp'])->middleware('throttle:3,1')->name('keamanan.otp.request');
+    Route::post('/keamanan/otp/verify', [AnggotaProfilController::class, 'verifyPasswordOtp'])->middleware('throttle:5,1')->name('keamanan.otp.verify');
+    Route::post('/keamanan/otp/resend', [AnggotaProfilController::class, 'resendPasswordOtp'])->middleware('throttle:3,1')->name('keamanan.otp.resend');
     Route::put('/keamanan/update-password', [AnggotaProfilController::class, 'updatePassword'])->name('keamanan.update-password');
 });
 

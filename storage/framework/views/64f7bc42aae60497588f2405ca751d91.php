@@ -16,7 +16,7 @@
             </div>
 
             <div class="hidden sm:flex flex-7 justify-center">
-                <div class="flex items-center gap-10">
+                <div class="flex items-center gap-5">
 
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->guest()): ?>

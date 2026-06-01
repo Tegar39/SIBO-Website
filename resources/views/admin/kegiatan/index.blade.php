@@ -23,40 +23,13 @@
             </a>
         </div>
 
-        <div class="mb-10 bg-white/70 backdrop-blur-md border border-white/50 p-4 rounded-3xl shadow-sm">
-            <form action="{{ route('admin.kegiatan.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                        placeholder="Cari judul atau lokasi..." 
-                        class="w-full bg-slate-100/50 border-none pl-11 pr-4 py-3 rounded-2xl text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 transition-all">
-                </div>
-
-                <div class="md:w-64">
-                    <select name="kategori" onchange="this.form.submit()" 
-                        class="w-full bg-slate-100/50 border-none px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer">
-                        <option value="">SEMUA KATEGORI</option>
-                        @foreach($kategoris as $kat)
-                            <option value="{{ $kat->id_kategori }}" {{ request('kategori') == $kat->id_kategori ? 'selected' : '' }}>
-                                {{ strtoupper($kat->nama) }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="flex gap-2">
-                    <button type="submit" class="bg-slate-800 text-white px-8 py-3 rounded-2xl font-bold text-sm hover:bg-slate-900 transition-all">
-                        FILTER
-                    </button>
-                    @if(request('search') || request('kategori'))
-                        <a href="{{ route('admin.kegiatan.index') }}" class="bg-rose-50 text-rose-600 px-6 py-3 rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-rose-100 transition-all">
-                            RESET
-                        </a>
-                    @endif
-                </div>
-            </form>
+        
+        <div class="mb-8 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-3xl px-6 py-4 flex items-start gap-3">
+            <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <p class="text-sm font-black">Filter cepat tetap tersedia.</p>
+                <p class="text-xs font-semibold mt-1 text-emerald-600">Gunakan filter bulan/tahun untuk memantau perkembangan. Rekap lengkap tetap tersedia di menu Laporan Kegiatan.</p>
+            </div>
         </div>
 
         @if(session('success'))
@@ -67,6 +40,46 @@
                 <span class="text-sm font-bold">{{ session('success') }}</span>
             </div>
         @endif
+
+        <form method="GET" action="{{ route('admin.kegiatan.index') }}" class="mb-8 bg-white rounded-3xl border border-slate-100 shadow-sm p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                <div>
+                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-700">Filter Kegiatan</h2>
+                    <p class="text-xs text-slate-500 mt-1">Filter ini membantu melihat perkembangan kegiatan per bulan tanpa masuk ke laporan.</p>
+                </div>
+                <a href="{{ route('admin.kegiatan.index') }}" class="text-xs font-black uppercase tracking-widest text-emerald-700 hover:text-emerald-900">Reset Filter</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-3">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari judul/lokasi..." class="md:col-span-2 rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                <select name="id_kategori" class="rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                    <option value="">Semua Kategori</option>
+                    @foreach($kategoris as $kategori)
+                        <option value="{{ $kategori->id_kategori }}" {{ (string) request('id_kategori') === (string) $kategori->id_kategori ? 'selected' : '' }}>{{ $kategori->nama }}</option>
+                    @endforeach
+                </select>
+                <select name="status" class="rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                    <option value="">Semua Status</option>
+                    @foreach(['aktif' => 'Aktif', 'tutup' => 'Ditutup', 'selesai' => 'Selesai', 'batal' => 'Batal'] as $value => $label)
+                        <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <select name="bulan" class="rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                    <option value="">Semua Bulan</option>
+                    @foreach(range(1,12) as $m)
+                        <option value="{{ $m }}" {{ (int) request('bulan') === $m ? 'selected' : '' }}>{{ \Carbon\Carbon::create(null, $m, 1)->locale('id')->translatedFormat('F') }}</option>
+                    @endforeach
+                </select>
+                <div class="flex gap-3">
+                    <select name="tahun" class="w-full rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                        <option value="">Tahun</option>
+                        @foreach($availableYears as $year)
+                            <option value="{{ $year }}" {{ (int) request('tahun') === (int) $year ? 'selected' : '' }}>{{ $year }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="px-5 rounded-2xl bg-slate-900 hover:bg-emerald-600 text-white text-xs font-black uppercase tracking-widest">Filter</button>
+                </div>
+            </div>
+        </form>
 
         @if($kegiatans->count() > 0)
             <div class="bg-white/70 backdrop-blur-md rounded-3xl border border-white/50 shadow-sm overflow-hidden">

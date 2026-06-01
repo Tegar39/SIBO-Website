@@ -22,12 +22,17 @@ class AnggotaController extends Controller
     public function index(Request $request)
     {
         $anggota = Anggota::with('user')
-            ->when($request->search, function ($query, $search) {
-                $query->where('nama_lengkap', 'like', "%{$search}%")
-                      ->orWhere('nomor_anggota', 'like', "%{$search}%");
-            })
-            ->when($request->pac, function ($query, $pac) {
-                $query->where('pac', $pac);
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $keyword = trim($request->q);
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('nama_lengkap', 'like', "%{$keyword}%")
+                      ->orWhere('nomor_anggota', 'like', "%{$keyword}%")
+                      ->orWhere('kontak', 'like', "%{$keyword}%")
+                      ->orWhere('pac', 'like', "%{$keyword}%")
+                      ->orWhereHas('user', function ($userQuery) use ($keyword) {
+                          $userQuery->where('email', 'like', "%{$keyword}%");
+                      });
+                });
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10)

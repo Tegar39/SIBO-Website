@@ -22,7 +22,7 @@
             <div class="flex gap-3">
                 <a href="{{ route('admin.galeri.create', $kegiatan->id_kegiatan) }}" class="group bg-slate-800 hover:bg-emerald-600 text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:shadow-xl hover:shadow-emerald-100 flex items-center gap-3">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Upload Foto
+                    Upload Dokumentasi
                 </a>
             </div>
         </div>
@@ -39,13 +39,23 @@
                 <div class="group relative bg-white/70 backdrop-blur-md border border-white rounded-[2rem] p-3 shadow-sm hover:shadow-xl hover:shadow-emerald-100 transition-all duration-500 overflow-hidden">
                     
                     <div class="aspect-square overflow-hidden rounded-[1.5rem] bg-slate-100 mb-4 relative">
-                        <img src="{{ Storage::url($f->path_file) }}" 
-                             class="w-full h-full object-cover transition-all duration-700 scale-110 group-hover:scale-100">
+                        @php
+                            $isVideo = ($f->jenis_media ?? 'foto') === 'video' || str_starts_with((string) $f->mime_type, 'video/');
+                        @endphp
+                        @if($isVideo)
+                            <video src="{{ Storage::url($f->path_file) }}" class="w-full h-full object-cover" muted preload="metadata"></video>
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <span class="w-14 h-14 rounded-full bg-white/90 text-emerald-700 flex items-center justify-center shadow-lg text-xl">▶</span>
+                            </div>
+                        @else
+                            <img src="{{ Storage::url($f->path_file) }}" 
+                                 class="w-full h-full object-cover transition-all duration-700 scale-110 group-hover:scale-100">
+                        @endif
                         
                         <div class="absolute inset-0 bg-emerald-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                             <form action="{{ route('admin.galeri.destroy', $f->id_foto) }}" method="POST" class="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                 @csrf @method('DELETE')
-                                <button type="submit" onclick="return confirm('Hapus foto ini?')" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg">
+                                <button type="submit" onclick="return confirm('Hapus dokumentasi ini?')" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </form>
@@ -59,7 +69,7 @@
                                     {{ $f->judul_foto ?? 'Dokumentasi' }}
                                 </p>
                                 <p class="text-[8px] font-bold text-slate-400 uppercase mt-1">
-                                    {{ $f->created_at->format('d M Y') }}
+                                    {{ (($f->jenis_media ?? 'foto') === 'video') ? 'Video' : 'Foto' }} · {{ $f->created_at->format('d M Y') }}
                                 </p>
                             </div>
                             

@@ -17,21 +17,30 @@ class KegiatanController extends Controller
      */
     public function index(Request $request)
     {
-        $kategoris = Kategori::all();
+        $selectedMonth = $request->filled('bulan') ? (int) $request->bulan : null;
+        $selectedYear = $request->filled('tahun') ? (int) $request->tahun : null;
+        $availableYears = range(max(2024, now()->year - 3), now()->year + 1);
+        $kategoris = Kategori::orderBy('nama')->get();
 
         $kegiatans = Kegiatan::with('kategori', 'creator', 'pamflet')
-            ->when($request->search, function ($query, $search) {
-                $query->where('judul', 'like', "%{$search}%")
-                    ->orWhere('lokasi', 'like', "%{$search}%");
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $keyword = trim($request->q);
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('judul', 'like', "%{$keyword}%")
+                      ->orWhere('lokasi', 'like', "%{$keyword}%")
+                      ->orWhere('deskripsi', 'like', "%{$keyword}%");
+                });
             })
-            ->when($request->kategori, function ($query, $kategori) {
-                $query->where('id_kategori', $kategori);
+            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->status))
+            ->when($request->filled('id_kategori'), fn ($query) => $query->where('id_kategori', $request->id_kategori))
+            ->when($selectedMonth && $selectedYear, function ($query) use ($selectedMonth, $selectedYear) {
+                $query->whereMonth('tanggal', $selectedMonth)->whereYear('tanggal', $selectedYear);
             })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.kegiatan.index', compact('kegiatans', 'kategoris'));
+        return view('admin.kegiatan.index', compact('kegiatans', 'kategoris', 'selectedMonth', 'selectedYear', 'availableYears'));
     }
 
     /**

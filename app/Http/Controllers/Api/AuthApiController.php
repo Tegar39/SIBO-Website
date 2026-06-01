@@ -7,7 +7,7 @@ use App\Models\Anggota;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthApiController extends Controller
@@ -20,11 +20,19 @@ class AuthApiController extends Controller
         ]);
 
         $user = User::where('email', $credentials['email'])->first();
-        if (! $user || !Auth::attempt($credentials)) {
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Kredensial tidak valid.'],
             ]);
         }
+
+        if (($user->account_status ?? 'aktif') !== 'aktif') {
+            throw ValidationException::withMessages([
+                'email' => ['Akun tidak aktif. Hubungi admin.'],
+            ]);
+        }
+
+        $user->forceFill(['last_login_at' => now(), 'last_login_ip' => $request->ip()])->save();
 
         // Sanctum personal access token
         $token = $user->createToken('sibo-mobile')->plainTextToken;
@@ -45,8 +53,15 @@ class AuthApiController extends Controller
                     'pac' => $anggota->pac,
                     'kontak' => $anggota->kontak,
                     'foto_profil' => $anggota->foto_profil,
+                    'foto_profil_url' => $anggota->foto_profil ? asset('storage/' . $anggota->foto_profil) : asset('images/logo-sibo.png'),
                 ] : null,
             ],
         ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()?->currentAccessToken()?->delete();
+        return response()->json(['message' => 'Logout berhasil.']);
     }
 }

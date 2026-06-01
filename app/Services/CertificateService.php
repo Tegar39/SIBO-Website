@@ -22,11 +22,7 @@ class CertificateService
         $namaPeserta = $pendaftaran->display_name;
         $certificateNumber = $this->generateCertificateNumber($pendaftaran);
 
-        $pdf = Pdf::loadView('certificates.template', [
-            'nama_peserta' => $namaPeserta,
-            'kegiatan' => $kegiatan,
-            'certificate_number' => $certificateNumber,
-        ]);
+        $pdf = $this->makePdf($namaPeserta, $kegiatan, $certificateNumber);
 
         $fileName = 'certificate_' . $certificateNumber . '.pdf';
         $filePath = 'certificates/' . $fileName;
@@ -42,6 +38,45 @@ class CertificateService
                 'judul_kegiatan' => $kegiatan?->judul,
                 'tanggal_kegiatan' => optional($kegiatan?->tanggal)->format('Y-m-d'),
             ],
+        ]);
+    }
+
+    public function refreshFile(Certificate $certificate): Certificate
+    {
+        $certificate->loadMissing('pendaftaran.anggota', 'pendaftaran.kegiatan');
+
+        $pendaftaran = $certificate->pendaftaran;
+        if (! $pendaftaran) {
+            return $certificate;
+        }
+
+        $kegiatan = $pendaftaran->kegiatan;
+        $namaPeserta = $pendaftaran->display_name;
+        $certificateNumber = $certificate->certificate_number;
+
+        $filePath = $certificate->file_path ?: 'certificates/certificate_' . $certificateNumber . '.pdf';
+        $pdf = $this->makePdf($namaPeserta, $kegiatan, $certificateNumber);
+
+        Storage::disk('public')->put($filePath, $pdf->output());
+
+        if ($certificate->file_path !== $filePath) {
+            $certificate->file_path = $filePath;
+            $certificate->save();
+        }
+
+        return $certificate->refresh();
+    }
+
+    protected function makePdf(string $namaPeserta, $kegiatan, string $certificateNumber)
+    {
+        return Pdf::loadView('certificates.template', [
+            'nama_peserta' => $namaPeserta,
+            'kegiatan' => $kegiatan,
+            'certificate_number' => $certificateNumber,
+        ])->setPaper('a4', 'landscape')->setOptions([
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'defaultFont' => 'DejaVu Sans',
         ]);
     }
 

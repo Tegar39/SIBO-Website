@@ -10,37 +10,42 @@ class GaleriPublikController extends Controller
 {
     public function index(Request $request)
     {
-        $kegiatanId = $request->get('kegiatan');
-        
-        // Hanya galeri dari kegiatan yang statusnya 'selesai'
-        $query = Galeri::with(['kegiatan'])
-            ->whereHas('kegiatan', function ($q) {
-                $q->where('status', 'selesai');
-            });
-        
+        $kegiatanId = $request->integer('kegiatan');
+
+        $kegiatans = Kegiatan::query()
+            ->where('status', 'selesai')
+            ->whereHas('galeris')
+            ->withCount('galeris')
+            ->with(['galeris' => fn ($q) => $q->orderByDesc('is_unggulan')->orderByDesc('tgl_upload')->limit(1)])
+            ->orderByDesc('tanggal')
+            ->paginate(9);
+
+        $selectedKegiatan = null;
+        $galeri = collect();
+
         if ($kegiatanId) {
-            $query->where('id_kegiatan', $kegiatanId);
+            $selectedKegiatan = Kegiatan::where('status', 'selesai')
+                ->whereHas('galeris')
+                ->findOrFail($kegiatanId);
+
+            $galeri = Galeri::with('kegiatan')
+                ->where('id_kegiatan', $kegiatanId)
+                ->orderByDesc('is_unggulan')
+                ->orderByDesc('tgl_upload')
+                ->paginate(12);
         }
-        
-        $galeri = $query->orderBy('created_at', 'desc')->paginate(12);
-        
-        // Dropdown filter hanya menampilkan kegiatan yang selesai
-        $kegiatans = Kegiatan::where('status', 'selesai')
-            ->orderBy('tanggal', 'desc')
-            ->get(['id_kegiatan', 'judul']);
-        
-        return view('galeri.index', compact('galeri', 'kegiatans', 'kegiatanId'));
+
+        return view('galeri.index', compact('kegiatans', 'selectedKegiatan', 'galeri', 'kegiatanId'));
     }
-    
+
     public function show($id)
     {
         $galeri = Galeri::with('kegiatan')->findOrFail($id);
-        
-        // Pastikan kegiatan yang terkait sudah selesai, jika tidak tampilkan 404
-        if ($galeri->kegiatan->status != 'selesai') {
+
+        if ($galeri->kegiatan->status !== 'selesai') {
             abort(404);
         }
-        
+
         return view('galeri.show', compact('galeri'));
     }
 }

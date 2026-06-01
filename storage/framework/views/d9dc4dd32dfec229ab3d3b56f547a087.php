@@ -210,9 +210,24 @@
                 </div>
             </div>
 
-            <!-- SCROLL HORIZONTAL: overflow-x-auto pada parent, w-max pada flex container -->
-            <div class="w-full overflow-x-auto pb-6 scrollbar-hide" style="-webkit-overflow-scrolling: touch;">
-                <div class="flex gap-6 w-max px-2">
+            <!-- SCROLL HORIZONTAL KEGIATAN: scrollbar terlihat + tombol geser kiri/kanan -->
+            <div class="relative">
+                <button type="button"
+                    onclick="scrollKegiatanHome('left')"
+                    class="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white text-slate-900 border border-slate-200 shadow-xl items-center justify-center hover:bg-green-600 hover:text-white transition-all"
+                    aria-label="Geser kegiatan ke kiri">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+
+                <button type="button"
+                    onclick="scrollKegiatanHome('right')"
+                    class="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white text-slate-900 border border-slate-200 shadow-xl items-center justify-center hover:bg-green-600 hover:text-white transition-all"
+                    aria-label="Geser kegiatan ke kanan">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+
+                <div id="kegiatan-scroll-home" class="w-full overflow-x-auto pb-8 sibo-horizontal-scroll" style="-webkit-overflow-scrolling: touch; scroll-behavior: smooth;">
+                    <div class="flex gap-6 w-max px-2 pr-10">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $kegiatanTerbaru; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kegiatan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                         <div class="w-[85vw] sm:w-[340px] flex-none">
                             <div class="bg-white rounded-[2rem] border border-slate-100/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-500 flex flex-col h-full group/card relative overflow-hidden">
@@ -265,9 +280,10 @@
                             <p class="text-slate-500 font-medium text-lg">Belum ada pengumuman kegiatan terbaru.</p>
                         </div>
                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    </div>
                 </div>
             </div>
-            <div class="md:hidden flex justify-center items-center gap-2 mt-6 text-slate-400 text-xs font-bold uppercase tracking-wider animate-pulse">
+            <div class="flex justify-center items-center gap-2 mt-6 text-slate-400 text-xs font-bold uppercase tracking-wider animate-pulse">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
                 Geser untuk melihat kegiatan lainnya
             </div>
@@ -275,54 +291,76 @@
     </div>
 
     <!-- Galeri -->
-    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($galeri->count() > 0): ?>
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(($galeri ?? collect())->count() > 0): ?>
     <div id="galeri" class="py-24 md:py-32 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16 md:mb-20">
+            <div class="text-center mb-14 md:mb-16">
                 <span class="text-green-600 font-bold text-sm uppercase tracking-[0.2em] mb-4 block">
                     Visual Archive
                 </span>
                 <h2 class="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight">
-                    Galeri <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400">Kegiatan</span>
+                    Galeri <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400">Dokumentasi</span>
                 </h2>
+                <p class="text-slate-500 max-w-2xl mx-auto mt-4">
+                    Cuplikan dokumentasi kegiatan terbaru. Geser atau biarkan berjalan otomatis, lalu buka halaman galeri untuk melihat semua dokumentasi berdasarkan folder kegiatan.
+                </p>
             </div>
-            <div class="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-                <div class="flex gap-6 animate-infinite-scroll py-4 hover:animate-pause">
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $galeri->merge($galeri); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $foto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                        <?php $fotoPath = $foto->path_file ? Storage::url($foto->path_file) : null; ?>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($fotoPath): ?>
-                            <div class="flex-none w-64 h-64 md:w-80 md:h-80 group relative overflow-hidden rounded-[2rem] shadow-sm hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] cursor-pointer transition-all duration-500"
-                                onclick="openLightbox('<?php echo e($fotoPath); ?>', '<?php echo e(addslashes($foto->judul_foto ?? '')); ?>')">
-                                <div class="w-full h-full overflow-hidden bg-slate-100">
-                                    <img src="<?php echo e($fotoPath); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                </div>
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent flex flex-col justify-end p-6 md:p-8 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-                                    <h4 class="text-white font-bold text-lg md:text-xl leading-tight mb-3">
-                                        <?php echo e($foto->judul_foto ?? 'Dokumentasi'); ?>
+        </div>
 
-                                    </h4>
-                                    <div class="text-xs md:text-sm text-slate-300 space-y-2 font-medium">
-                                        <p class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                            <span class="truncate"><?php echo e($foto->kegiatan?->lokasi ?? 'Lokasi tidak tersedia'); ?></span>
-                                        </p>
-                                        <p class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                            <?php echo e($foto->kegiatan ? \Carbon\Carbon::parse($foto->kegiatan->tanggal)->translatedFormat('d M Y') : '-'); ?>
+        <div class="relative w-full overflow-hidden">
+            <div class="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 md:w-32 bg-gradient-to-r from-white to-transparent"></div>
+            <div class="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 md:w-32 bg-gradient-to-l from-white to-transparent"></div>
 
-                                        </p>
+            <div class="gallery-marquee flex w-max gap-6 px-6">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php for($loopIndex = 0; $loopIndex < 2; $loopIndex++): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $galeri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $foto): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <?php
+                            $url = Storage::url($foto->path_file);
+                            $isVideo = ($foto->jenis_media ?? 'foto') === 'video' || str_starts_with((string) $foto->mime_type, 'video/');
+                            $judul = $foto->judul_foto ?: ($foto->kegiatan->judul ?? 'Dokumentasi Kegiatan');
+                            $kegiatanJudul = $foto->kegiatan->judul ?? 'Kegiatan SIBO';
+                        ?>
+                        <div class="group w-[280px] sm:w-[340px] shrink-0 overflow-hidden rounded-[2rem] bg-white border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-300">
+                            <div class="h-56 bg-emerald-50 relative overflow-hidden">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isVideo): ?>
+                                    <video src="<?php echo e($url); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" muted preload="metadata"></video>
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+                                        <div class="w-14 h-14 rounded-full bg-white/90 text-emerald-700 flex items-center justify-center shadow-lg text-xl">▶</div>
                                     </div>
-                                </div>
+                                <?php else: ?>
+                                    <img src="<?php echo e($url); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="<?php echo e($judul); ?>">
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-md <?php echo e($isVideo ? 'text-amber-700' : 'text-emerald-700'); ?> text-[10px] font-black px-4 py-2 rounded-full uppercase tracking-widest shadow-sm">
+                                    <?php echo e($isVideo ? 'Video' : 'Foto'); ?>
+
+                                </span>
                             </div>
-                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                            <div class="p-5">
+                                <p class="text-[10px] font-black uppercase tracking-[0.2em] text-green-600 mb-2 line-clamp-1"><?php echo e($kegiatanJudul); ?></p>
+                                <h3 class="text-lg font-black text-slate-900 line-clamp-2"><?php echo e($judul); ?></h3>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($foto->deskripsi): ?>
+                                    <p class="text-slate-500 text-sm mt-2 line-clamp-2"><?php echo e($foto->deskripsi); ?></p>
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                <button type="button"
+                                    onclick="<?php echo e($isVideo ? 'openVideo' : 'openLightbox'); ?>('<?php echo e($url); ?>', '<?php echo e(addslashes($judul)); ?>')"
+                                    class="mt-5 w-full inline-flex items-center justify-center rounded-2xl bg-slate-900 hover:bg-green-600 text-white text-xs font-black uppercase tracking-widest py-3 transition-all">
+                                    <?php echo e($isVideo ? 'Putar Video' : 'Lihat Foto'); ?>
+
+                                </button>
+                            </div>
+                        </div>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                </div>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endfor; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
             </div>
-            <div class="text-center mt-16">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mt-14">
                 <a href="<?php echo e(route('galeri.publik.index')); ?>" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transition-all transform hover:-translate-y-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    Lihat Galeri Lengkap
+                    Lihat Semua Galeri
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </a>
+                <p class="mt-4 text-sm text-slate-400 font-medium">Halaman galeri lengkap tetap dikelompokkan berdasarkan kegiatan.</p>
             </div>
         </div>
     </div>
@@ -335,7 +373,8 @@
         <button class="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all" onclick="closeLightbox()">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
-        <img id="lightbox-img" src="" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain ring-1 ring-white/10">
+        <img id="lightbox-img" src="" class="hidden max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain ring-1 ring-white/10">
+        <video id="lightbox-video" src="" controls class="hidden max-w-full max-h-[80vh] rounded-2xl shadow-2xl bg-black ring-1 ring-white/10"></video>
         <div class="mt-6 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full ring-1 ring-white/20">
             <p id="lightbox-caption" class="text-white font-semibold text-lg text-center"></p>
         </div>
@@ -345,13 +384,39 @@
 <?php $__env->startPush('scripts'); ?>
 <script>
     function openLightbox(src, caption) {
-        document.getElementById('lightbox-img').src = src;
+        const image = document.getElementById('lightbox-img');
+        const video = document.getElementById('lightbox-video');
+        video.pause();
+        video.src = '';
+        video.classList.add('hidden');
+        image.src = src;
+        image.classList.remove('hidden');
+        showLightbox(caption);
+    }
+
+    function openVideo(src, caption) {
+        const image = document.getElementById('lightbox-img');
+        const video = document.getElementById('lightbox-video');
+        image.src = '';
+        image.classList.add('hidden');
+        video.src = src;
+        video.classList.remove('hidden');
+        showLightbox(caption);
+    }
+
+    function showLightbox(caption) {
         document.getElementById('lightbox-caption').innerText = caption;
         document.getElementById('lightbox').classList.remove('hidden');
         document.getElementById('lightbox').classList.add('flex');
         document.body.style.overflow = 'hidden';
     }
+
     function closeLightbox() {
+        const image = document.getElementById('lightbox-img');
+        const video = document.getElementById('lightbox-video');
+        video.pause();
+        video.src = '';
+        image.src = '';
         document.getElementById('lightbox').classList.add('hidden');
         document.getElementById('lightbox').classList.remove('flex');
         document.body.style.overflow = '';
@@ -359,6 +424,13 @@
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeLightbox();
     });
+
+    function scrollKegiatanHome(direction) {
+        const el = document.getElementById('kegiatan-scroll-home');
+        if (!el) return;
+        const amount = Math.min(420, Math.max(300, el.clientWidth * 0.78));
+        el.scrollBy({ left: direction === 'left' ? -amount : amount, behavior: 'smooth' });
+    }
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('statistik');
         if(container) {
@@ -385,6 +457,10 @@
     }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .sibo-horizontal-scroll::-webkit-scrollbar { height: 10px; }
+    .sibo-horizontal-scroll::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 999px; }
+    .sibo-horizontal-scroll::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 999px; border: 2px solid #e2e8f0; }
+    .sibo-horizontal-scroll { scrollbar-width: thin; scrollbar-color: #16a34a #e2e8f0; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .stat-outline-dynamic { color: transparent; -webkit-text-stroke: 1px #e2e8f0; }
@@ -402,6 +478,19 @@
     @keyframes infinite-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 12px)); } }
     .animate-infinite-scroll { animation: infinite-scroll 40s linear infinite; width: max-content; }
     .hover\:animate-pause:hover { animation-play-state: paused; }
+
+    .gallery-marquee {
+        animation: siboGalleryMarquee 42s linear infinite;
+    }
+
+    .gallery-marquee:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes siboGalleryMarquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
 </style>
 <?php $__env->stopPush(); ?>
 <?php $__env->stopSection(); ?>

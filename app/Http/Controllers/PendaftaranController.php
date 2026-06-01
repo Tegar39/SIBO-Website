@@ -122,22 +122,54 @@ class PendaftaranController extends Controller
     // ========== ADMIN ==========
     public function index(Request $request)
     {
-        $kegiatans = Kegiatan::withCount('pendaftarans')
+        $selectedMonth = $request->filled('bulan') ? (int) $request->bulan : null;
+        $selectedYear = $request->filled('tahun') ? (int) $request->tahun : null;
+        $availableYears = range(max(2024, now()->year - 3), now()->year + 1);
+
+        $kegiatans = Kegiatan::withCount(['pendaftarans', 'pendaftarans as pending_count' => function ($query) {
+                $query->where('status', 'pending');
+            }, 'pendaftarans as disetujui_count' => function ($query) {
+                $query->where('status', 'disetujui');
+            }])
             ->with('pamflet')
-            ->when($request->search, fn($q, $s) => $q->where('judul', 'like', "%{$s}%"))
-            ->orderBy('created_at', 'desc')
-            ->paginate(3)
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $keyword = trim($request->q);
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('judul', 'like', "%{$keyword}%")
+                      ->orWhere('lokasi', 'like', "%{$keyword}%");
+                });
+            })
+            ->when($request->filled('status_kegiatan'), fn ($query) => $query->where('status', $request->status_kegiatan))
+            ->when($selectedMonth && $selectedYear, function ($query) use ($selectedMonth, $selectedYear) {
+                $query->whereMonth('tanggal', $selectedMonth)->whereYear('tanggal', $selectedYear);
+            })
+            ->orderBy('tanggal', 'desc')
+            ->paginate(6)
             ->withQueryString();
-        return view('admin.pendaftaran.index', compact('kegiatans'));
+        return view('admin.pendaftaran.index', compact('kegiatans', 'selectedMonth', 'selectedYear', 'availableYears'));
     }
 
-    public function show($id_kegiatan)
+    public function show(Request $request, $id_kegiatan)
     {
         $kegiatan = Kegiatan::findOrFail($id_kegiatan);
         $pendaftarans = Pendaftaran::with('anggota.user', 'creator')
             ->where('id_kegiatan', $id_kegiatan)
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $keyword = trim($request->q);
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('nama_peserta', 'like', "%{$keyword}%")
+                      ->orWhere('kontak_peserta', 'like', "%{$keyword}%")
+                      ->orWhereHas('anggota', function ($anggotaQuery) use ($keyword) {
+                          $anggotaQuery->where('nama_lengkap', 'like', "%{$keyword}%")
+                                       ->orWhere('nomor_anggota', 'like', "%{$keyword}%");
+                      });
+                });
+            })
+            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->status))
+            ->when($request->filled('jenis_daftar'), fn ($query) => $query->where('jenis_daftar', $request->jenis_daftar))
             ->latest()
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString();
         return view('admin.pendaftaran.show', compact('kegiatan', 'pendaftarans'));
     }
 

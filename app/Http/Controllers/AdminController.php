@@ -6,88 +6,155 @@ use App\Models\Anggota;
 use App\Models\Kegiatan;
 use App\Models\Pendaftaran;
 use App\Models\Kategori;
+use App\Models\Absensi;
+use App\Models\Notifikasi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        // Total Anggota (untuk grafik garis: pertumbuhan 6 bulan terakhir)
-        $anggotaPerBulan = Anggota::select(
-                DB::raw('MONTH(created_at) as bulan'),
-                DB::raw('YEAR(created_at) as tahun'),
-                DB::raw('COUNT(*) as total')
-            )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('tahun', 'bulan')
-            ->orderBy('tahun', 'asc')
-            ->orderBy('bulan', 'asc')
-            ->get();
+        $today = Carbon::now('Asia/Jakarta');
+        $startOfMonth = $today->copy()->startOfMonth();
+        $endOfMonth = $today->copy()->endOfMonth();
+        $startOfYear = $today->copy()->startOfYear();
+        $endOfYear = $today->copy()->endOfYear();
+        $tomorrow = $today->copy()->addDay();
 
-        $anggotaLabels = [];
-        $anggotaData = [];
-        foreach ($anggotaPerBulan as $item) {
-            $anggotaLabels[] = \Carbon\Carbon::create()->month($item->bulan)->isoFormat('MMMM') . ' ' . $item->tahun;
-            $anggotaData[] = $item->total;
-        }
+        // Dashboard tidak memakai filter. Semua angka adalah ringkasan bulan/tahun berjalan.
+        $periodeBulanIni = $today->copy()->locale('id')->translatedFormat('F Y');
+        $periodeTahunIni = $today->year;
 
-        // Total Kegiatan per Kategori (lingkaran)
-        $kegiatanPerKategori = Kategori::withCount('kegiatans')->get();
-        $kategoriLabels = [];
-        $kategoriData = [];
-        foreach ($kegiatanPerKategori as $kat) {
-            $kategoriLabels[] = $kat->nama;
-            $kategoriData[] = $kat->kegiatans_count;
-        }
+        $this->kirimNotifikasiKegiatanH1($tomorrow);
 
-        // Pendaftar baru bulan ini
-        $pendaftarBaru = Pendaftaran::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
+        $totalAnggota = Anggota::count();
+        $anggotaBaruBulanIni = Anggota::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
+
+        $totalKegiatanTahunan = Kegiatan::whereBetween('tanggal', [$startOfYear->toDateString(), $endOfYear->toDateString()])->count();
+        $totalKegiatanBulanIni = Kegiatan::whereBetween('tanggal', [$startOfMonth->toDateString(), $endOfMonth->toDateString()])->count();
+        $kegiatanTerlaksanaBulanIni = Kegiatan::whereBetween('tanggal', [$startOfMonth->toDateString(), $endOfMonth->toDateString()])
+            ->where(function ($query) use ($today) {
+                $query->where('status', 'selesai')
+                    ->orWhereDate('tanggal', '<', $today->toDateString());
+            })
+            ->where('status', '!=', 'batal')
+            ->count();
+        $kegiatanTerjadwalBulanIni = Kegiatan::whereBetween('tanggal', [$startOfMonth->toDateString(), $endOfMonth->toDateString()])
+            ->where(function ($query) use ($today) {
+                $query->whereIn('status', ['aktif', 'tutup'])
+                    ->orWhereDate('tanggal', '>=', $today->toDateString());
+            })
+            ->whereDate('tanggal', '>=', $today->toDateString())
+            ->where('status', '!=', 'batal')
             ->count();
 
-        // Kegiatan terdekat (5 kegiatan dengan tanggal terdekat, status aktif)
-        $kegiatanTerdekat = Kegiatan::where('status', 'aktif')
-            ->where('tanggal', '>=', now())
-            ->orderBy('tanggal', 'asc')
-            ->limit(5)
+        $pendaftarBulanIni = Pendaftaran::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
+        $pesertaDisetujuiBulanIni = Pendaftaran::where('status', 'disetujui')
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->count();
+        $hadirBulanIni = Absensi::where('hadir', true)
+            ->whereHas('pendaftaran.kegiatan', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('tanggal', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
+            })
+            ->count();
+        $tidakHadirBulanIni = Absensi::where('hadir', false)
+            ->whereHas('pendaftaran.kegiatan', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('tanggal', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
+            })
+            ->count();
+
+        $kegiatanBelumTerlaksanaBulanIni = Kegiatan::with(['kategori'])
+            ->withCount(['pendaftarans as total_pendaftar', 'pendaftarans as total_disetujui' => function ($query) {
+                $query->where('status', 'disetujui');
+            }])
+            ->whereBetween('tanggal', [$today->toDateString(), $endOfMonth->toDateString()])
+            ->whereIn('status', ['aktif', 'tutup'])
+            ->orderBy('tanggal')
+            ->orderBy('waktu')
+            ->limit(8)
             ->get();
 
-        // Pendaftar per kegiatan (batang) -> 5 kegiatan dengan pendaftar terbanyak
-        $pendaftarPerKegiatan = Kegiatan::withCount('pendaftarans')
-            ->orderBy('pendaftarans_count', 'desc')
-            ->limit(5)
+        $kegiatanH1 = Kegiatan::with(['kategori'])
+            ->withCount(['pendaftarans as total_disetujui' => function ($query) {
+                $query->where('status', 'disetujui');
+            }])
+            ->whereDate('tanggal', $tomorrow->toDateString())
+            ->whereIn('status', ['aktif', 'tutup'])
+            ->orderBy('waktu')
             ->get();
 
-        $kegiatanPendaftarLabels = [];
-        $kegiatanPendaftarData = [];
-        foreach ($pendaftarPerKegiatan as $k) {
-            $kegiatanPendaftarLabels[] = $k->judul;
-            $kegiatanPendaftarData[] = $k->pendaftarans_count;
-        }
-
-        // Log aktivitas terbaru (contoh dari pendaftaran terbaru, bisa juga dibuat model terpisah)
-        $aktivitasTerbaru = Pendaftaran::with('anggota', 'kegiatan')
+        $pendaftarTerbaruBulanIni = Pendaftaran::with(['anggota.user', 'kegiatan.kategori', 'creator'])
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->latest()
-            ->limit(10)
+            ->limit(8)
             ->get();
 
-        $anggotaBolos = Pendaftaran::with(['anggota', 'kegiatan'])
-        ->where('status', 'disetujui')
-        ->whereDoesntHave('absensi', function ($q) {
-            $q->where('hadir', true);
-        })
-        ->latest()
-        ->limit(10)
-        ->get();
+        $kegiatanPerKategoriBulanIni = Kategori::withCount(['kegiatans as total_bulan_ini' => function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereBetween('tanggal', [$startOfMonth->toDateString(), $endOfMonth->toDateString()]);
+            }])
+            ->orderBy('nama')
+            ->get();
+
+        $trenBulanan = collect(range(5, 0))->map(function ($i) use ($today) {
+            $month = $today->copy()->subMonths($i);
+            $start = $month->copy()->startOfMonth();
+            $end = $month->copy()->endOfMonth();
+
+            return [
+                'label' => $month->locale('id')->translatedFormat('M Y'),
+                'anggota' => Anggota::whereBetween('created_at', [$start, $end])->count(),
+                'kegiatan' => Kegiatan::whereBetween('tanggal', [$start->toDateString(), $end->toDateString()])->count(),
+                'pendaftar' => Pendaftaran::whereBetween('created_at', [$start, $end])->count(),
+            ];
+        });
+
+        $kategoriLabels = $kegiatanPerKategoriBulanIni->pluck('nama')->values();
+        $kategoriData = $kegiatanPerKategoriBulanIni->pluck('total_bulan_ini')->values();
+        $trenLabels = $trenBulanan->pluck('label')->values();
+        $trenAnggotaData = $trenBulanan->pluck('anggota')->values();
+        $trenKegiatanData = $trenBulanan->pluck('kegiatan')->values();
+        $trenPendaftarData = $trenBulanan->pluck('pendaftar')->values();
 
         return view('admin.dashboard', compact(
-            'anggotaLabels', 'anggotaData',
-            'kategoriLabels', 'kategoriData',
-            'pendaftarBaru',
-            'kegiatanTerdekat',
-            'kegiatanPendaftarLabels', 'kegiatanPendaftarData',
-            'aktivitasTerbaru', 'anggotaBolos'
+            'periodeBulanIni', 'periodeTahunIni',
+            'totalAnggota', 'anggotaBaruBulanIni',
+            'totalKegiatanTahunan', 'totalKegiatanBulanIni', 'kegiatanTerlaksanaBulanIni', 'kegiatanTerjadwalBulanIni',
+            'pendaftarBulanIni', 'pesertaDisetujuiBulanIni', 'hadirBulanIni', 'tidakHadirBulanIni',
+            'kegiatanBelumTerlaksanaBulanIni', 'kegiatanH1', 'pendaftarTerbaruBulanIni',
+            'kategoriLabels', 'kategoriData', 'trenLabels', 'trenAnggotaData', 'trenKegiatanData', 'trenPendaftarData'
         ));
+    }
+
+    private function kirimNotifikasiKegiatanH1(Carbon $tomorrow): void
+    {
+        $kegiatans = Kegiatan::with(['pendaftarans' => function ($query) {
+                $query->where('status', 'disetujui')->whereNotNull('id_anggota');
+            }])
+            ->whereDate('tanggal', $tomorrow->toDateString())
+            ->whereIn('status', ['aktif', 'tutup'])
+            ->get();
+
+        foreach ($kegiatans as $kegiatan) {
+            foreach ($kegiatan->pendaftarans as $pendaftaran) {
+                $kode = 'KGT-' . $kegiatan->id_kegiatan . '-' . $tomorrow->format('Ymd');
+                $sudahAda = Notifikasi::where('id_anggota', $pendaftaran->id_anggota)
+                    ->where('tipe', 'reminder')
+                    ->where('pesan', 'like', "%{$kode}%")
+                    ->exists();
+
+                if ($sudahAda) {
+                    continue;
+                }
+
+                Notifikasi::create([
+                    'id_anggota' => $pendaftaran->id_anggota,
+                    'judul' => 'Pengingat Kegiatan Besok',
+                    'pesan' => "Besok ada kegiatan {$kegiatan->judul} di {$kegiatan->lokasi}. Jangan lupa hadir tepat waktu. Kode: {$kode}",
+                    'tipe' => 'reminder',
+                    'is_read' => false,
+                ]);
+            }
+        }
     }
 }

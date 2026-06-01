@@ -10,9 +10,10 @@ class KategoriController extends Controller
     public function index(Request $request)
     {
         $kategoris = Kategori::query()
-            ->when($request->search, function ($query, $search) {
-                $query->where('nama', 'like', "%{$search}%")
-                    ->orWhere('deskripsi', 'like', "%{$search}%");
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $keyword = trim($request->q);
+                $query->where('nama', 'like', "%{$keyword}%")
+                      ->orWhere('deskripsi', 'like', "%{$keyword}%");
             })
             ->latest()
             ->paginate(10)

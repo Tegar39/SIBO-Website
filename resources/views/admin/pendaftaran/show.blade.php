@@ -60,6 +60,34 @@
             </div>
         @endif
 
+        <form method="GET" action="{{ route('admin.pendaftaran.show', $kegiatan->id_kegiatan) }}" class="mb-8 bg-white rounded-3xl border border-slate-100 shadow-sm p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+                <div>
+                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-700">Filter Pendaftar</h2>
+                    <p class="text-xs text-slate-500 mt-1">Cari peserta, cek status verifikasi, dan pisahkan daftar sendiri/orang lain/input admin.</p>
+                </div>
+                <a href="{{ route('admin.pendaftaran.show', $kegiatan->id_kegiatan) }}" class="text-xs font-black uppercase tracking-widest text-emerald-700 hover:text-emerald-900">Reset Filter</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama/kontak/nomor anggota..." class="md:col-span-2 rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                <select name="status" class="rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                    <option value="">Semua Status</option>
+                    @foreach(['pending' => 'Pending', 'disetujui' => 'Disetujui', 'ditolak' => 'Ditolak', 'batal' => 'Batal'] as $value => $label)
+                        <option value="{{ $value }}" {{ request('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <div class="flex gap-3">
+                    <select name="jenis_daftar" class="w-full rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                        <option value="">Semua Jenis</option>
+                        @foreach(['self' => 'Daftar Sendiri', 'other' => 'Daftar Orang Lain', 'admin' => 'Input Admin'] as $value => $label)
+                            <option value="{{ $value }}" {{ request('jenis_daftar') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="px-5 rounded-2xl bg-slate-900 hover:bg-emerald-600 text-white text-xs font-black uppercase tracking-widest">Filter</button>
+                </div>
+            </div>
+        </form>
+
         <div class="bg-white/70 backdrop-blur-md rounded-[2rem] border border-white/50 shadow-xl overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">

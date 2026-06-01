@@ -23,30 +23,13 @@
             </a>
         </div>
 
-        <div class="mb-10 bg-white/70 backdrop-blur-md border border-white/50 p-4 rounded-3xl shadow-sm">
-            <form action="{{ route('admin.kategori.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </div>
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                        placeholder="Cari nama kategori atau deskripsi..." 
-                        class="w-full bg-slate-100/50 border-none pl-11 pr-4 py-3 rounded-2xl text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-emerald-500 transition-all">
-                </div>
-
-                <div class="flex gap-2">
-                    <button type="submit" class="bg-slate-800 text-white px-8 py-3 rounded-2xl font-bold text-sm hover:bg-slate-900 transition-all shadow-md shadow-slate-200">
-                        FILTER
-                    </button>
-                    @if(request('search'))
-                        <a href="{{ route('admin.kategori.index') }}" class="bg-rose-50 text-rose-600 px-6 py-3 rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-rose-100 transition-all">
-                            RESET
-                        </a>
-                    @endif
-                </div>
-            </form>
+        
+        <div class="mb-8 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-3xl px-6 py-4 flex items-start gap-3">
+            <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <p class="text-sm font-black">Filter cepat tetap tersedia.</p>
+                <p class="text-xs font-semibold mt-1 text-emerald-600">Cari kategori langsung dari halaman ini; analisis detail tetap tersedia di menu Laporan.</p>
+            </div>
         </div>
 
         @if(session('success'))

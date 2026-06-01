@@ -16,7 +16,7 @@
             </div>
 
             <div class="hidden sm:flex flex-7 justify-center">
-                <div class="flex items-center gap-10">
+                <div class="flex items-center gap-5">
 
                     {{-- ===== GUEST (HOME SCROLL) ===== --}}
                     @guest

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
+use App\Services\CertificateService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CertificateController extends Controller
 {
-    public function download($id)
+    public function download($id, CertificateService $certificateService)
     {
         $certificate = Certificate::with('pendaftaran.anggota')->findOrFail($id);
         $user = Auth::user();
@@ -21,6 +22,9 @@ class CertificateController extends Controller
                 'Sertifikat ini bukan milik akun Anda.'
             );
         }
+
+        // Regenerate sebelum download agar sertifikat lama otomatis memakai desain PDF terbaru.
+        $certificate = $certificateService->refreshFile($certificate);
 
         if (! Storage::disk('public')->exists($certificate->file_path)) {
             abort(404, 'File sertifikat tidak ditemukan.');

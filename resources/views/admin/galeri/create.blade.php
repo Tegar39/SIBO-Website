@@ -41,10 +41,10 @@
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                 </div>
                             </div>
-                            <span class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2 group-hover:text-emerald-600 transition-colors">Pilih Foto Kegiatan</span>
-                            <span class="block text-[9px] font-medium text-slate-400 uppercase tracking-widest mb-6">Anda dapat memilih banyak file sekaligus</span>
+                            <span class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2 group-hover:text-emerald-600 transition-colors">Pilih Foto / Video Kegiatan</span>
+                            <span class="block text-[9px] font-medium text-slate-400 uppercase tracking-widest mb-6">Anda dapat memilih banyak file sekaligus. Format: JPG, PNG, WEBP, MP4, MOV, M4V, WEBM.</span>
                             
-                            <input type="file" id="fotos" name="fotos[]" accept="image/*" multiple required 
+                            <input type="file" id="fotos" name="fotos[]" accept="image/*,video/*" multiple required 
                                    class="block w-full text-xs font-bold text-slate-400
                                           file:mr-4 file:py-2.5 file:px-6
                                           file:rounded-xl file:border-0
@@ -59,7 +59,7 @@
                             <div class="opacity-30 flex justify-center mb-3">
                                 <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             </div>
-                            <p class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Form detail foto akan muncul secara otomatis</p>
+                            <p class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Form detail dokumentasi akan muncul secara otomatis</p>
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@
             header.className = 'flex items-center gap-2 mb-6 px-2';
             header.innerHTML = `
                 <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-700 italic">Lengkapi Informasi File (${files.length} Item):</h3>
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-700 italic">Lengkapi Informasi Dokumentasi (${files.length} Item):</h3>
             `;
             container.appendChild(header);
             
@@ -100,9 +100,11 @@
                         </div>
                         <div class="text-[10px] font-bold truncate text-slate-500 italic uppercase">${files[i].name}</div>
                     </div>
-                    <div class="relative">
-                        <input type="text" name="judul[]" placeholder="Berikan judul untuk foto ini..." 
+                    <div class="relative space-y-2">
+                        <input type="text" name="judul[]" placeholder="Berikan judul dokumentasi..." 
                             class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-[10px] font-bold uppercase focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-300">
+                        <input type="text" name="deskripsi[]" placeholder="Deskripsi singkat opsional..." 
+                            class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-[10px] font-semibold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-300">
                     </div>
                     <div class="flex justify-center md:justify-end">
                         <label class="relative inline-flex items-center cursor-pointer group/item">
