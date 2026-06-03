@@ -6,7 +6,6 @@
         <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
             <p class="text-emerald-600 text-xs font-black uppercase tracking-[0.25em]">Keamanan Sistem</p>
             <h1 class="mt-2 text-3xl font-black text-slate-900">Status Akun, OTP Aksi Sensitif, dan Audit Log</h1>
-            <p class="mt-3 text-slate-500">Fitur tambahan untuk mendukung keamanan proyek UAS: OTP hanya untuk aksi sensitif anggota/PAC seperti ganti password, semua role langsung masuk setelah password valid, blokir akun, dan pencatatan aktivitas penting.</p>
         </div>
         @if(session('success'))<div class="mt-6 rounded-2xl bg-emerald-50 text-emerald-700 px-5 py-4 font-bold">{{ session('success') }}</div>@endif
         <div class="mt-8 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">

@@ -24,7 +24,7 @@
         }
     ?>
     <div class="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
-         style="background-image: url('<?php echo e($backgroundImage ?: asset('images/default-bg.jpg')); ?>');">
+         style="background-image: url('<?php echo e($backgroundImage ?: asset('images/default-bg.jpeg')); ?>');">
         <!-- Overlay gelap -->
         <div class="absolute inset-0 bg-black/60"></div>
 

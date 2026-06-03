@@ -14,7 +14,7 @@
             margin: 0;
             padding: 0;
             font-family: DejaVu Serif, serif;
-            color: #111827;
+            color: #0f172a;
             background: #ffffff;
         }
 
@@ -32,7 +32,7 @@
             top: 0;
             width: 47mm;
             height: 210mm;
-            background: #0b2f57;
+            background: #0f172a;
         }
 
         .blue-band-bottom {
@@ -41,14 +41,14 @@
             bottom: 0;
             width: 297mm;
             height: 23mm;
-            background: #0b2f57;
+            background: #0f172a;
         }
 
         .pattern-left-a,
         .pattern-left-b,
         .pattern-bottom-a {
             position: absolute;
-            border: 1px solid rgba(255,255,255,.09);
+            border: 1px solid rgba(255,255,255,.10);
             border-radius: 50%;
         }
 
@@ -79,7 +79,7 @@
             top: 8mm;
             right: 8mm;
             bottom: 17mm;
-            border: 2px solid #d6a733;
+            border: 2px solid #f59e0b;
         }
 
         .white-panel {
@@ -89,7 +89,7 @@
             right: 8mm;
             bottom: 17mm;
             background: #ffffff;
-            border-left: 1px solid #eadb9c;
+            border-left: 1px solid #d1fae5;
             overflow: hidden;
         }
 
@@ -99,10 +99,10 @@
             top: 8mm;
             right: 8mm;
             bottom: 17mm;
-            opacity: .32;
+            opacity: .30;
             background-image:
-                radial-gradient(circle at 10px 10px, #d7dde7 1.1px, transparent 1.2px),
-                radial-gradient(circle at 26px 26px, #d7dde7 1.1px, transparent 1.2px);
+                radial-gradient(circle at 10px 10px, #bbf7d0 1.1px, transparent 1.2px),
+                radial-gradient(circle at 26px 26px, #d1fae5 1.1px, transparent 1.2px);
             background-size: 18px 18px;
         }
 
@@ -114,7 +114,7 @@
             height: 75mm;
             background: #ffffff;
             transform: rotate(39deg);
-            border-right: 3px solid #d6a733;
+            border-right: 3px solid #f59e0b;
         }
 
         .gold-ribbon {
@@ -123,7 +123,7 @@
             top: 40mm;
             width: 27mm;
             height: 27mm;
-            border: 5px solid #d6a733;
+            border: 5px solid #f59e0b;
             transform: rotate(45deg);
             background: transparent;
         }
@@ -161,7 +161,7 @@
             font-size: 35pt;
             line-height: 1;
             letter-spacing: 8px;
-            color: #d6a733;
+            color: #059669;
             text-transform: uppercase;
             font-weight: 700;
         }
@@ -171,14 +171,14 @@
             font-size: 22pt;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: #111827;
+            color: #0f172a;
             font-weight: 700;
         }
 
         .certificate-number {
             margin-top: 3mm;
             font-size: 10pt;
-            color: #374151;
+            color: #475569;
             font-family: DejaVu Sans, sans-serif;
             letter-spacing: .4px;
         }
@@ -186,17 +186,17 @@
         .given {
             margin-top: 11mm;
             font-size: 14pt;
-            color: #374151;
+            color: #475569;
         }
 
         .recipient {
             margin: 5mm auto 0 auto;
             width: 155mm;
             padding-bottom: 3mm;
-            border-bottom: 2px solid #d6a733;
+            border-bottom: 2px solid #f59e0b;
             font-size: 25pt;
             line-height: 1.1;
-            color: #111827;
+            color: #0f172a;
             font-style: italic;
             font-weight: 700;
             text-transform: uppercase;
@@ -205,12 +205,12 @@
         .role-line {
             margin-top: 4mm;
             font-size: 12pt;
-            color: #374151;
+            color: #475569;
         }
 
         .role-line strong {
             font-family: DejaVu Sans, sans-serif;
-            color: #0b7a53;
+            color: #059669;
             letter-spacing: 2px;
             text-transform: uppercase;
             font-size: 13pt;
@@ -221,7 +221,7 @@
             width: 168mm;
             font-size: 13pt;
             line-height: 1.45;
-            color: #111827;
+            color: #0f172a;
         }
 
         .activity-title {
@@ -229,14 +229,14 @@
             margin: 2mm 0 1.5mm 0;
             font-size: 17pt;
             font-weight: 700;
-            color: #0b2f57;
+            color: #059669;
         }
 
         .activity-desc {
             display: block;
             font-family: DejaVu Sans, sans-serif;
             font-size: 10pt;
-            color: #4b5563;
+            color: #64748b;
             line-height: 1.35;
         }
 
@@ -244,7 +244,7 @@
             margin-top: 4mm;
             font-family: DejaVu Sans, sans-serif;
             font-size: 11pt;
-            color: #111827;
+            color: #0f172a;
         }
 
         .validation {
@@ -253,15 +253,15 @@
             bottom: 21mm;
             width: 152mm;
             padding: 4mm 7mm;
-            border: 1px solid #d6a733;
-            background: rgba(255, 251, 235, .78);
+            border: 1px solid #10b981;
+            background: rgba(236, 253, 245, .86);
             text-align: center;
             font-family: DejaVu Sans, sans-serif;
         }
 
         .validation-title {
             margin-bottom: 1.5mm;
-            color: #0b2f57;
+            color: #059669;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.2px;
@@ -270,7 +270,7 @@
 
         .validation-text {
             margin: 0;
-            color: #4b5563;
+            color: #475569;
             font-size: 8.4pt;
             line-height: 1.35;
         }
@@ -293,8 +293,8 @@
             width: 35mm;
             height: 35mm;
             border-radius: 50%;
-            background: #0b2f57;
-            border: 4px solid #d6a733;
+            background: #059669;
+            border: 4px solid #f59e0b;
             color: #ffffff;
             text-align: center;
             font-family: DejaVu Sans, sans-serif;
@@ -309,7 +309,7 @@
             position: absolute;
             right: 10mm;
             bottom: 5.5mm;
-            color: rgba(255,255,255,.85);
+            color: rgba(255,255,255,.88);
             font-family: DejaVu Sans, sans-serif;
             font-size: 7.2pt;
             letter-spacing: 1px;

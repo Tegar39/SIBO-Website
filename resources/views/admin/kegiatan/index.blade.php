@@ -22,17 +22,7 @@
                 Tambah Kegiatan
             </a>
         </div>
-
-        
-        <div class="mb-8 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-3xl px-6 py-4 flex items-start gap-3">
-            <svg class="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <div>
-                <p class="text-sm font-black">Filter cepat tetap tersedia.</p>
-                <p class="text-xs font-semibold mt-1 text-emerald-600">Gunakan filter bulan/tahun untuk memantau perkembangan. Rekap lengkap tetap tersedia di menu Laporan Kegiatan.</p>
-            </div>
-        </div>
-
-        @if(session('success'))
+@if(session('success'))
             <div class="bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-4 rounded-2xl mb-8 flex items-center gap-3">
                 <div class="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
@@ -45,7 +35,6 @@
             <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
                 <div>
                     <h2 class="text-sm font-black uppercase tracking-wider text-slate-700">Filter Kegiatan</h2>
-                    <p class="text-xs text-slate-500 mt-1">Filter ini membantu melihat perkembangan kegiatan per bulan tanpa masuk ke laporan.</p>
                 </div>
                 <a href="{{ route('admin.kegiatan.index') }}" class="text-xs font-black uppercase tracking-widest text-emerald-700 hover:text-emerald-900">Reset Filter</a>
             </div>
