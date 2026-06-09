@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-16 bg-slate-50 min-h-screen">
+<div class="pt-20 pb-16 bg-slate-50 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <a href="{{ route('pac.public.index') }}" class="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-emerald-600">← Kembali ke daftar PAC</a>
         <div class="mt-6 bg-gradient-to-br from-slate-900 to-emerald-900 rounded-[2rem] text-white p-8 md:p-12 shadow-xl">

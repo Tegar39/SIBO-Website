@@ -17,7 +17,7 @@ class KegiatanApiController extends Controller
 
         $query = Kegiatan::query()
             ->with(['kategori', 'pamflet'])
-            ->where('status', 'aktif')
+            ->whereIn('status', ['aktif', 'tutup', 'selesai'])
             ->orderBy('tanggal', 'desc');
 
         if ($kategoriId) {
@@ -70,6 +70,7 @@ class KegiatanApiController extends Controller
             'kuota' => $kegiatan->kuota,
             'status' => $kegiatan->status,
             'kategori' => $kegiatan->kategori?->nama,
+            'kategori_nama' => $kegiatan->kategori?->nama,
             'id_kategori' => $kegiatan->id_kategori,
             'pamflet_path' => $pamfletPath,
             'pamflet_url' => $pamfletUrl,

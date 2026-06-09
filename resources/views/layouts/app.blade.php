@@ -157,7 +157,7 @@
         @include('layouts.navigation')
 
     <!-- CONTENT -->
-    <main id="app-content" class="{{ auth()->check() ? 'pt-28' : '' }}">
+    <main id="app-content" class="{{ auth()->check() ? 'pt-20 md:pt-22' : '' }}">
         @yield('content')
     </main>
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-16 bg-slate-50 min-h-screen">
+<div class="pt-20 pb-16 bg-slate-50 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <span class="text-emerald-600 font-black uppercase tracking-[0.25em] text-xs">Direktori PAC Aktif</span>

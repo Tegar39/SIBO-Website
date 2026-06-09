@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+<div class="pt-20 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -22,6 +22,8 @@
                 Tambah Kategori
             </a>
         </div>
+
+        
 @if(session('success'))
             <div class="bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-4 rounded-2xl mb-8 flex items-center gap-3">
                 <div class="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center flex-shrink-0">

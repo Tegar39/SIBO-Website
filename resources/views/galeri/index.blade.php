@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-slate-50 min-h-screen py-16 md:py-24">
+<div class="bg-slate-50 min-h-screen py-16 md:py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12 md:mb-16">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-black uppercase tracking-[0.25em] mb-4">
@@ -125,7 +125,7 @@
 
 <div id="lightbox" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden items-center justify-center" onclick="closeMediaModal()">
     <div class="relative max-w-6xl mx-auto p-4 w-full flex flex-col items-center justify-center h-full" onclick="event.stopPropagation()">
-        <button class="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all" onclick="closeMediaModal()">×</button>
+        <button class="absolute top-5 right-5 md:top-8 md:right-8 w-14 h-14 bg-white text-slate-900 hover:bg-rose-500 hover:text-white rounded-full flex items-center justify-center shadow-2xl text-3xl font-black transition-all z-[120]" onclick="closeMediaModal()" aria-label="Tutup galeri">×</button>
         <img id="lightbox-img" src="" class="hidden max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain">
         <video id="lightbox-video" src="" controls class="hidden max-w-full max-h-[80vh] rounded-2xl shadow-2xl bg-black"></video>
         <div class="mt-6 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full ring-1 ring-white/20">

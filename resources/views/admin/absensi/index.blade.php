@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+<div class="pt-20 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -49,7 +49,7 @@
                     </div>
                 </a>
             @empty
-                <div class="col-span-full py-24 text-center bg-white/70 backdrop-blur-md rounded-3xl border-2 border-dashed border-slate-200">
+                <div class="col-span-full py-16 text-center bg-white/70 backdrop-blur-md rounded-3xl border-2 border-dashed border-slate-200">
                     <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>

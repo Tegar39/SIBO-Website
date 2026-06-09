@@ -1,6 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
+
+@php
+    $homeStats = [
+        [
+            'label' => 'Total Anggota',
+            'val' => $totalAnggota ?? 0,
+            'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+        ],
+        [
+            'label' => 'Total Kegiatan',
+            'val' => $totalKegiatan ?? 0,
+            'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+        ],
+        [
+            'label' => 'PAC Aktif',
+            'val' => $totalPac ?? 0,
+            'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
+        ],
+    ];
+@endphp
+
 <div class="bg-slate-50 font-sans text-slate-800 selection:bg-green-200 selection:text-green-900">
     <!-- Hero Section -->
     <section id="home" 
@@ -89,7 +110,7 @@
     </section>
 
     <!-- Tentang SIBO (Profil) -->
-    <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+    <div id="tentang" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div class="relative order-2 lg:order-1">
                 <div class="mb-10 relative">
@@ -135,6 +156,15 @@
                 <div class="absolute inset-0 bg-white/40 backdrop-blur-3xl rounded-[3rem] -z-10"></div>
                 <div class="relative rounded-[2.5rem] bg-white p-8 md:p-12 shadow-[0_30px_60px_rgba(0,0,0,0.08)] border border-slate-100 w-full max-w-md group overflow-hidden">
                     <img src="{{ asset('images/logo-desbor.png') }}" alt="PC DESBOR" class="w-full h-auto object-contain transform group-hover:scale-110 transition-transform duration-700 drop-shadow-2xl">
+                    <div class="mt-6 rounded-[1.5rem] overflow-hidden bg-slate-950 border border-slate-100 shadow-xl">
+                        <video id="siboProfileVideo" class="w-full h-56 object-cover bg-slate-950" controls preload="metadata" playsinline poster="{{ asset('images/logo-desbor.png') }}">
+                            <source src="{{ asset('videos/sibo_profile.mp4') }}" type="video/mp4">
+                            Browser tidak mendukung pemutaran video.
+                        </video>
+                        <div id="siboVideoHelp" class="hidden p-4 text-xs text-center text-emerald-100 bg-slate-900">
+                            Video belum dapat dimuat. Pastikan file tersedia di <strong>public/videos/sibo_profile.mp4</strong> dan bisa dibuka dari browser.
+                        </div>
+                    </div>
                     <div class="absolute top-0 right-0 p-4 opacity-10">
                         <svg class="w-20 h-20 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
                     </div>
@@ -163,14 +193,7 @@
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 relative z-20">
-                @php
-                    $stats = [
-                        ['label' => 'Total Anggota', 'val' => $totalAnggota ?? 0, 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
-                        ['label' => 'Total Kegiatan', 'val' => $totalKegiatan ?? 0, 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                        ['label' => 'PAC Aktif', 'val' => $totalPac ?? 0, 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-                    ];
-                @endphp
-                @foreach($stats as $s)
+                @foreach(($homeStats ?? []) as $s)
                 <div class="group text-center bg-white rounded-[2rem] py-12 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 transition-all duration-500 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 stat-card relative overflow-hidden">
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-green-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700 ease-out z-0"></div>
                     <div class="relative z-10 flex flex-col items-center">
@@ -192,7 +215,7 @@
     </div>
 
     <!-- ========== INFORMASI & KEGIATAN (Horizontal Scroll FIXED) ========== -->
-    <div id="kegiatan-terbaru" class="bg-slate-50/50 py-24 relative">
+    <div id="kegiatan-terbaru" class="bg-slate-50/50 py-16 relative">
         <div class="absolute inset-0 bg-top bg-no-repeat bg-[url('data:image/svg+xml,%3Csvg width=\"100%25\" height=\"100%25\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cdefs%3E%3Cpattern id=\"grid\" width=\"40\" height=\"40\" patternUnits=\"userSpaceOnUse\"%3E%3Cpath d=\"M0 40L40 0H20L0 20M40 40V20L20 40\" fill=\"none\" stroke=\"%23e2e8f0\" stroke-opacity=\"0.4\"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\"100%25\" height=\"100%25\" fill=\"url(%23grid)\"/%3E%3C/svg%3E')]"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -271,7 +294,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="w-full flex flex-col items-center justify-center py-24 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
+                        <div class="w-full flex flex-col items-center justify-center py-16 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
                             <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                                 <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                             </div>
@@ -290,7 +313,7 @@
 
     <!-- Galeri -->
     @if(($galeri ?? collect())->count() > 0)
-    <div id="galeri" class="py-24 md:py-32 bg-white overflow-hidden">
+    <div id="galeri" class="py-16 md:py-32 bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-14 md:mb-16">
                 <span class="text-green-600 font-bold text-sm uppercase tracking-[0.2em] mb-4 block">
@@ -366,10 +389,10 @@
 <!-- Lightbox Modal -->
 <div id="lightbox" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden items-center justify-center transition-opacity" onclick="closeLightbox()">
     <div class="relative max-w-6xl mx-auto p-4 w-full flex flex-col items-center justify-center h-full" onclick="event.stopPropagation()">
-        <button class="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all" onclick="closeLightbox()">
+        <button class="absolute top-20 right-6 md:top-30 md:right-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-sm transition-all" onclick="closeLightbox()">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
-        <img id="lightbox-img" src="" class="hidden max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain ring-1 ring-white/10">
+        <img id="lightbox-img" src="" class="hidden max-w-full max-h-[50vh] rounded-2xl shadow-2xl object-contain ring-1 ring-white/10">
         <video id="lightbox-video" src="" controls class="hidden max-w-full max-h-[80vh] rounded-2xl shadow-2xl bg-black ring-1 ring-white/10"></video>
         <div class="mt-6 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full ring-1 ring-white/20">
             <p id="lightbox-caption" class="text-white font-semibold text-lg text-center"></p>
@@ -489,4 +512,17 @@
     }
 </style>
 @endpush
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const video = document.getElementById('siboProfileVideo');
+    const help = document.getElementById('siboVideoHelp');
+    if (video && help) {
+        video.addEventListener('error', function () {
+            help.classList.remove('hidden');
+        });
+    }
+});
+</script>
+
 @endsection

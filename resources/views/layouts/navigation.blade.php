@@ -37,10 +37,8 @@
                             <a href="{{ route('admin.kegiatan.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.kegiatan.*') ? 'active' : '' }}">Kegiatan</a>
                             <a href="{{ route('admin.pendaftaran.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}">Pendaftaran</a>
                             <a href="{{ route('admin.absensi.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}">Absensi</a>
-                            <a href="{{ route('admin.inventory.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.inventory.*') ? 'active' : '' }}">Inventaris</a>
                             <a href="{{ route('admin.galeri.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}">Galeri</a>
                             <a href="{{ route('admin.laporan.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">Laporan</a>
-                            <a href="{{ route('admin.security.index') }}" wire:navigate class="nav-item {{ request()->routeIs('admin.security.*') ? 'active' : '' }}">Keamanan</a>
                         @elseif(auth()->user()->role == 'pac')
                             <a href="{{ route('pac.dashboard') }}" wire:navigate class="nav-item {{ request()->routeIs('pac.dashboard') ? 'active' : '' }}">Dashboard PAC</a>
                             <a href="{{ route('pac.public.index') }}" wire:navigate class="nav-item {{ request()->routeIs('pac.public.*') ? 'active' : '' }}">Direktori PAC</a>
@@ -134,10 +132,8 @@
                     <a href="{{ route('admin.kegiatan.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.kegiatan.*') ? 'active' : '' }}" @click="open = false">Kegiatan</a>
                     <a href="{{ route('admin.pendaftaran.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.pendaftaran.*') ? 'active' : '' }}" @click="open = false">Pendaftaran</a>
                     <a href="{{ route('admin.absensi.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}" @click="open = false">Absensi</a>
-                    <a href="{{ route('admin.inventory.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.inventory.*') ? 'active' : '' }}" @click="open = false">Inventaris</a>
                     <a href="{{ route('admin.galeri.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.galeri.*') ? 'active' : '' }}" @click="open = false">Galeri</a>
                     <a href="{{ route('admin.laporan.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}" @click="open = false">Laporan</a>
-                    <a href="{{ route('admin.security.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('admin.security.*') ? 'active' : '' }}" @click="open = false">Keamanan</a>
                 @elseif(auth()->user()->role == 'pac')
                     <a href="{{ route('pac.dashboard') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('pac.dashboard') ? 'active' : '' }}" @click="open = false">Dashboard PAC</a>
                     <a href="{{ route('pac.public.index') }}" wire:navigate class="nav-item-mobile {{ request()->routeIs('pac.public.*') ? 'active' : '' }}" @click="open = false">Direktori PAC</a>

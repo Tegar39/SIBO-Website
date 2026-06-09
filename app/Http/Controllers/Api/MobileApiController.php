@@ -389,6 +389,91 @@ class MobileApiController extends Controller
         ]);
     }
 
+
+    public function adminKegiatan(Request $request): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        $items = Kegiatan::with(['kategori', 'pamflet'])
+            ->when($request->search, fn($q,$search) => $q->where(fn($sub) => $sub->where('judul','like',"%{$search}%")->orWhere('lokasi','like',"%{$search}%")))
+            ->orderByDesc('tanggal')
+            ->get()
+            ->map(fn(Kegiatan $k) => $this->kegiatanPayload($k));
+        return response()->json(['data' => $items]);
+    }
+
+    public function adminStoreKegiatan(Request $request): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        $data = $request->validate([
+            'judul' => ['required','string','max:150'],
+            'deskripsi' => ['nullable','string'],
+            'tanggal' => ['required','date'],
+            'waktu' => ['nullable','date_format:H:i'],
+            'lokasi' => ['required','string','max:150'],
+            'kuota' => ['nullable','integer','min:0'],
+            'status' => ['nullable','in:aktif,tutup,selesai,batal'],
+            'id_kategori' => ['nullable','integer'],
+        ]);
+        $data['status'] = $data['status'] ?? 'aktif';
+        $item = Kegiatan::create($data);
+        return response()->json(['message'=>'Kegiatan berhasil ditambahkan','data'=>$this->kegiatanPayload($item->load(['kategori','pamflet']))],201);
+    }
+
+    public function adminUpdateKegiatan(Request $request, int $id): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        $item = Kegiatan::findOrFail($id);
+        $data = $request->validate([
+            'judul' => ['required','string','max:150'],
+            'deskripsi' => ['nullable','string'],
+            'tanggal' => ['required','date'],
+            'waktu' => ['nullable','date_format:H:i'],
+            'lokasi' => ['required','string','max:150'],
+            'kuota' => ['nullable','integer','min:0'],
+            'status' => ['nullable','in:aktif,tutup,selesai,batal'],
+            'id_kategori' => ['nullable','integer'],
+        ]);
+        $item->update($data);
+        return response()->json(['message'=>'Kegiatan berhasil diperbarui','data'=>$this->kegiatanPayload($item->refresh()->load(['kategori','pamflet']))]);
+    }
+
+    public function adminDeleteKegiatan(Request $request, int $id): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        Kegiatan::findOrFail($id)->delete();
+        return response()->json(['message'=>'Kegiatan berhasil dihapus']);
+    }
+
+    public function adminGaleri(Request $request): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        $items = Galeri::with('kegiatan')->orderByDesc('tgl_upload')->get()->map(fn(Galeri $g) => $this->galeriPayload($g));
+        return response()->json(['data'=>$items]);
+    }
+
+    public function adminStoreGaleri(Request $request): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        $data = $request->validate([
+            'id_kegiatan' => ['required','integer'],
+            'judul_foto' => ['required','string','max:150'],
+            'deskripsi' => ['nullable','string'],
+            'jenis_media' => ['nullable','in:foto,video'],
+            'path_file' => ['required','string'],
+        ]);
+        $data['tgl_upload'] = now();
+        $data['is_unggulan'] = $request->boolean('is_unggulan');
+        $item = Galeri::create($data);
+        return response()->json(['message'=>'Dokumentasi berhasil ditambahkan','data'=>$this->galeriPayload($item->load('kegiatan'))],201);
+    }
+
+    public function adminDeleteGaleri(Request $request, int $id): JsonResponse
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+        Galeri::findOrFail($id)->delete();
+        return response()->json(['message'=>'Dokumentasi berhasil dihapus']);
+    }
+
     public function inventory(Request $request, InventoryService $inventory): JsonResponse
     {
         return response()->json(['data' => $inventory->checkAvailability($request->string('keyword')->toString() ?: null)]);
@@ -466,6 +551,7 @@ class MobileApiController extends Controller
             'kuota' => $kegiatan->kuota,
             'status' => $kegiatan->status,
             'kategori' => $kegiatan->kategori?->nama,
+            'kategori_nama' => $kegiatan->kategori?->nama,
             'id_kategori' => $kegiatan->id_kategori,
             'jumlah_peserta' => $kegiatan->pendaftarans()->where('status', 'disetujui')->count(),
             'bisa_daftar' => (bool) $kegiatan->bisaDaftar,

@@ -50,5 +50,15 @@ Route::prefix('v1')->group(function () {
         Route::post('/mobile/profil/password', [MobileApiController::class, 'updatePassword'])->middleware('throttle:5,1');
         Route::get('/mobile/inventory', [MobileApiController::class, 'inventory']);
         Route::get('/mobile/laporan/ringkasan', [MobileApiController::class, 'laporanRingkasan']);
+
+        // Admin mobile CRUD
+        Route::get('/mobile/admin/kegiatan', [MobileApiController::class, 'adminKegiatan']);
+        Route::post('/mobile/admin/kegiatan', [MobileApiController::class, 'adminStoreKegiatan']);
+        Route::post('/mobile/admin/kegiatan/{id}/update', [MobileApiController::class, 'adminUpdateKegiatan']);
+        Route::post('/mobile/admin/kegiatan/{id}/delete', [MobileApiController::class, 'adminDeleteKegiatan']);
+        Route::get('/mobile/admin/galeri', [MobileApiController::class, 'adminGaleri']);
+        Route::post('/mobile/admin/galeri', [MobileApiController::class, 'adminStoreGaleri']);
+        Route::post('/mobile/admin/galeri/{id}/delete', [MobileApiController::class, 'adminDeleteGaleri']);
+
     });
 });

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+<div class="pt-20 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -26,9 +26,11 @@
         
         <form method="GET" action="{{ route('admin.anggota.index') }}" class="mb-8 bg-white rounded-3xl border border-slate-100 shadow-sm p-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-700">Cari Data Anggota</h2>
-                    <p class="text-xs text-slate-500 mt-1">Menu ini fokus untuk tambah, edit, hapus, lihat, dan cari data. Filter detail tersedia di menu Laporan.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 justify-between w-full md:w-auto">
+                    <div>
+                        <h2 class="text-sm font-black uppercase tracking-wider text-slate-700">Cari Data Anggota</h2>
+                        <p class="text-xs text-slate-500 mt-1">Menu ini fokus untuk tambah, edit, hapus, lihat, dan cari data.</p>
+                    </div>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                     <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama, email, nomor, kontak, PAC..." class="w-full md:w-96 rounded-2xl border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
@@ -110,7 +112,7 @@
                 {{ $anggota->links() }}
             </div>
         @else
-            <div class="text-center py-24 bg-white/70 backdrop-blur-md rounded-3xl border-2 border-dashed border-slate-200">
+            <div class="text-center py-16 bg-white/70 backdrop-blur-md rounded-3xl border-2 border-dashed border-slate-200">
                 <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 01-9-3.612m0-11.214a3 3 0 11-2.047 5.291"></path></svg>
                 </div>

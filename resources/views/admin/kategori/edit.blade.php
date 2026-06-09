@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+<div class="pt-20 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white/70 backdrop-blur-md border border-white/50 rounded-[2.5rem] shadow-xl p-8 md:p-12">
             

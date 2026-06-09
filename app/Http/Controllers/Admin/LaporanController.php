@@ -34,20 +34,23 @@ class LaporanController extends Controller
     public function anggota(Request $request)
     {
         $anggota = $this->anggotaQuery($request)->get();
-        return view('admin.laporan.anggota', compact('anggota'));
+        $pacList = Anggota::whereNotNull('pac')->where('pac', '!=', '')->distinct()->orderBy('pac')->pluck('pac');
+        return view('admin.laporan.anggota', compact('anggota', 'pacList'));
     }
 
     public function kegiatan(Request $request)
     {
         $kegiatan = $this->kegiatanQuery($request)->get();
-        return view('admin.laporan.kegiatan', compact('kegiatan'));
+        $pacList = Anggota::whereNotNull('pac')->where('pac', '!=', '')->distinct()->orderBy('pac')->pluck('pac');
+        return view('admin.laporan.kegiatan', compact('kegiatan', 'pacList'));
     }
 
     public function absensi(Request $request)
     {
         $absensi = $this->absensiQuery($request)->paginate(25)->withQueryString();
         $kegiatans = Kegiatan::orderByDesc('tanggal')->get();
-        return view('admin.laporan.absensi', compact('absensi', 'kegiatans'));
+        $pacList = Anggota::whereNotNull('pac')->where('pac', '!=', '')->distinct()->orderBy('pac')->pluck('pac');
+        return view('admin.laporan.absensi', compact('absensi', 'kegiatans', 'pacList'));
     }
 
     public function exportAnggotaExcel(Request $request)
@@ -111,6 +114,8 @@ class LaporanController extends Controller
     {
         return Anggota::with('user')
             ->when($request->pac, fn ($q, $pac) => $q->where('pac', $pac))
+            ->when($request->bulan, fn ($q, $bulan) => $q->whereMonth('created_at', $bulan))
+            ->when($request->tahun, fn ($q, $tahun) => $q->whereYear('created_at', $tahun))
             ->when($request->search, function ($q, $search) {
                 $q->where(function ($sub) use ($search) {
                     $sub->where('nama_lengkap', 'like', "%{$search}%")
@@ -125,6 +130,10 @@ class LaporanController extends Controller
     {
         return Kegiatan::with(['kategori', 'pendaftarans.absensi'])
             ->when($request->status, fn ($q, $status) => $q->where('status', $status))
+            ->when($request->bulan, fn ($q, $bulan) => $q->whereMonth('tanggal', $bulan))
+            ->when($request->tahun, fn ($q, $tahun) => $q->whereYear('tanggal', $tahun))
+            ->when($request->pac, fn ($q, $pac) => $q->whereHas('pendaftarans.anggota', fn ($sub) => $sub->where('pac', $pac)))
+            ->when($request->id_kegiatan, fn ($q, $id) => $q->where('id_kegiatan', $id))
             ->when($request->start_date, fn ($q, $date) => $q->whereDate('tanggal', '>=', $date))
             ->when($request->end_date, fn ($q, $date) => $q->whereDate('tanggal', '<=', $date))
             ->orderByDesc('tanggal');
@@ -134,6 +143,8 @@ class LaporanController extends Controller
     {
         return Absensi::with(['pendaftaran.anggota.user', 'pendaftaran.kegiatan.kategori'])
             ->when($request->id_kegiatan, fn ($q, $id) => $q->whereHas('pendaftaran', fn ($sub) => $sub->where('id_kegiatan', $id)))
+            ->when($request->bulan, fn ($q, $bulan) => $q->whereMonth('created_at', $bulan))
+            ->when($request->tahun, fn ($q, $tahun) => $q->whereYear('created_at', $tahun))
             ->when($request->status_kehadiran !== null && $request->status_kehadiran !== '', fn ($q) => $q->where('hadir', request('status_kehadiran')))
             ->when($request->pac, fn ($q, $pac) => $q->whereHas('pendaftaran.anggota', fn ($sub) => $sub->where('pac', $pac)))
             ->orderByDesc('created_at');

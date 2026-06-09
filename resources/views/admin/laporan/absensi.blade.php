@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+<div class="pt-20 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
@@ -16,20 +16,13 @@
         </div>
 
         <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 mb-8">
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <select name="id_kegiatan" class="rounded-2xl border-slate-200 text-sm">
-                    <option value="">Semua Kegiatan</option>
-                    @foreach($kegiatans as $kegiatan)
-                        <option value="{{ $kegiatan->id_kegiatan }}" @selected(request('id_kegiatan') == $kegiatan->id_kegiatan)>{{ $kegiatan->judul }}</option>
-                    @endforeach
-                </select>
-                <select name="status_kehadiran" class="rounded-2xl border-slate-200 text-sm">
-                    <option value="">Semua Status</option>
-                    <option value="1" @selected(request('status_kehadiran') === '1')>Hadir</option>
-                    <option value="0" @selected(request('status_kehadiran') === '0')>Tidak Hadir</option>
-                </select>
-                <input type="text" name="pac" value="{{ request('pac') }}" placeholder="Filter PAC" class="rounded-2xl border-slate-200 text-sm">
-                <button class="bg-slate-800 hover:bg-emerald-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest">Terapkan</button>
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                <select name="id_kegiatan" class="rounded-2xl border-slate-200 text-sm"><option value="">Semua Kegiatan</option>@foreach($kegiatans as $kegiatan)<option value="{{ $kegiatan->id_kegiatan }}" @selected(request('id_kegiatan') == $kegiatan->id_kegiatan)>{{ $kegiatan->judul }}</option>@endforeach</select>
+                <select name="pac" class="rounded-2xl border-slate-200 text-sm"><option value="">Semua PAC</option>@foreach(($pacList ?? []) as $pac)<option value="{{ $pac }}" @selected(request('pac') == $pac)>{{ $pac }}</option>@endforeach</select>
+                <select name="status_kehadiran" class="rounded-2xl border-slate-200 text-sm"><option value="">Semua Status</option><option value="1" @selected(request('status_kehadiran') === '1')>Hadir</option><option value="0" @selected(request('status_kehadiran') === '0')>Tidak Hadir</option></select>
+                <select name="bulan" class="rounded-2xl border-slate-200 text-sm"><option value="">Semua Bulan</option>@foreach(range(1,12) as $b)<option value="{{ $b }}" @selected((string)request('bulan') === (string)$b)>{{ \Carbon\Carbon::create()->month($b)->translatedFormat('F') }}</option>@endforeach</select>
+                <input type="number" name="tahun" value="{{ request('tahun', now()->year) }}" placeholder="Tahun" class="rounded-2xl border-slate-200 text-sm">
+                <button class="bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest py-3">Terapkan</button>
             </form>
         </div>
 

@@ -1,5 +1,5 @@
 <?php $__env->startSection('content'); ?>
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
+<div class="pt-20 pb-12 bg-slate-50 min-h-screen font-sans">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="mb-6 flex items-center justify-between">
@@ -12,6 +12,27 @@
                 <a href="<?php echo e(route('admin.laporan.anggota.export.csv', request()->all())); ?>" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Export CSV</a>
                 <a href="<?php echo e(route('admin.laporan.anggota.export.pdf', request()->all())); ?>" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm">Export PDF</a>
             </div>
+        </div>
+
+        
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 mb-8">
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <input type="text" name="search" value="<?php echo e(request('search')); ?>" placeholder="Cari nama/nomor/kontak..." class="rounded-2xl border-slate-200 text-sm">
+                <select name="pac" class="rounded-2xl border-slate-200 text-sm">
+                    <option value="">Semua PAC</option>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ($pacList ?? []); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pac): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <option value="<?php echo e($pac); ?>" <?php if(request('pac') == $pac): echo 'selected'; endif; ?>><?php echo e($pac); ?></option>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                </select>
+                <select name="bulan" class="rounded-2xl border-slate-200 text-sm">
+                    <option value="">Semua Bulan</option>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = range(1,12); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $b): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <option value="<?php echo e($b); ?>" <?php if((string)request('bulan') === (string)$b): echo 'selected'; endif; ?>><?php echo e(\Carbon\Carbon::create()->month($b)->translatedFormat('F')); ?></option>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                </select>
+                <input type="number" name="tahun" value="<?php echo e(request('tahun', now()->year)); ?>" placeholder="Tahun" class="rounded-2xl border-slate-200 text-sm">
+                <button class="bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl py-3 text-xs font-black uppercase tracking-widest">Filter</button>
+            </form>
         </div>
 
         <div class="bg-white rounded-xl shadow-sm overflow-hidden">

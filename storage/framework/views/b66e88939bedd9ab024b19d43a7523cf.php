@@ -158,7 +158,7 @@
         <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <!-- CONTENT -->
-    <main id="app-content" class="<?php echo e(auth()->check() ? 'pt-28' : ''); ?>">
+    <main id="app-content" class="<?php echo e(auth()->check() ? 'pt-20 md:pt-22' : ''); ?>">
         <?php echo $__env->yieldContent('content'); ?>
     </main>
 

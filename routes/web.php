@@ -107,13 +107,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/absensi/export/csv', [LaporanController::class, 'exportAbsensiCsv'])->name('absensi.export.csv');
         Route::get('/absensi/export/pdf', [LaporanController::class, 'exportAbsensiPdf'])->name('absensi.export.pdf');
     });
-    // Keamanan sistem
-    Route::get('/security', [SecurityController::class, 'index'])->name('security.index');
-    Route::put('/security/users/{user}', [SecurityController::class, 'updateUser'])->name('security.user.update');
-
-    // Integrasi inventaris eksternal
-    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-    Route::get('/inventory/sync', [InventoryController::class, 'sync'])->name('inventory.sync');
+    // Keamanan sistem sementara ditutup
+    Route::get('/security', fn () => abort(404))->name('security.index');
+    Route::put('/security/users/{user}', fn () => abort(404))->name('security.user.update');
+    // Inventaris sementara ditutup
+    Route::get('/inventory', fn () => abort(404))->name('inventory.index');
+    Route::get('/inventory/sync', fn () => abort(404))->name('inventory.sync');
 
     // ========== END ROUTE LAPORAN ==========
 });

@@ -1,177 +1,386 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="pt-28 pb-12 bg-slate-50 min-h-screen font-sans">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 gap-6 border-b border-slate-200">
-            <div>
-                <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight leading-none uppercase">
-                    Halo, <span class="text-emerald-600">{{ Auth::user()->name }}!</span>
-                </h1>
-                <p class="text-slate-400 text-[11px] font-bold uppercase tracking-[0.3em] mt-3 flex items-center gap-2">
-                    <span class="w-8 h-[2px] bg-emerald-500"></span>
-                    Portal Anggota SIBO
-                </p>
-            </div>
-            <a href="{{ route('anggota.profil') }}" class="group bg-white hover:bg-emerald-600 border border-slate-100 text-slate-700 hover:text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:shadow-xl hover:shadow-emerald-100 flex items-center gap-3">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                Edit Profil Saya
-            </a>
-        </div>
+@php
+    use Carbon\Carbon;
+    use Illuminate\Support\Facades\Route;
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
 
-        @if(Auth::user()->anggota)
-            <div class="bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden mb-12 flex flex-col md:flex-row">
-                <div class="bg-emerald-600 md:w-1/3 p-10 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-                    
-                    <div class="w-36 h-36 bg-white/20 p-2 rounded-[2rem] mb-6 backdrop-blur-sm relative z-10">
-                        <div class="w-full h-full bg-emerald-100 rounded-[1.8rem] overflow-hidden flex items-center justify-center border-2 border-white shadow-inner">
-                            @if(Auth::user()->anggota->foto_profil && Storage::disk('public')->exists(Auth::user()->anggota->foto_profil))
-                                <img src="{{ Storage::url(Auth::user()->anggota->foto_profil) }}" class="w-full h-full object-cover">
-                            @else
-                                <svg class="w-16 h-16 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+    $user = auth()->user();
+    $anggota = $anggota ?? ($user->anggota ?? null);
+
+    $namaAnggota = $anggota->nama_lengkap
+        ?? $anggota->nama
+        ?? $user->name
+        ?? 'Anggota';
+
+    $inisialAnggota = collect(explode(' ', trim($namaAnggota)))
+        ->filter()
+        ->take(2)
+        ->map(fn ($nama) => Str::upper(Str::substr($nama, 0, 1)))
+        ->implode('');
+
+    $fotoProfil = $anggota->foto
+        ?? $anggota->foto_profil
+        ?? $anggota->avatar
+        ?? $user->foto
+        ?? $user->avatar
+        ?? null;
+
+    $fotoProfilUrl = null;
+
+    if ($fotoProfil) {
+        if (Str::startsWith($fotoProfil, ['http://', 'https://'])) {
+            $fotoProfilUrl = $fotoProfil;
+        } elseif (Storage::disk('public')->exists($fotoProfil)) {
+            $fotoProfilUrl = Storage::url($fotoProfil);
+        } elseif (file_exists(public_path($fotoProfil))) {
+            $fotoProfilUrl = asset($fotoProfil);
+        } elseif (file_exists(public_path('storage/' . $fotoProfil))) {
+            $fotoProfilUrl = asset('storage/' . $fotoProfil);
+        }
+    }
+
+    $pacAnggota = $anggota->pac
+        ?? $anggota->nama_pac
+        ?? $user->pac
+        ?? '-';
+
+    $jumlahPendaftaran = $jumlahPendaftaran ?? 0;
+    $jumlahDiikuti = $jumlahDiikuti ?? 0;
+    $jumlahSelesai = $jumlahSelesai ?? 0;
+    $jumlahSertifikat = $jumlahSertifikat ?? 0;
+
+    $agendaMendatang = collect($agendaMendatang ?? $kegiatanMendatang ?? $kegiatanTerbaru ?? []);
+    $riwayatTerbaru = collect($riwayatTerbaru ?? $riwayat ?? []);
+    $notifikasiTerbaru = collect($notifikasiTerbaru ?? $notifikasi ?? []);
+    $sertifikatTerbaru = collect($sertifikatTerbaru ?? $sertifikat ?? []);
+    $pacInfo = $pacInfo ?? $pac ?? null;
+
+    $urlProfil = Route::has('anggota.profil') ? route('anggota.profil') : url('/anggota/profil');
+    $urlKegiatan = Route::has('kegiatan.publik.index') ? route('kegiatan.publik.index') : url('/kegiatan');
+    $urlRiwayat = Route::has('anggota.riwayat') ? route('anggota.riwayat') : url('/anggota/riwayat');
+    $urlNotifikasi = Route::has('anggota.notifikasi') ? route('anggota.notifikasi') : url('/anggota/notifikasi');
+
+    $urlPac = Route::has('anggota.pac.index')
+        ? route('anggota.pac.index')
+        : (Route::has('pac.public.index') ? route('pac.public.index') : url('/pac'));
+
+    $urlSertifikat = Route::has('anggota.sertifikat.index') ? route('anggota.sertifikat.index') : url('/certificate');
+@endphp
+
+<div class="min-h-screen bg-slate-50 pt-24 pb-16 font-sans">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <section class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-700 via-emerald-600 to-green-500 text-white shadow-xl mb-10">
+            <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-white/10"></div>
+            <div class="absolute -left-16 -bottom-20 w-60 h-60 rounded-full bg-yellow-300/10"></div>
+
+            <div class="relative z-10 px-8 py-10 md:px-12 md:py-12">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.35em] font-black text-emerald-100 mb-3">
+                            Dashboard Anggota
+                        </p>
+
+                        <h1 class="text-4xl md:text-5xl font-black leading-tight">
+                            Halo, {{ $namaAnggota }}
+                        </h1>
+
+                        <p class="mt-4 text-emerald-50 text-lg max-w-2xl">
+                            Pantau kegiatan, riwayat pendaftaran, notifikasi, sertifikat, dan informasi PAC yang kamu ikuti.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-full bg-white overflow-hidden border-4 border-white shadow-lg flex items-center justify-center shrink-0">
+                            @if($fotoProfilUrl)
+                                <img src="{{ $fotoProfilUrl }}"
+                                     alt="Foto Profil {{ $namaAnggota }}"
+                                     class="w-full h-full object-cover">
+                            @endif
+
+                            @if(!$fotoProfilUrl)
+                                <div class="w-full h-full bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl font-black">
+                                    {{ $inisialAnggota ?: 'A' }}
+                                </div>
                             @endif
                         </div>
-                    </div>
-                    <h2 class="text-white font-extrabold uppercase tracking-tight text-2xl relative z-10">{{ Auth::user()->anggota->nama_lengkap }}</h2>
-                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-4 py-1.5 mt-4 rounded-full uppercase tracking-widest relative z-10 border border-white/30">Anggota Aktif</span>
-                </div>
-                
-                <div class="flex-1 p-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 bg-white/30">
-                    @php $fields = [
-                        ['label' => 'Nomor Anggota', 'val' => Auth::user()->anggota->nomor_anggota],
-                        ['label' => 'Wilayah (PAC)', 'val' => Auth::user()->anggota->pac ?? '-'],
-                        ['label' => 'WhatsApp', 'val' => Auth::user()->anggota->kontak ?? '-'],
-                        ['label' => 'Email Terdaftar', 'val' => Auth::user()->email]
-                    ]; @endphp
 
-                    @foreach($fields as $field)
-                    <div class="relative group">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-emerald-500 transition-colors">{{ $field['label'] }}</p>
-                        <p class="text-lg font-bold text-slate-800">{{ $field['val'] }}</p>
-                        <div class="w-full h-[1px] bg-slate-100 mt-2"></div>
+                        <a href="{{ $urlProfil }}"
+                           class="inline-flex items-center justify-center rounded-2xl bg-white text-emerald-700 px-6 py-4 font-black shadow-lg hover:bg-emerald-50 transition">
+                            Edit Profil
+                        </a>
                     </div>
-                    @endforeach
                 </div>
             </div>
-        @else
-            <div class="bg-rose-50 border border-rose-100 p-8 rounded-[2rem] mb-12 flex items-center gap-6 shadow-sm">
-                <div class="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-white shrink-0">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                </div>
+        </section>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="rounded-[1.7rem] bg-white p-6 shadow-sm border border-slate-100">
+                <p class="text-sm text-slate-500 font-bold mb-2">Total Pendaftaran</p>
+                <p class="text-4xl font-black text-slate-900">{{ $jumlahPendaftaran }}</p>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-6 shadow-sm border border-slate-100">
+                <p class="text-sm text-slate-500 font-bold mb-2">Kegiatan Diikuti</p>
+                <p class="text-4xl font-black text-emerald-600">{{ $jumlahDiikuti }}</p>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-6 shadow-sm border border-slate-100">
+                <p class="text-sm text-slate-500 font-bold mb-2">Kegiatan Selesai</p>
+                <p class="text-4xl font-black text-slate-900">{{ $jumlahSelesai }}</p>
+            </div>
+
+            <div class="rounded-[1.7rem] bg-white p-6 shadow-sm border border-slate-100">
+                <p class="text-sm text-slate-500 font-bold mb-2">Sertifikat</p>
+                <p class="text-4xl font-black text-amber-500">{{ $jumlahSertifikat }}</p>
+            </div>
+        </section>
+
+        <section class="rounded-[2rem] bg-white p-8 shadow-sm border border-slate-100 mb-10">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
                 <div>
-                    <p class="font-black uppercase text-rose-700 tracking-wider">Lengkapi Data Anda</p>
-                    <p class="text-rose-500 text-sm font-medium mt-1 uppercase italic">Segera hubungi admin untuk validasi data agar dapat mengikuti kegiatan.</p>
-                </div>
-            </div>
-        @endif
+                    <p class="text-sm uppercase tracking-[0.25em] font-black text-emerald-600 mb-2">
+                        Informasi PAC Saya
+                    </p>
 
-        {{-- ========== NOTIFIKASI ALFA ========== --}}
-        @if(isset($unreadCount) && $unreadCount > 0)
-        <div class="mb-6 bg-rose-50 border-l-4 border-rose-500 p-4 rounded-xl shadow-sm">
-            <div class="flex justify-between items-center">
-                <p class="font-bold text-rose-700">
-                    ⚠️ Anda memiliki {{ $unreadCount }} notifikasi alfa (tidak hadir tanpa keterangan).
-                </p>
-                <a href="{{ route('anggota.notifikasi') }}" class="text-sm text-rose-600 underline hover:text-rose-800">
-                    Lihat Semua
+                    <h2 class="text-2xl font-black text-slate-900">
+                        {{ $pacInfo->nama ?? $pacInfo->nama_pac ?? ($pacAnggota !== '-' ? 'PAC '.$pacAnggota : 'PAC belum tercatat') }}
+                    </h2>
+
+                    <p class="mt-2 text-slate-600">
+                        {{ $pacInfo->deskripsi ?? $pacInfo->keterangan ?? 'Informasi PAC mengikuti data profil anggota dan data yang dikelola admin.' }}
+                    </p>
+                </div>
+
+                <a href="{{ $urlPac }}"
+                   class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-6 py-3 text-white font-black shadow-lg shadow-emerald-100 hover:bg-emerald-700 transition">
+                    Lihat PAC
                 </a>
             </div>
-        </div>
-        @endif
+        </section>
 
-        @if(isset($notifikasi) && $notifikasi->count() > 0)
-        <div class="mb-6 bg-white p-4 rounded-xl shadow-sm border">
-            <h3 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                Notifikasi Terbaru
-            </h3>
-            @foreach($notifikasi as $notif)
-                <div class="border-b py-2 {{ $notif->is_read ? 'opacity-60' : '' }}">
-                    <p class="font-semibold text-sm">{{ $notif->judul }}</p>
-                    <p class="text-xs text-slate-500">{{ $notif->pesan }}</p>
-                    <small class="text-[10px] text-slate-400">{{ $notif->created_at->diffForHumans() }}</small>
-                </div>
-            @endforeach
-            @if($notifikasi->count() > 0)
-                <div class="mt-3 text-right">
-                    <a href="{{ route('anggota.notifikasi') }}" class="text-xs text-emerald-600 hover:underline">Lihat semua →</a>
-                </div>
-            @endif
-        </div>
-        @endif
-        {{-- ========== AKHIR NOTIFIKASI ========== --}}
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="md:col-span-2 bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden flex flex-col">
-                <div class="p-6 bg-slate-800 text-white font-black uppercase text-[10px] tracking-[0.3em] px-10">
-                    Statistik Aktivitas
-                </div>
-                <div class="p-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
-                    @php $stats = [
-                        ['label' => 'Pendaftaran', 'val' => $jumlahPendaftaran, 'bg' => 'bg-slate-50', 'text' => 'text-slate-800'],
-                        ['label' => 'Diikuti', 'val' => $jumlahDiikuti, 'bg' => 'bg-emerald-50', 'text' => 'text-emerald-600'],
-                        ['label' => 'Selesai', 'val' => $jumlahSelesai, 'bg' => 'bg-slate-800', 'text' => 'text-white']
-                    ]; @endphp
-                    
-                    @foreach($stats as $s)
-                    <div class="{{ $s['bg'] }} p-6 rounded-[2rem] flex flex-col items-center justify-center shadow-sm">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ $s['label'] }}</p>
-                        <p class="text-4xl font-black {{ $s['text'] }}">{{ $s['val'] }}</p>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <section class="xl:col-span-2 rounded-[2rem] bg-white shadow-sm border border-slate-100 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Kegiatan Terbaru</h2>
+                        <p class="text-slate-500 mt-1">Kegiatan aktif yang masih bisa dilihat atau diikuti.</p>
                     </div>
+
+                    <a href="{{ $urlKegiatan }}" class="text-emerald-600 font-black hover:text-emerald-700">
+                        Lihat Semua
+                    </a>
+                </div>
+
+                <div class="p-8 space-y-5">
+                    @if($agendaMendatang->count() > 0)
+                        @foreach($agendaMendatang as $kegiatan)
+                            @php
+                                $idKegiatan = $kegiatan->id_kegiatan ?? $kegiatan->id ?? null;
+                                $judul = $kegiatan->judul ?? $kegiatan->nama_kegiatan ?? 'Kegiatan';
+                                $tanggal = $kegiatan->tanggal ?? $kegiatan->tanggal_mulai ?? null;
+                                $tanggalText = $tanggal ? Carbon::parse($tanggal)->translatedFormat('d M Y') : '-';
+                                $lokasi = $kegiatan->lokasi ?? '-';
+
+                                $kategori = $kegiatan->kategori->nama_kategori
+                                    ?? $kegiatan->kategori->nama
+                                    ?? $kegiatan->kategori
+                                    ?? '-';
+
+                                $urlDetail = $idKegiatan && Route::has('kegiatan.publik.show')
+                                    ? route('kegiatan.publik.show', $idKegiatan)
+                                    : $urlKegiatan;
+                            @endphp
+
+                            <article class="rounded-3xl border border-slate-100 bg-slate-50 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.18em] font-black text-emerald-600 mb-2">
+                                        {{ $kategori }}
+                                    </p>
+
+                                    <h3 class="text-xl font-black text-slate-900">
+                                        {{ $judul }}
+                                    </h3>
+
+                                    <p class="mt-2 text-slate-600 text-sm">
+                                        {{ $tanggalText }} · {{ $lokasi }}
+                                    </p>
+                                </div>
+
+                                <a href="{{ $urlDetail }}"
+                                   class="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-white font-black hover:bg-slate-800 transition">
+                                    Detail
+                                </a>
+                            </article>
+                        @endforeach
+                    @endif
+
+                    @if($agendaMendatang->count() === 0)
+                        <div class="rounded-3xl border border-dashed border-slate-200 p-8 text-center">
+                            <h3 class="text-xl font-black text-slate-900">Belum ada kegiatan aktif</h3>
+                            <p class="text-slate-500 mt-2">Kegiatan terbaru akan muncul setelah admin menambahkan data.</p>
+                        </div>
+                    @endif
+                </div>
+            </section>
+
+            <section class="rounded-[2rem] bg-white shadow-sm border border-slate-100 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100">
+                    <h2 class="text-2xl font-black text-slate-900">Notifikasi</h2>
+                    <p class="text-slate-500 mt-1">Informasi terbaru untuk akunmu.</p>
+                </div>
+
+                <div class="p-8 space-y-4">
+                    @if($notifikasiTerbaru->count() > 0)
+                        @foreach($notifikasiTerbaru->take(4) as $item)
+                            @php
+                                $judulNotif = $item->judul ?? $item->title ?? 'Notifikasi';
+                                $pesanNotif = $item->pesan ?? $item->message ?? $item->keterangan ?? '-';
+                                $tanggalNotif = $item->created_at
+                                    ? Carbon::parse($item->created_at)->translatedFormat('d M Y H:i')
+                                    : '-';
+                            @endphp
+
+                            <article class="rounded-3xl bg-slate-50 border border-slate-100 p-5">
+                                <h3 class="font-black text-slate-900">{{ $judulNotif }}</h3>
+                                <p class="text-slate-600 text-sm mt-2">{{ $pesanNotif }}</p>
+                                <p class="text-xs text-slate-400 mt-3">
+                                    Pada tanggal: {{ $tanggalNotif }}
+                                </p>
+                            </article>
+                        @endforeach
+                    @endif
+
+                    @if($notifikasiTerbaru->count() === 0)
+                        <div class="rounded-3xl bg-slate-50 border border-slate-100 p-6 text-center">
+                            <p class="font-bold text-slate-700">Belum ada notifikasi.</p>
+                        </div>
+                    @endif
+
+                    <a href="{{ $urlNotifikasi }}"
+                       class="block text-center rounded-2xl bg-emerald-600 text-white font-black px-5 py-3 hover:bg-emerald-700 transition">
+                        Lihat Notifikasi
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <section class="rounded-[2rem] bg-white shadow-sm border border-slate-100 overflow-hidden mt-8">
+            <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Riwayat Kegiatan</h2>
+                    <p class="text-slate-500 mt-1">Kegiatan yang sudah kamu daftar atau ikuti.</p>
+                </div>
+
+                <a href="{{ $urlRiwayat }}" class="text-emerald-600 font-black hover:text-emerald-700">
+                    Lihat Riwayat
+                </a>
+            </div>
+
+            <div class="p-8 space-y-4">
+                @if($riwayatTerbaru->count() > 0)
+                    @foreach($riwayatTerbaru->take(4) as $row)
+                        @php
+                            $keg = $row->kegiatan ?? $row;
+                            $judulRiwayat = $keg->judul ?? $keg->nama_kegiatan ?? 'Kegiatan';
+                            $statusDaftar = $row->status ?? $row->status_pendaftaran ?? '-';
+                            $statusAbsensi = $row->status_absensi ?? $row->absensi_status ?? null;
+                            $kegId = $keg->id_kegiatan ?? $keg->id ?? null;
+
+                            $urlDetailRiwayat = $kegId && Route::has('kegiatan.publik.show')
+                                ? route('kegiatan.publik.show', $kegId)
+                                : $urlKegiatan;
+                        @endphp
+
+                        <article class="rounded-3xl bg-slate-50 border border-slate-100 p-5">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                <div>
+                                    <h3 class="font-black text-slate-900">{{ $judulRiwayat }}</h3>
+
+                                    <p class="text-sm text-slate-500 mt-1">
+                                        Status pendaftaran: {{ $statusDaftar }}
+                                        @if($statusAbsensi)
+                                            · Absensi: {{ $statusAbsensi }}
+                                        @endif
+                                    </p>
+                                </div>
+
+                                <a href="{{ $urlDetailRiwayat }}"
+                                   class="inline-flex items-center justify-center rounded-2xl bg-slate-900 text-white px-4 py-2 text-sm font-black hover:bg-slate-800 transition">
+                                    Info
+                                </a>
+                            </div>
+                        </article>
                     @endforeach
+                @endif
+
+                @if($riwayatTerbaru->count() === 0)
+                    <div class="rounded-3xl border border-dashed border-slate-200 p-8 text-center">
+                        <h3 class="text-lg font-black text-slate-900">Belum ada riwayat</h3>
+                        <p class="text-slate-500 mt-2">Riwayat akan muncul setelah kamu mendaftar kegiatan.</p>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        <section class="rounded-[2rem] bg-white shadow-sm border border-slate-100 overflow-hidden mt-8">
+            <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Sertifikat Digital</h2>
+                    <p class="text-slate-500 mt-1">Sertifikat kegiatan yang sudah tersedia.</p>
                 </div>
-            </div>
 
-            <div class="flex flex-col gap-6">
-                <a href="{{ route('kegiatan.publik.index') }}" class="group flex-1 bg-emerald-600 p-8 rounded-[2.5rem] text-white shadow-lg shadow-emerald-100 hover:shadow-emerald-200 transition-all flex flex-col justify-center items-center text-center">
-                    <span class="text-2xl font-extrabold uppercase tracking-tight group-hover:scale-105 transition-transform">Cari Kegiatan</span>
-                    <span class="text-[10px] font-bold uppercase opacity-60 tracking-[0.2em] mt-2 italic">— Lihat agenda terbaru</span>
-                </a>
-                <a href="{{ route('anggota.riwayat') }}" class="group flex-1 bg-white p-8 rounded-[2.5rem] text-slate-800 border border-slate-100 shadow-xl hover:shadow-emerald-100 transition-all flex flex-col justify-center items-center text-center">
-                    <span class="text-2xl font-extrabold uppercase tracking-tight group-hover:scale-105 transition-transform">Riwayat Saya</span>
-                    <span class="text-[10px] font-bold uppercase text-slate-400 tracking-[0.2em] mt-2 italic">— Cek status pendaftaran</span>
+                <a href="{{ $urlSertifikat }}" class="text-emerald-600 font-black hover:text-emerald-700">
+                    Lihat Sertifikat
                 </a>
             </div>
-        </div>
 
-        <div class="mt-12 bg-white/70 backdrop-blur-md rounded-[2.5rem] border border-white/50 shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-white bg-white/30 flex items-center justify-between px-10">
-                <span class="font-black uppercase text-[10px] tracking-[0.3em] text-slate-800">Agenda Mendatang</span>
-                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-            </div>
-            
-            <div class="p-4">
-                @forelse($agendaMendatang as $item)
-                    <div class="p-6 m-2 bg-white border border-slate-50 rounded-3xl flex flex-col md:flex-row justify-between items-center hover:shadow-md transition-all group">
-                        <div class="text-center md:text-left mb-4 md:mb-0">
-                            <h4 class="font-extrabold text-lg text-slate-800 uppercase tracking-tight group-hover:text-emerald-600 transition-colors">{{ $item->kegiatan->judul }}</h4>
-                            <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-1">{{ \Carbon\Carbon::parse($item->kegiatan->tanggal)->translatedFormat('d F Y') }}</p>
-                        </div>
-                        <div class="px-6 py-2.5 bg-slate-50 rounded-full border border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                            {{ $item->status_pendaftaran }}
-                        </div>
+            <div class="p-8 space-y-4">
+                @if($sertifikatTerbaru->count() > 0)
+                    @foreach($sertifikatTerbaru->take(4) as $cert)
+                        @php
+                            $nomor = $cert->nomor_sertifikat ?? $cert->nomor ?? '-';
+
+                            $judulCert = $cert->kegiatan->judul
+                                ?? $cert->pendaftaran->kegiatan->judul
+                                ?? 'Sertifikat Kegiatan';
+
+                            $idCert = $cert->id_sertifikat ?? $cert->id ?? null;
+                            $urlDownloadCert = $idCert ? url('/certificate/' . $idCert . '/download') : $urlSertifikat;
+                        @endphp
+
+                        <article class="rounded-3xl bg-slate-50 border border-slate-100 p-5">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                <div>
+                                    <h3 class="font-black text-slate-900">{{ $judulCert }}</h3>
+                                    <p class="text-sm text-slate-500 mt-1">
+                                        Nomor: {{ $nomor }}
+                                    </p>
+                                </div>
+
+                                <a href="{{ $urlDownloadCert }}"
+                                   class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 text-white px-4 py-2 text-sm font-black hover:bg-emerald-700 transition">
+                                    Download
+                                </a>
+                            </div>
+                        </article>
+                    @endforeach
+                @endif
+
+                @if($sertifikatTerbaru->count() === 0)
+                    <div class="rounded-3xl border border-dashed border-slate-200 p-8 text-center">
+                        <h3 class="text-lg font-black text-slate-900">Belum ada sertifikat</h3>
+                        <p class="text-slate-500 mt-2">
+                            Sertifikat akan muncul setelah kamu mengikuti kegiatan dan absensi dinyatakan hadir.
+                        </p>
                     </div>
-                @empty
-                    <div class="py-20 text-center">
-                        <div class="inline-flex p-6 bg-slate-50 rounded-full mb-6">
-                            <svg class="w-12 h-12 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        </div>
-                        <p class="text-slate-300 font-bold uppercase italic tracking-widest text-xs">Belum ada kegiatan yang kamu ikuti</p>
-                    </div>
-                @endforelse
+                @endif
             </div>
-        </div>
+        </section>
 
     </div>
 </div>
-
-<style>
-    @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
-</style>
 @endsection
